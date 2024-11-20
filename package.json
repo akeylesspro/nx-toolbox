@@ -1,0 +1,57 @@
+{
+    "name": "nx-tool-box",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "start": "next dev --turbopack",
+        "test": "npm run build && npm run checkBuild",
+        "build": "next build",
+        "checkBuild": "next start",
+        "lint": "next lint",
+        "uc": "powershell -ExecutionPolicy Bypass -File ./ps/update_commons.ps1"
+    },
+    "dependencies": {
+        "@next/bundle-analyzer": "^15.0.3",
+        "@radix-ui/react-aspect-ratio": "^1.1.0",
+        "@radix-ui/react-label": "^2.1.0",
+        "@radix-ui/react-slot": "^1.1.0",
+        "akeyless-assets-commons": "github:akeylesspro/akeyless-assets-commons",
+        "akeyless-client-commons": "github:akeylesspro/akeyless-client-commons#test",
+        "akeyless-server-commons": "github:akeylesspro/akeyless-server-commons#main",
+        "akeyless-types-commons": "github:akeylesspro/akeyless-types-commons",
+        "autoprefixer": "^10.4.20",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "cookies-next": "^4.3.0",
+        "firebase-admin": "^12.7.0",
+        "i18next": "^23.16.4",
+        "i18next-http-backend": "^2.6.2",
+        "jwt-decode": "^4.0.0",
+        "lucide-react": "^0.454.0",
+        "moment": "^2.30.1",
+        "moment-timezone": "^0.5.46",
+        "next": "15.0.2",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-i18next": "^15.1.0",
+        "tailwind-merge": "^2.5.4",
+        "tailwindcss-animate": "^1.0.7",
+        "zustand": "^5.0.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "@types/react": "^18",
+        "@types/react-dom": "^18",
+        "eslint": "^8",
+        "eslint-config-next": "15.0.2",
+        "postcss": "^8",
+        "tailwindcss": "^3.4.1",
+        "typescript": "^5"
+    },
+    "overrides": {
+        "rimraf": "3.0.2",
+        "fstream": {
+            "rimraf": "3.0.2"
+        }
+    }
+}

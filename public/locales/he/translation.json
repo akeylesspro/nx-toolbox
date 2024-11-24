@@ -28,5 +28,7 @@
     "search": "חיפוש",
     "home": "בית",
     "boards": "מערכות",
-    "home_message": "ברוך הבא {name}"
+    "home_message": "ברוך הבא {name}",
+    "maxRowsLabel1": "מציג :",
+    "maxRowsLabel2": "שורות מתוך :"
 }

@@ -3,16 +3,18 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "start": "next dev --turbopack",
+        "start": "next dev ",
         "test": "npm run build && npm run checkBuild",
         "build": "next build",
         "checkBuild": "next start",
         "lint": "next lint",
-        "uc": "powershell -ExecutionPolicy Bypass -File ./ps/update_commons.ps1"
+        "uc": "powershell -ExecutionPolicy Bypass -File ./ps/update_commons.ps1",
+        "clear3000": "powershell -ExecutionPolicy Bypass -File ./ps/clear_port_3000.ps1"
     },
     "dependencies": {
         "@next/bundle-analyzer": "^15.0.3",
         "@radix-ui/react-aspect-ratio": "^1.1.0",
+        "@radix-ui/react-dialog": "^1.1.2",
         "@radix-ui/react-label": "^2.1.0",
         "@radix-ui/react-slot": "^1.1.0",
         "akeyless-assets-commons": "github:akeylesspro/akeyless-assets-commons",
@@ -31,15 +33,18 @@
         "moment": "^2.30.1",
         "moment-timezone": "^0.5.46",
         "next": "15.0.2",
+        "qrcode": "^1.5.4",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-i18next": "^15.1.0",
+        "react-to-print": "^3.0.2",
         "tailwind-merge": "^2.5.4",
         "tailwindcss-animate": "^1.0.7",
         "zustand": "^5.0.1"
     },
     "devDependencies": {
         "@types/node": "^20",
+        "@types/qrcode": "^1.5.5",
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "eslint": "^8",

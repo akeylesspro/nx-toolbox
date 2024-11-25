@@ -9,6 +9,7 @@
         "checkBuild": "next start",
         "lint": "next lint",
         "uc": "powershell -ExecutionPolicy Bypass -File ./ps/update_commons.ps1",
+        "tc": "powershell -ExecutionPolicy Bypass -File ./ps/test_commons.ps1",
         "clear3000": "powershell -ExecutionPolicy Bypass -File ./ps/clear_port_3000.ps1"
     },
     "dependencies": {
@@ -18,7 +19,7 @@
         "@radix-ui/react-label": "^2.1.0",
         "@radix-ui/react-slot": "^1.1.0",
         "akeyless-assets-commons": "github:akeylesspro/akeyless-assets-commons",
-        "akeyless-client-commons": "github:akeylesspro/akeyless-client-commons#test",
+        "akeyless-client-commons": "github:akeylesspro/akeyless-client-commons#main",
         "akeyless-server-commons": "github:akeylesspro/akeyless-server-commons#main",
         "akeyless-types-commons": "github:akeylesspro/akeyless-types-commons",
         "autoprefixer": "^10.4.20",

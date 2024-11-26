@@ -18,11 +18,9 @@ export const usePrintQR = (board: Board) => {
         let token: string;
         if (board.token) {
             token = board.token;
-            console.log("no update token");
         } else {
             token = [...board.id].reverse().join("");
             await set_document("boards", board.id, { token, update: fire_base_TIME_TEMP() });
-            console.log("update board token success");
         }
 
         const canvas = document.createElement("canvas");
@@ -56,4 +54,3 @@ export const usePrintQR = (board: Board) => {
 
     return { onPrintClick, PrintableContent };
 };
-

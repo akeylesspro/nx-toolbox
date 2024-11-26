@@ -7,8 +7,8 @@ export default function NotFound() {
             <h2>Not Found</h2>
             <p>Could not find requested resource</p>
 
-            <Button className="p-0">
-                <Link className="text-blue-500 _full p-2" href="/">
+            <Button variant={"default"} className="p-0">
+                <Link className="_full p-2" href="/">
                     Home
                 </Link>
             </Button>

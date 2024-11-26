@@ -7,6 +7,7 @@ import { Loader, Table } from "akeyless-client-commons/components";
 import { memo, useMemo } from "react";
 import { Timestamp } from "firebase/firestore";
 import { usePrintQR } from "./helpers";
+import { TableProps } from "akeyless-client-commons/types";
 
 interface BoardProps {
     board: Board;
@@ -22,7 +23,7 @@ export const BoardsTable = memo(({ data }: BoardsProps) => {
 
     const headers = [t("imei"), t("sim"), t("status"), t("type"), t("comments"), t("created_date"), t("actions")];
 
-    const keysToRender = ["imei", "sim", "ui_status", "type", "comments", "ui_uploaded", "actions"];
+    const keysToRender = ["imei", "sim_ui", "ui_status", "type", "comments", "ui_uploaded", "actions"];
 
     const sortKeys = ["imei", "sim", "status", "type", "comments", "created_date", "actions"];
 
@@ -38,41 +39,48 @@ export const BoardsTable = memo(({ data }: BoardsProps) => {
                 actions: <BoardOptions board={val} />,
                 ui_status: t(BoardStatus[val.status]) || "N/A",
                 ui_uploaded: (
-                    <div className="_ellipsis" title={timestamp_to_string(val.uploaded as Timestamp)} style={{ direction: "ltr" }}>
-                        {timestamp_to_string(val.uploaded as Timestamp)}
+                    <div className="_ellipsis " title={timestamp_to_string(val.uploaded as Timestamp, "DD/MM/YYYY HH:mm:ss")}>
+                        {timestamp_to_string(val.uploaded as Timestamp, "DD/MM/YYYY HH:mm:ss")}
+                    </div>
+                ),
+                sim_ui: (
+                    <div style={{ direction: "ltr" }} className="text-end">
+                        {val.sim}
                     </div>
                 ),
             };
         });
     }, [data]);
-
+    const tableProps: TableProps = useMemo(() => {
+        return {
+            // settings
+            includeSearch: true,
+            maxRows: 100,
+            // data
+            data: formattedData,
+            direction: direction,
+            headers: headers,
+            keysToRender: keysToRender,
+            filterableColumns: filterableColumns,
+            sortKeys: sortKeys,
+            // styles
+            headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
+            containerHeaderClassName: "h-12 justify-between",
+            containerClassName: "_full",
+            cellClassName: "_ellipsis text-start h-10 px-3",
+            tableContainerClass: "flex-1",
+            searchInputClassName: "h-10 w-1/4",
+            // labels
+            searchPlaceHolder: t("search"),
+            filterLabel: t("filter_by"),
+            sortLabel: t("sort_by"),
+            maxRowsLabel1: t("maxRowsLabel1"),
+            maxRowsLabel2: t("maxRowsLabel2"),
+        };
+    }, [formattedData]);
     return (
         <div style={{ direction: direction }} className="w-full h-full _center">
-            {formattedData.length ? (
-                <Table
-                    headerStyle={{ backgroundColor: "#0f172a", height: "40px" }}
-                    containerHeaderClassName="h-12 justify-between px-2"
-                    containerClassName="_full"
-                    cellClassName="_ellipsis text-start h-10"
-                    tableContainerClass="flex-1 "
-                    searchInputClassName="h-6"
-                    data={formattedData}
-                    direction={direction}
-                    headers={headers}
-                    keysToRender={keysToRender}
-                    includeSearch={true}
-                    filterableColumns={filterableColumns}
-                    sortKeys={sortKeys}
-                    searchPlaceHolder={t("search")}
-                    filterLabel={t("filter_by")}
-                    sortLabel={t("sort_by")}
-                    maxRowsLabel1={t("maxRowsLabel1")}
-                    maxRowsLabel2={t("maxRowsLabel2")}
-                    maxRows={100}
-                />
-            ) : (
-                <Loader size={200} />
-            )}
+            {formattedData.length ? <Table {...tableProps} /> : <Loader size={200} />}
         </div>
     );
 });
@@ -88,8 +96,8 @@ const PrintQR = ({ board }: BoardProps) => {
     const { onPrintClick, PrintableContent } = usePrintQR(board);
     return (
         <>
-            <button className="text-[px]" title={t("print")} onClick={() => onPrintClick()}>
-                <i className="fa-light fa-print"></i>
+            <button title={t("print")} onClick={() => onPrintClick()}>
+                <i className="fa-light fa-print text-xl "></i>
             </button>
             <PrintableContent />
         </>

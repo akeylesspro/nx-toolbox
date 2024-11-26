@@ -14,8 +14,8 @@
     "filter": "Filter",
     "filter_by": "Filter by",
     "sort_by": "Sort by",
-    "imei": "imei",
-    "sim": "Sim",
+    "imei": "IMEI",
+    "sim": "SIM",
     "status": "Status",
     "type": "Type",
     "comments": "Comments",
@@ -29,6 +29,6 @@
     "home": "Home",
     "boards": "Boards",
     "home_message": "Welcome {name}",
-    "maxRowsLabel1": "Displaying :",
+    "maxRowsLabel1": "Displaying",
     "maxRowsLabel2": "lines out of"
 }

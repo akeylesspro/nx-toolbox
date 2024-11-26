@@ -1,16 +1,19 @@
 {
     "name": "nx-tool-box",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "next dev ",
-        "test": "npm run build && npm run checkBuild",
+        "start": "next dev -p 8003",
         "build": "next build",
-        "checkBuild": "next start",
+        "startBuild": "next start -p 8003",
+        "test": "npm run build && npm run startBuild",
         "lint": "next lint",
         "uc": "powershell -ExecutionPolicy Bypass -File ./ps/update_commons.ps1",
         "tc": "powershell -ExecutionPolicy Bypass -File ./ps/test_commons.ps1",
-        "clear3000": "powershell -ExecutionPolicy Bypass -File ./ps/clear_port_3000.ps1"
+        "clear3000": "powershell -ExecutionPolicy Bypass -File ./ps/clear_port_3000.ps1",
+        "deploy": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/deployment.ps1",
+        "gs": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/get_status.ps1",
+        "switch": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/switch_project.ps1"
     },
     "dependencies": {
         "@next/bundle-analyzer": "^15.0.3",

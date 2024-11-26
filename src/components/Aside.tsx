@@ -6,7 +6,7 @@ function Aside() {
             <div className="w-full _center  h-16">
                 <ClickableLogo />
             </div>
-            <div className="w-full px-4 py-2 flex flex-col gap-2   flex-1">
+            <div className="w-full px-4 py-2 flex flex-col gap-2 flex-1">
                 <AsideButton content="boards" to="/boards" />
             </div>
             <div className="h-10  ">

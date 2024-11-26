@@ -12,19 +12,14 @@ export default function InitialCache() {
             {
                 collectionName: "boards",
                 onFirstTime: (data) => {
-                    console.log("boards first time :", data);
                     setBoards(data);
                 },
                 onAdd: (data) => {
-                    console.log("boards added :", data);
-
                     setBoards((prev) => {
                         return [...prev, ...data];
                     });
                 },
                 onModify: (data) => {
-                    console.log("boards updated :", data);
-
                     setBoards((prev) => {
                         const updatedBoards = prev.map((item) => {
                             const updatedItem = data.find((v) => v.id === item.id);
@@ -34,7 +29,6 @@ export default function InitialCache() {
                     });
                 },
                 onRemove: (data) => {
-                    console.log("boards removed :", data);
                     setBoards((prev) => {
                         return prev.filter((item) => !data.some((v) => v.id === item.id));
                     });

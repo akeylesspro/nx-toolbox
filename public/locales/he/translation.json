@@ -14,8 +14,8 @@
     "sort_by": "מיון לפי",
     "filter": "סינון",
     "filter_by": "סינון לפי",
-    "imei": "imei",
-    "sim": "סים",
+    "imei": "IMEI",
+    "sim": "SIM",
     "status": "סטטוס",
     "type": "סוג",
     "comments": "הערות",
@@ -29,6 +29,6 @@
     "home": "בית",
     "boards": "מערכות",
     "home_message": "ברוך הבא {name}",
-    "maxRowsLabel1": "מציג :",
-    "maxRowsLabel2": "שורות מתוך :"
+    "maxRowsLabel1": "מציג",
+    "maxRowsLabel2": "שורות מתוך"
 }

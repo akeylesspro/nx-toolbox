@@ -23,6 +23,7 @@ const Login = () => {
     const [technician, setTechnician] = useState<Installer | null>(null);
     const [codeDisplay, setCodeDisplay] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    
     const handleSubmit = async (e: FormEvent) => {
         try {
             e.preventDefault();

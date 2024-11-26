@@ -28,7 +28,7 @@
     "search": "Search",
     "home": "Home",
     "boards": "Boards",
-    "home_message": "welcome {name}"
-
-
+    "home_message": "Welcome {name}",
+    "maxRowsLabel1": "Displaying :",
+    "maxRowsLabel2": "lines out of"
 }

@@ -1,6 +1,6 @@
-import { Login } from "@/appPages";
+import Login from "./Login";
 
-export default function LoginPage() {
+export default async function LoginPage() {
     return <Login />;
 }
 

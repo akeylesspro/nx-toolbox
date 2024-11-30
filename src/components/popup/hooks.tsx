@@ -1,11 +1,7 @@
-import { Position } from "@/types";
+import { Position, useDragAndDropProps, UseResizeProps } from "./types";
 import { useEffect, useState } from "react";
 
-interface useDraggableProps {
-    initialPosition: Position;
-}
-
-export const useDraggable = ({ initialPosition }: useDraggableProps) => {
+export const useDragAndDrop = ({ initialPosition }: useDragAndDropProps) => {
     const [position, setPosition] = useState<Position>(initialPosition);
     const [isDragging, setIsDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -65,20 +61,7 @@ export const useDraggable = ({ initialPosition }: useDraggableProps) => {
     };
 };
 
-interface UseResizableProps {
-    resize: boolean;
-    initialWidth: number;
-    initialHeight: number;
-    minWidth: number;
-    minHeight: number;
-    setPosition: React.Dispatch<React.SetStateAction<Position>>;
-    position: Position;
-}
-
-export const useResizable = ({ resize, initialWidth, initialHeight, minWidth, minHeight, position, setPosition }: UseResizableProps) => {
-    // if (!resize) {
-    //     return {};
-    // }
+export const useResize = ({  initialWidth, initialHeight, minWidth, minHeight, position, setPosition }: UseResizeProps) => {
     const [size, setSize] = useState({ width: initialWidth, height: initialHeight });
     const [isResizing, setIsResizing] = useState(false);
     const [startMouse, setStartMouse] = useState<{ x: number; y: number } | null>(null);
@@ -142,15 +125,12 @@ export const useResizable = ({ resize, initialWidth, initialHeight, minWidth, mi
                 const rightValue = parsePositionValue(prevPosition.right);
 
                 if (leftValue !== undefined) {
-                    // אם 'left' מוגדר
                     const newLeft = leftValue + deltaX;
                     updatedPosition.left = `${newLeft}px`;
                 } else if (rightValue !== undefined) {
-                    // אם 'right' מוגדר
                     const newRight = rightValue - deltaX;
                     updatedPosition.right = `${newRight}px`;
                 } else {
-                    // אם אף אחד מהם לא מוגדר, נניח ש-left הוא 0
                     const newLeft = deltaX;
                     updatedPosition.left = `${newLeft}px`;
                     updatedPosition.right = "auto";
@@ -175,6 +155,7 @@ export const useResizable = ({ resize, initialWidth, initialHeight, minWidth, mi
 
     return {
         size,
+        setSize,
         startResizing,
     };
 };

@@ -30,5 +30,11 @@
     "boards": "Boards",
     "home_message": "Welcome {name}",
     "maxRowsLabel1": "Displaying",
-    "maxRowsLabel2": "lines out of"
+    "maxRowsLabel2": "lines out of",
+    "popup_error": "Error in popup {id}",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close",
+    "restore": "Restore",
+    "resize": "Resize"
 }

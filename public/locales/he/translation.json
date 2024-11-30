@@ -30,5 +30,11 @@
     "boards": "מערכות",
     "home_message": "ברוך הבא {name}",
     "maxRowsLabel1": "מציג",
-    "maxRowsLabel2": "שורות מתוך"
+    "maxRowsLabel2": "שורות מתוך",
+    "popup_error": "שגיאה בפופאפ {id}",
+    "minimize": "מזער",
+    "maximize": "הגדל",
+    "close": "סגירה",
+    "restore": "שחזר",
+    "resize": "שנה גודל"
 }

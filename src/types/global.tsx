@@ -10,9 +10,4 @@ export interface AsideButtonsProps {
     to: string;
     disabled?: boolean;
 }
-export interface Position {
-    top?: string;
-    left?: string;
-    bottom?: string;
-    right?: string;
-}
+

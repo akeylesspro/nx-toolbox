@@ -1,35 +1,17 @@
-import React, { memo, useCallback, useMemo } from "react";
-import Warper from "./Warper";
+import React, { memo, useCallback } from "react";
+import { MinimizePopup, Warper } from "./Comps";
 import { ErrorBoundary } from "akeyless-client-commons/components";
 import { useTranslation } from "react-i18next";
 import { SettingsStore } from "@/lib/store";
 import { PopupsStore } from "@/lib/store";
-import { useDraggable, useResizable } from "./hooks";
-
-export interface PopUpProps {
-    id: string;
-    element: JSX.Element;
-    close?: {
-        noClose?: boolean;
-        onClose?: () => void | Promise<void>;
-    };
-    top?: string;
-    left?: string;
-    bottom?: string;
-    right?: string;
-    headerBackground?: string;
-    zIndex?: number;
-    dragAndDrop?: boolean;
-    resize?: boolean;
-    singleton?: boolean;
-    minimize?: boolean;
-    maximize?: boolean;
-}
+import { useDragAndDrop, useResize } from "./hooks";
+import { PopUpProps } from "./types";
 
 const Popup = memo(
     ({
         id,
         element,
+        type,
         right = "465px",
         left = "auto",
         top = "105px",
@@ -39,7 +21,7 @@ const Popup = memo(
         dragAndDrop = true,
         close,
         resize = true,
-        singleton = true,
+        errorMsg,
         maximize,
         minimize,
     }: PopUpProps) => {
@@ -47,16 +29,17 @@ const Popup = memo(
         const direction = SettingsStore.direction();
         const deletePopup = PopupsStore.deletePopup();
         const bringToFront = PopupsStore.bringToFront();
+        const minimizePopup = PopupsStore.minimize();
+        const minimizedPopups = PopupsStore.minimizedPopups();
 
-        const { isDragging, startDragging, position, setPosition } = useDraggable({
+        const { isDragging, startDragging, position, setPosition } = useDragAndDrop({
             initialPosition: { top, left, right, bottom },
         });
 
-        const { size, startResizing } = useResizable({
-            resize,
+        const { size, setSize, startResizing } = useResize({
             initialWidth: 300,
-            initialHeight: 150,
             minWidth: 300,
+            initialHeight: 150,
             minHeight: 150,
             setPosition,
             position,
@@ -66,6 +49,24 @@ const Popup = memo(
             deletePopup(id);
             close?.onClose?.();
         }, [deletePopup, close]);
+
+        const maximizePopup = useCallback(() => {
+            setSize({ height: maximize?.height || 600, width: maximize?.width || 900 });
+        }, [setSize]);
+
+        if (minimize?.isMinimized) {
+            return (
+                <MinimizePopup
+                    id={id}
+                    type={type}
+                    close={close}
+                    minimize={minimize}
+                    zIndex={zIndex}
+                    minimizedPopups={minimizedPopups}
+                    exitPopUp={exitPopUp}
+                />
+            );
+        }
 
         return (
             <div
@@ -82,51 +83,66 @@ const Popup = memo(
                 }}
                 onMouseDown={() => bringToFront(id)}
             >
-                {/* Header */}
-                <div
-                    className={`flex items-center justify-start w-full h-8`}
-                    onMouseDown={(e) => dragAndDrop && startDragging(e)}
-                    style={{
-                        direction: "ltr",
-                        cursor: isDragging ? "grabbing" : "grab",
-                        background: headerBackground,
-                    }}
+                <ErrorBoundary
+                    fallback={
+                        <div className="full center">
+                            <h1>{errorMsg || t("popup_error").replace("{id}", id)}</h1>
+                        </div>
+                    }
                 >
-                    {!close?.noClose && (
-                        <button onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d]">
-                            <i className="fa-solid fa-x"></i>
-                        </button>
-                    )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 flex justify-center items-center">
-                    <ErrorBoundary
-                        fallback={
-                            <div className="full center">
-                                <h1>{t("pop up 2 error ...")}</h1>
-                            </div>
-                        }
-                    >
-                        <Warper element={element} exitPopUp={exitPopUp} position={position} />
-                    </ErrorBoundary>
-                </div>
-
-                {/* Resize Handle */}
-                {resize && (
+                    {/* Header */}
                     <div
-                        onMouseDown={startResizing}
+                        className={`flex items-center justify-start w-full h-8`}
+                        onMouseDown={(e) => dragAndDrop && startDragging(e)}
                         style={{
-                            width: "6px",
-                            height: "6px",
-                            background: "rgba(0,0,0,0.2)",
-                            position: "absolute",
-                            bottom: 0,
-                            left: 0,
-                            cursor: "sw-resize",
+                            direction: "ltr",
+                            cursor: isDragging ? "grabbing" : "grab",
+                            background: headerBackground,
                         }}
-                    />
-                )}
+                    >
+                        {!close?.noClose && (
+                            <button title={t("close")} onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d]">
+                                <i className="fa-solid fa-x"></i>
+                            </button>
+                        )}
+                        {maximize?.enable && (
+                            <button title={t("maximize")} onClick={() => maximizePopup()} className="center text-white w-8 h-full hover:bg-gray-500">
+                                <i className="fa-light fa-square"></i>
+                            </button>
+                        )}
+                        {minimize?.enable && (
+                            <button
+                                title={t("minimize")}
+                                onClick={() => minimizePopup(id)}
+                                className="center text-white w-8 h-full hover:bg-gray-500"
+                            >
+                                <i className="fa-solid fa-window-minimize"></i>
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 flex justify-center items-center">
+                        <Warper element={element} exitPopUp={exitPopUp} position={position} />
+                    </div>
+
+                    {/* Resize Handle */}
+                    {resize && (
+                        <div
+                            title={t("resize")}
+                            onMouseDown={startResizing}
+                            style={{
+                                width: "6px",
+                                height: "6px",
+                                background: "rgba(0,0,0,0.2)",
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                cursor: "sw-resize",
+                            }}
+                        />
+                    )}
+                </ErrorBoundary>
             </div>
         );
     }

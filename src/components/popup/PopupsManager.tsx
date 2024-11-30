@@ -7,12 +7,16 @@ export default function PopupsManager() {
     const popups = PopupsStore.popups();
     const addPopup = PopupsStore.addPopup();
     useEffect(() => {
-        addPopup({ id: "test", element: <Test id="" /> });
-        addPopup({ id: "test2", element: <Test id="2" /> });
-        addPopup({ id: "test3", element: <Test id="3" /> });
-        addPopup({ id: "test4", element: <Test id="4" />, resize: false });
-        addPopup({ id: "test5", element: <Test id="5" />, resize: false });
-        addPopup({ id: "test6", element: <Test id="6" />, resize: false });
+        for (let i = 0; i < 35; i++) {
+            addPopup({
+                id: `test${i}`,
+                type: "info",
+                element: <Test id={i.toString()} />,
+                resize: true,
+                minimize: { enable: true },
+                maximize: { enable: true },
+            });
+        }
     }, []);
     return (
         <>

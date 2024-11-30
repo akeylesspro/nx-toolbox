@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import i18n from "@/i18n";
 import PopupsManager from "../popup/PopupsManager";
 import { QaBadge } from "../global";
-import InitialCache from "./InitialCache";
 
 export function GlobalConfig() {
     useEffect(() => {
@@ -12,7 +11,7 @@ export function GlobalConfig() {
     }, []);
     return (
         <>
-            <InitialCache />
+            
             <PopupsManager />
             <QaBadge />
         </>

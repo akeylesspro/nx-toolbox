@@ -61,7 +61,7 @@ export const useDragAndDrop = ({ initialPosition }: useDragAndDropProps) => {
     };
 };
 
-export const useResize = ({  initialWidth, initialHeight, minWidth, minHeight, position, setPosition }: UseResizeProps) => {
+export const useResize = ({ resize, initialWidth, initialHeight, minWidth, minHeight, position, setPosition }: UseResizeProps) => {
     const [size, setSize] = useState({ width: initialWidth, height: initialHeight });
     const [isResizing, setIsResizing] = useState(false);
     const [startMouse, setStartMouse] = useState<{ x: number; y: number } | null>(null);
@@ -81,6 +81,9 @@ export const useResize = ({  initialWidth, initialHeight, minWidth, minHeight, p
     }, [isResizing, startMouse]);
 
     useEffect(() => {
+        if (!resize) {
+            return;
+        }
         const calculatedLeft = window.innerWidth - parseFloat(position.right!) - initialWidth;
         setPosition({
             left: `${calculatedLeft}px`,

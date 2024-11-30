@@ -20,7 +20,7 @@ const Popup = memo(
         zIndex = 10,
         dragAndDrop = true,
         close,
-        resize = true,
+        resize,
         errorMsg,
         maximize,
         minimize,
@@ -37,6 +37,7 @@ const Popup = memo(
         });
 
         const { size, setSize, startResizing } = useResize({
+            resize,
             initialWidth: 300,
             minWidth: 300,
             initialHeight: 150,
@@ -70,7 +71,7 @@ const Popup = memo(
 
         return (
             <div
-                className={`min-h-[150px] min-w-[300px] bg-[#fff] fixed flex flex-col`}
+                className={`min-h-[150px] min-w-[300px] bg-[#fff] fixed flex flex-col rounded-md`}
                 style={{
                     boxShadow: "3px 4px 12.1px 0px rgba(0, 0, 0, 0.12)",
                     top: position.top,
@@ -92,16 +93,16 @@ const Popup = memo(
                 >
                     {/* Header */}
                     <div
-                        className={`flex items-center justify-start w-full h-8`}
+                        className={`flex items-center justify-start w-full h-8 rounded-t-md`}
                         onMouseDown={(e) => dragAndDrop && startDragging(e)}
                         style={{
                             direction: "ltr",
-                            cursor: isDragging ? "grabbing" : "grab",
+                            cursor: !dragAndDrop ? "default" : isDragging ? "grabbing" : "grab",
                             background: headerBackground,
                         }}
                     >
                         {!close?.noClose && (
-                            <button title={t("close")} onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d]">
+                            <button title={t("close")} onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d] rounded-tl-md">
                                 <i className="fa-solid fa-x"></i>
                             </button>
                         )}
@@ -136,8 +137,8 @@ const Popup = memo(
                                 height: "6px",
                                 background: "rgba(0,0,0,0.2)",
                                 position: "absolute",
-                                bottom: 0,
-                                left: 0,
+                                bottom:"-2px",
+                                left: "-2px",
                                 cursor: "sw-resize",
                             }}
                         />

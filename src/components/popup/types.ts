@@ -34,6 +34,7 @@ export interface useDragAndDropProps {
 }
 
 export interface UseResizeProps {
+    resize?: boolean;
     initialWidth: number;
     initialHeight: number;
     minWidth: number;

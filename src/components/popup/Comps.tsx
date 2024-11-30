@@ -43,10 +43,10 @@ const MinimizePopup = ({ id, type, close, zIndex, minimize, minimizedPopups, exi
                 zIndex,
             }}
         >
-            <div className="bg-gray-500 text-white h-full flex items-center justify-between  hover:bg-gray-700">
+            <div className="bg-gray-500 text-white h-full flex items-center justify-between  hover:bg-gray-700  rounded-t-md">
                 <div className="h-full flex justify-start items-center">
                     {!close?.noClose && (
-                        <button title={t("close")} onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d]">
+                        <button title={t("close")} onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d]  rounded-tl-md">
                             <i className="fa-solid fa-x"></i>
                         </button>
                     )}

@@ -13,7 +13,9 @@
         "clear3000": "powershell -ExecutionPolicy Bypass -File ./ps/clear_port_3000.ps1",
         "deploy": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/deployment.ps1",
         "gs": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/get_status.ps1",
-        "switch": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/switch_project.ps1"
+        "switch": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/switch_project.ps1",
+        "git": "powershell -ExecutionPolicy Bypass -File ./ps/create_branch.ps1",
+        "git2": "powershell -ExecutionPolicy Bypass -File ./ps/move_to_develop.ps1"
     },
     "dependencies": {
         "@next/bundle-analyzer": "^15.0.3",

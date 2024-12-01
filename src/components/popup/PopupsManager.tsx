@@ -6,6 +6,7 @@ import Popup from ".";
 export default function PopupsManager() {
     const popups = PopupsStore.popups();
     const addPopup = PopupsStore.addPopup();
+    // test popups
     useEffect(() => {
         addPopup({
             id: `test1`,

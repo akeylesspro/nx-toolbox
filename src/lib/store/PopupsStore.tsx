@@ -52,9 +52,8 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
     minimize: (id) => {
         set((state) => {
             const popupIndex = state.popups.findIndex((popup) => popup.id === id);
-
             if (popupIndex !== -1) {
-                if (!state.popups[popupIndex].minimize?.enable) {
+                if (!state.popups[popupIndex].minimize?.enabled) {
                     return state;
                 }
                 state.popups[popupIndex].minimize.isMinimized = true;
@@ -70,7 +69,7 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
         set((state) => {
             const popupIndex = state.popups.findIndex((popup) => popup.id === id);
             if (popupIndex !== -1) {
-                if (!state.popups[popupIndex].minimize?.enable) {
+                if (!state.popups[popupIndex].minimize?.enabled) {
                     return state;
                 }
                 state.popups[popupIndex].minimize.isMinimized = false;

@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect } from "react";
 import i18n from "@/i18n";
-import PopupsManager from "../popup/PopupsManager";
 import { QaBadge } from "../global";
+import { PopupManager } from "../popup/comps";
 
 export function GlobalConfig() {
     useEffect(() => {
@@ -11,8 +11,7 @@ export function GlobalConfig() {
     }, []);
     return (
         <>
-            
-            <PopupsManager />
+            <PopupManager />
             <QaBadge />
         </>
     );

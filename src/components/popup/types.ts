@@ -1,10 +1,10 @@
 export interface PopUpProps {
     id: string;
     element: JSX.Element;
-    type: "info" | "error" | "warning" | "interaction";
+    type: "info" | "error" | "warning" | "custom";
     close?: {
         noClose?: boolean;
-        onClose?: () => void | Promise<void>;
+        onClose?: () => void | boolean | Promise<void | boolean>;
     };
     top?: string;
     left?: string;
@@ -12,18 +12,18 @@ export interface PopUpProps {
     right?: string;
     headerBackground?: string;
     zIndex?: number;
-    dragAndDrop?: boolean;
+    move?: boolean;
     resize?: boolean;
     singleton?: boolean;
     errorMsg?: string;
     minimize?: {
-        enable?: boolean;
+        enabled?: boolean;
         isMinimized?: boolean;
         icon?: React.ReactNode;
         iconTitle?: string;
     };
     maximize?: {
-        enable?: boolean;
+        enabled?: boolean;
         height?: number;
         width?: number;
     };
@@ -34,13 +34,12 @@ export interface useDragAndDropProps {
 }
 
 export interface UseResizeProps {
-    resize?: boolean;
-    initialWidth: number;
-    initialHeight: number;
+    resize: boolean;
     minWidth: number;
     minHeight: number;
-    setPosition: React.Dispatch<React.SetStateAction<Position>>;
     position: Position;
+    setPosition: React.Dispatch<React.SetStateAction<Position>>;
+    isLtr: boolean;
 }
 
 export interface Position {
@@ -60,3 +59,8 @@ export type MinimizePopupProps = Pick<PopUpProps, "id" | "type" | "zIndex" | "cl
     exitPopUp: () => void;
     minimizedPopups: string[];
 };
+
+export interface ResizeHandleProps {
+    startResizing: (e: React.MouseEvent) => void;
+    isLtr: boolean;
+}

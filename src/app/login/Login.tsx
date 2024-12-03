@@ -15,7 +15,7 @@ const Login = () => {
     const { i18n, t } = useTranslation();
     const router = useRouter();
 
-    const isLangHe = SettingsStore.isLangHe();
+    const isLtr = SettingsStore.isLtr();
     const setDirection = SettingsStore.setDirection();
     const setActiveUser = UserStore.setActiveUser();
 
@@ -45,7 +45,7 @@ const Login = () => {
 
     return (
         <div className="_full _center px-3">
-            <Image className="fixed top-4 left-4" width={214} height={57} src="/images/akeyless_logo_big.png" alt="akyeless_logo" />
+            <Image className="fixed top-4 left-4" width={214} height={57} src="/images/akeyless_logo_big.png" alt="akyeless_logo" fetchPriority="high" />
             <div className="p-6 border w-96  border-gray-200 rounded-lg shadow-md flex flex-col gap-4">
                 <div className="text-2xl font-semibold ">{t("phone_login_headline")}</div>
                 {error && <div className=" text-red-500">{error}</div>}
@@ -54,7 +54,7 @@ const Login = () => {
                         <Input
                             name="input"
                             type="text"
-                            className={`${isLangHe ? "text-end" : "text-start"} ltr`}
+                            className={`${isLtr ? "text-end" : "text-start"} ltr`}
                             placeholder={codeDisplay ? t("code_input_placeholder") : t("phone_input_placeholder")}
                             {...useValidation("numbers")}
                         />

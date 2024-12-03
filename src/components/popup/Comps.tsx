@@ -1,9 +1,10 @@
-import React, { cloneElement, isValidElement, memo, useCallback } from "react";
+import React, { cloneElement, isValidElement, memo, useCallback, useEffect } from "react";
 import { isEqual } from "lodash";
 import { TObject } from "akeyless-types-commons";
-import { MinimizePopupProps, PopupWrapperProps, Position } from "./types";
+import { MinimizePopupProps, PopupWrapperProps, Position, ResizeHandleProps } from "./types";
 import { PopupsStore } from "@/lib/store";
 import { useTranslation } from "react-i18next";
+import Popup from "./Popup";
 
 // core component to wrap the popup element
 const PopupWrapper = ({ element, position, exitPopUp }: PopupWrapperProps) => {
@@ -21,12 +22,13 @@ const areEqual = (prevProps: TObject<any>, nextProps: TObject<any>) => {
 };
 
 // memoize the component
-const Warper = memo<PopupWrapperProps>(PopupWrapper, areEqual);
-Warper.displayName = "PopupWarper";
+const Wrapper = memo<PopupWrapperProps>(PopupWrapper, areEqual);
+Wrapper.displayName = "PopupWrapper ";
 
 const MinimizePopup = ({ id, type, close, zIndex, minimize, minimizedPopups, exitPopUp }: MinimizePopupProps) => {
     const { t } = useTranslation();
     const restorePopup = PopupsStore.restore();
+
     const getMinimizedPosition = useCallback((): string => {
         const index = minimizedPopups.findIndex((popupId) => popupId === id);
         const popupWidth = 135;
@@ -50,16 +52,86 @@ const MinimizePopup = ({ id, type, close, zIndex, minimize, minimizedPopups, exi
                             <i className="fa-solid fa-x"></i>
                         </button>
                     )}
-                    <button title={t("restore")}  onClick={() => restorePopup(id)} className="center text-white w-8 h-full hover:bg-gray-500">
+                    <button title={t("restore")} onClick={() => restorePopup(id)} className="center text-white w-8 h-full hover:bg-gray-500">
                         <i className="fa-light fa-square"></i>
                     </button>
                 </div>
-                <div title={minimize?.iconTitle} className="px-1 _center">
-                    {minimize?.icon || type}
-                </div>
+                {minimize?.icon && (
+                    <div title={minimize?.iconTitle} className="px-1 _center">
+                        {minimize.icon}
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
-export { Warper, MinimizePopup };
+const ResizeHandle = memo(({ startResizing, isLtr }: ResizeHandleProps) => {
+    return (
+        <div
+            onMouseDown={startResizing}
+            className={`absolute bottom-1 ${
+                isLtr ? "left-0 rotate-45 cursor-sw-resize" : "right-0 -rotate-45 cursor-nw-resize"
+            } flex flex-col items-center justify-center gap-0.5`}
+        >
+            <div className="w-2.5 h-[1px] bg-black"></div>
+            <div className="w-1.5 h-[1px] bg-black "></div>
+        </div>
+    );
+});
+ResizeHandle.displayName = "resizeHandle";
+
+const PopupManager = () => {
+    const popups = PopupsStore.popups();
+    const addPopup = PopupsStore.addPopup();
+    useEffect(() => {
+        addPopup({
+            id: `test1`,
+
+            type: "info",
+            element: <Test text={"maximize and maximize"} />,
+            maximize: { enabled: true },
+            minimize: { enabled: true, iconTitle: "test3", icon: <i className="fa-regular fa-user mx-1 "></i> },
+            resize: true,
+        });
+        // addPopup({
+        //     id: `test2`,
+        //     type: "warning",
+        //     element: <Test text={"maximize and maximize"} />,
+        //     maximize: { enabled: true },
+        //     minimize: { enabled: true, iconTitle: "test3", icon: <i className="fa-regular fa-user mx-1 "></i> },
+        //     resize: true,
+        // });
+        // addPopup({
+        //     id: `test3`,
+        //     type: "error",
+        //     element: <Test text={"maximize and maximize"} />,
+        //     maximize: { enabled: true },
+        //     minimize: { enabled: true, iconTitle: "test3", icon: <i className="fa-regular fa-user mx-1 "></i> },
+        //     resize: true,
+        // });
+        // addPopup({
+        //     id: `test4`,
+        //     type: "custom",
+        //     element: <Test text={"maximize and maximize"} />,
+        //     maximize: { enabled: true },
+        //     minimize: { enabled: true, iconTitle: "test3", icon: <i className="fa-regular fa-user mx-1 "></i> },
+        //     resize: true,
+        // });
+    }, []);
+
+    return (
+        <>
+            {popups.map((popupProps) => {
+                return <Popup key={popupProps.id} {...popupProps} />;
+            })}
+        </>
+    );
+};
+
+const Test = ({ text }: { text: string }) => {
+    console.log("rendering test", text);
+    return <div className="min-w-[500px] min-h-[500px] w-full h-full ">{text} </div>;
+};
+
+export { Wrapper, MinimizePopup, PopupManager, ResizeHandle };

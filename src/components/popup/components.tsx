@@ -66,12 +66,12 @@ const MinimizePopup = ({ id, close, zIndex, headerIcon, headerTitle, minimizedPo
 };
 
 // resize handle component
-const ResizeHandle = memo(({ startResizing, isLtr }: ResizeHandleProps) => {
+const ResizeHandle = memo(({ startResizing, isRtl }: ResizeHandleProps) => {
     return (
         <div
             onMouseDown={startResizing}
             className={`absolute bottom-1 ${
-                isLtr ? "left-0 rotate-45 cursor-sw-resize" : "right-0 -rotate-45 cursor-nw-resize"
+                isRtl ? "left-0 rotate-45 cursor-sw-resize" : "right-0 -rotate-45 cursor-nw-resize"
             } flex flex-col items-center justify-center gap-0.5`}
         >
             <div className="w-2.5 h-[1px] bg-black"></div>

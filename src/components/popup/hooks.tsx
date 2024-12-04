@@ -78,7 +78,7 @@ export const useResize = ({
     minHeight,
     position,
     setPosition,
-    isLtr,
+    isRtl,
     parentRef,
     popupRef,
 }: UseResizeProps & {
@@ -119,7 +119,7 @@ export const useResize = ({
             let newHeight = startSize.height;
             let newLeft = parseFloat(startPosition.left || "0");
             let newRight = parseFloat(startPosition.right || "0");
-            if (isLtr) {
+            if (isRtl) {
                 newWidth = startSize.width - deltaX;
                 if (newWidth < minWidth) {
                     newWidth = minWidth;
@@ -180,7 +180,7 @@ export const useResize = ({
 
             setPosition((prevPosition: Position) => {
                 const updatedPosition = { ...prevPosition };
-                if (isLtr) {
+                if (isRtl) {
                     updatedPosition.left = `${newLeft}px`;
                 } else {
                     updatedPosition.right = `${newRight}px`;
@@ -188,7 +188,7 @@ export const useResize = ({
                 return updatedPosition;
             });
         },
-        [isResizing, startMouse, startSize, startPosition, parentRef, popupRef, isLtr, minWidth, minHeight, setPosition]
+        [isResizing, startMouse, startSize, startPosition, parentRef, popupRef, isRtl, minWidth, minHeight, setPosition]
     );
 
     const stopResizing = () => {

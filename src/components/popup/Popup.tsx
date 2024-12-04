@@ -38,7 +38,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
 
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
-    const isLtr = SettingsStore.isLtr();
+    const isRtl = SettingsStore.isRtl();
     const deletePopup = PopupsStore.deletePopup();
     const bringToFront = PopupsStore.bringToFront();
     const minimizePopup = PopupsStore.minimize();
@@ -49,7 +49,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
     const [minSize, setMinSize] = useState({ width: 300, height: 150 });
 
     const { isDragging, startDragging, position, setPosition } = useDragAndDrop({
-        initialPosition: { top, left: left || isLtr ? "0px" : "auto", right: right || isLtr ? "auto" : "0px", bottom },
+        initialPosition: { top, left: left || isRtl ? "0px" : "auto", right: right || isRtl ? "auto" : "0px", bottom },
         parentRef,
         popupRef,
     });
@@ -75,7 +75,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
         minHeight: minSize.height,
         setPosition,
         position,
-        isLtr,
+        isRtl,
         parentRef,
         popupRef,
     });
@@ -187,7 +187,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                 </div>
 
                 {/* Resize Handle */}
-                {resize && <ResizeHandle isLtr={isLtr} startResizing={startResizing} />}
+                {resize && <ResizeHandle isRtl={isRtl} startResizing={startResizing} />}
             </ErrorBoundary>
         </div>
     );

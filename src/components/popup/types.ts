@@ -42,7 +42,7 @@ export interface UseResizeProps {
     minHeight: number;
     position: Position;
     setPosition: React.Dispatch<React.SetStateAction<Position>>;
-    isLtr: boolean;
+    isRtl: boolean;
 }
 
 export interface Position {
@@ -65,5 +65,5 @@ export type MinimizePopupProps = Pick<PopUpProps, "id" | "zIndex" | "close" | "h
 
 export interface ResizeHandleProps {
     startResizing: (e: React.MouseEvent) => void;
-    isLtr: boolean;
+    isRtl: boolean;
 }

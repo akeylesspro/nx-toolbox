@@ -5,7 +5,7 @@ import { isBrowser } from "@/lib/helpers";
 
 interface SettingsStoreType {
     currentLanguage: "he" | "en";
-    isLtr: boolean;
+    isRtl: boolean;
     direction: "ltr" | "rtl";
     setDirection: (updater?: any) => void;
 }
@@ -25,7 +25,7 @@ const initialLang = (): "he" | "en" => {
     }
     return "he";
 };
-const initialIsLtr = (): boolean => {
+const initialIsRtl = (): boolean => {
     const lang = isBrowser() ? (localStorage.getItem("lang") as "he" | "en" | undefined) : undefined;
     if (lang) {
         return lang == "he" ? true : false;
@@ -36,7 +36,7 @@ const initialIsLtr = (): boolean => {
 
 export const SettingsStoreBase = create<SettingsStoreType>((set, get) => ({
     currentLanguage: initialLang(),
-    isLtr: initialIsLtr(),
+    isRtl: initialIsRtl(),
     direction: initialDirection(),
     setDirection: (updater) =>
         set((state) => {
@@ -44,7 +44,7 @@ export const SettingsStoreBase = create<SettingsStoreType>((set, get) => ({
             return {
                 direction: newDirection,
                 currentLanguage: newDirection === "rtl" ? "he" : "en",
-                isLtr: newDirection === "rtl",
+                isRtl: newDirection === "rtl",
             };
         }),
 }));

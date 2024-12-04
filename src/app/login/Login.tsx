@@ -15,7 +15,7 @@ const Login = () => {
     const { i18n, t } = useTranslation();
     const router = useRouter();
 
-    const isLtr = SettingsStore.isLtr();
+    const isRtl = SettingsStore.isRtl();
     const setDirection = SettingsStore.setDirection();
     const setActiveUser = UserStore.setActiveUser();
 
@@ -54,7 +54,7 @@ const Login = () => {
                         <Input
                             name="input"
                             type="text"
-                            className={`${isLtr ? "text-end" : "text-start"} ltr`}
+                            className={`${isRtl ? "text-end" : "text-start"} ltr`}
                             placeholder={codeDisplay ? t("code_input_placeholder") : t("phone_input_placeholder")}
                             {...useValidation("numbers")}
                         />

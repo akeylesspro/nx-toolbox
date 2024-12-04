@@ -23,7 +23,7 @@ const Login = () => {
     const [technician, setTechnician] = useState<Installer | null>(null);
     const [codeDisplay, setCodeDisplay] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const handleSubmit = async (e: FormEvent) => {
         try {
             e.preventDefault();
@@ -45,7 +45,14 @@ const Login = () => {
 
     return (
         <div className="_full _center px-3">
-            <Image className="fixed top-4 left-4" width={214} height={57} src="/images/akeyless_logo_big.png" alt="akyeless_logo" fetchPriority="high" />
+            <Image
+                className="fixed top-4 left-4"
+                width={214}
+                height={57}
+                src="/images/akeyless_logo_big.png"
+                alt="akyeless_logo"
+                fetchPriority="high"
+            />
             <div className="p-6 border w-96  border-gray-200 rounded-lg shadow-md flex flex-col gap-4">
                 <div className="text-2xl font-semibold ">{t("phone_login_headline")}</div>
                 {error && <div className=" text-red-500">{error}</div>}
@@ -59,7 +66,7 @@ const Login = () => {
                             {...useValidation("numbers")}
                         />
                     </div>
-                    <Button disabled={isLoading} type="submit" className="w-full flex items-end">
+                    <Button  disabled={isLoading} type="submit" className="w-full flex items-end">
                         <div>{isLoading ? <Loader size={25} color="#fff" /> : codeDisplay ? t("code_button") : t("phone_button")}</div>
                     </Button>
                 </form>

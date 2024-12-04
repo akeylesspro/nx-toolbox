@@ -6,7 +6,7 @@
     "phone_login_headline": "log in with phone number",
     "phone_input_placeholder": "phone number",
     "code_input_placeholder": "enter code",
-    "phone_button": "LOG IN ",
+    "phone_button": "LOGIN ",
     "code_button": "verify code",
     "number_not_valid": "number not funded",
     "number_not_in_system": "number not in system",

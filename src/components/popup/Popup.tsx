@@ -6,7 +6,7 @@ import { SettingsStore } from "@/lib/store";
 import { PopupsStore } from "@/lib/store";
 import { useDragAndDrop, useResize } from "./hooks";
 import { PopUpProps } from "./types";
-import { MinimizePopup, Wrapper, ResizeHandle } from "./comps";
+import { MinimizePopup, Wrapper, ResizeHandle } from "./components";
 
 const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElement> }) => {
     const {

@@ -22,7 +22,7 @@ function get_user_by_token(token?: string): Installer | null {
 }
 
 export const UserStoreBase = create<UserStorType>((set) => ({
-    activeUser: get_user_by_token(getCookie("token")),
+    activeUser: get_user_by_token(getCookie("token") as string),
     setActiveUser: (updater) => setState(updater, set, "activeUser"),
 }));
 

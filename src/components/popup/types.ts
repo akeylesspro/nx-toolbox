@@ -19,18 +19,21 @@ export interface PopUpProps {
     minimize?: {
         enabled?: boolean;
         isMinimized?: boolean;
-        icon?: React.ReactNode;
-        iconTitle?: string;
     };
+    headerIcon?: React.ReactNode;
+    headerTitle?: string;
     maximize?: {
         enabled?: boolean;
         height?: number;
         width?: number;
     };
+    
 }
 
 export interface useDragAndDropProps {
     initialPosition: Position;
+    parentRef: React.RefObject<HTMLDivElement>
+    popupRef: React.RefObject<HTMLDivElement>
 }
 
 export interface UseResizeProps {
@@ -55,7 +58,7 @@ export interface PopupWrapperProps {
     exitPopUp: () => void | Promise<void>;
 }
 
-export type MinimizePopupProps = Pick<PopUpProps, "id" | "type" | "zIndex" | "close" | "minimize"> & {
+export type MinimizePopupProps = Pick<PopUpProps, "id" | "zIndex" | "close" | "headerIcon" | "headerTitle"> & {
     exitPopUp: () => void;
     minimizedPopups: string[];
 };

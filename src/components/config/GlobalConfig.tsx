@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import i18n from "@/i18n";
 import { QaBadge } from "../global";
-import { PopupManager } from "../popup/comps";
 
 export function GlobalConfig() {
     useEffect(() => {
@@ -11,7 +10,7 @@ export function GlobalConfig() {
     }, []);
     return (
         <>
-            <PopupManager />
+            
             <QaBadge />
         </>
     );

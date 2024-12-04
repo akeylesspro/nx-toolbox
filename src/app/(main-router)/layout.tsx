@@ -1,6 +1,6 @@
 import Aside from "@/components/Aside";
 import InitialCache from "@/components/config/InitialCache";
-import { PopupManager } from "@/components/popup/comps";
+import { PopupManager } from "@/components/popup/components";
 
 export default async function AppLayout({
     children,

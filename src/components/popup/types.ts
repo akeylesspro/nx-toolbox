@@ -27,13 +27,12 @@ export interface PopUpProps {
         height?: number;
         width?: number;
     };
-    
 }
 
 export interface useDragAndDropProps {
     initialPosition: Position;
-    parentRef: React.RefObject<HTMLDivElement>
-    popupRef: React.RefObject<HTMLDivElement>
+    parentRef: React.RefObject<HTMLDivElement>;
+    popupRef: React.RefObject<HTMLDivElement>;
 }
 
 export interface UseResizeProps {

@@ -1,6 +1,14 @@
 import { Position, useDragAndDropProps, UseResizeProps } from "./types";
 import { useCallback, useEffect, useState } from "react";
 
+const disableDocumentHover = ()=>{
+    document.body.classList.add('disable-hover', 'select-none')
+
+}
+const enableDocumentHover = ()=>{
+    document.body.classList.remove('disable-hover', 'select-none')
+}
+
 export const useDragAndDrop = ({ initialPosition, parentRef, popupRef }: useDragAndDropProps) => {
     const [position, setPosition] = useState<Position>(initialPosition);
     const [isDragging, setIsDragging] = useState(false);
@@ -16,7 +24,7 @@ export const useDragAndDrop = ({ initialPosition, parentRef, popupRef }: useDrag
                     x: e.clientX - popupRect.left,
                     y: e.clientY - popupRect.top,
                 });
-                document.body.classList.add("select-none");
+                disableDocumentHover()
             }
         },
         [popupRef]
@@ -25,7 +33,7 @@ export const useDragAndDrop = ({ initialPosition, parentRef, popupRef }: useDrag
     const stopDragging = () => {
         if (isDragging) {
             setIsDragging(false);
-            document.body.classList.remove("select-none");
+            enableDocumentHover();
         }
     };
 
@@ -96,7 +104,7 @@ export const useResize = ({
         setStartSize({ ...size });
         setStartPosition({ ...position });
         setIsResizing(true);
-        document.body.classList.add("select-none");
+        disableDocumentHover()
     };
 
     useEffect(() => {
@@ -196,7 +204,7 @@ export const useResize = ({
         setStartMouse(null);
         setStartSize(null);
         setStartPosition(null);
-        document.body.classList.remove("select-none");
+        enableDocumentHover();
     };
 
     useEffect(() => {

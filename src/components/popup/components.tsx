@@ -84,41 +84,7 @@ ResizeHandle.displayName = "resizeHandle";
 // popup manager component
 const PopupManager = () => {
     const popups = PopupsStore.popups();
-    const addPopup = PopupsStore.addPopup();
     const managerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        addPopup({
-            id: `test1`,
-            type: "info",
-            element: <Test text={"maximize and minimize"} />,
-            maximize: { enabled: true },
-            minimize: { enabled: true },
-            resize: true,
-            headerIcon: <i className="fa-regular fa-user mx-1 "></i>,
-            headerTitle: "test1",
-        });
-        addPopup({
-            id: `test2`,
-            type: "info",
-            element: <Test text={"maximize and minimize"} />,
-            maximize: { enabled: true },
-            minimize: { enabled: true },
-            resize: true,
-            headerIcon: <i className="fa-regular fa-user mx-1 "></i>,
-            headerTitle: "test1",
-        });
-        addPopup({
-            id: `test3`,
-            type: "info",
-            element: <Test text={"maximize and minimize"} />,
-            maximize: { enabled: true },
-            minimize: { enabled: true },
-            resize: true,
-            headerIcon: <i className="fa-regular fa-user mx-1 "></i>,
-            headerTitle: "test1",
-        });
-    }, [addPopup]);
 
     return (
         <div ref={managerRef} className="absolute top-0 left-0 w-full h-full" style={{ pointerEvents: "none" }}>
@@ -127,10 +93,6 @@ const PopupManager = () => {
             })}
         </div>
     );
-};
-
-const Test = ({ text }: { text: string }) => {
-    return <div className="min-w-[500px] min-h-[500px] w-full h-full ">{text}</div>;
 };
 
 export { Wrapper, MinimizePopup, PopupManager, ResizeHandle };

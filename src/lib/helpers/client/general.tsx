@@ -2,9 +2,7 @@ import { FetchDataOptions } from "@/types";
 import { i18n } from "i18next";
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
-import { baseUrl, isBrowser } from "./global";
-
-
+import { baseUrl, isBrowser } from "../global";
 
 export const changeLanguage = (lang: string, i18n: i18n, setDirection: (updater: "ltr" | "rtl") => void) => {
     localStorage.setItem("lang", lang);
@@ -20,10 +18,10 @@ export const changeLanguage = (lang: string, i18n: i18n, setDirection: (updater:
 export const fetchData = async ({ url, token, method = "GET", data }: FetchDataOptions) => {
     try {
         const headers: Record<string, string> = {};
-            if (!token) {
-                throw new Error("Token is required for server-side requests");
-            }
-            headers["Cookie"] = `token=${token}`;
+        if (!token) {
+            throw new Error("Token is required for server-side requests");
+        }
+        headers["Cookie"] = `token=${token}`;
 
         const response = await fetch(`${baseUrl()}/${url}`, {
             method: data ? "POST" : method,

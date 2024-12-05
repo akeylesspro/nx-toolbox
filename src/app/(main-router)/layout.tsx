@@ -1,4 +1,5 @@
 import Aside from "@/components/Aside";
+import InitialCache from "@/components/config/InitialCache";
 
 export default async function AppLayout({
     children,
@@ -8,6 +9,7 @@ export default async function AppLayout({
     return (
         <div className="_full flex p-1 h-screen ">
             <Aside />
+            <InitialCache />
             <div className="flex-grow flex children_container">{children}</div>
         </div>
     );

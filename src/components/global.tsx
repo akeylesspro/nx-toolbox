@@ -86,5 +86,5 @@ export const HomePageMessage = () => {
 };
 
 export const Version = () => {
-    return <div className="absolute text-black z-30 bottom-[0px] text-xs right-0 px-1 ">v{packageJson.version}</div>;
+    return <div className="absolute text-black z-30 bottom-0.5 text-xs right-0.5 px-1 ">v{packageJson.version}</div>;
 };

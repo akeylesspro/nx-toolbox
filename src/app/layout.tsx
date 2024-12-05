@@ -21,7 +21,6 @@ export default async function RootLayout({
             <body className={`w-dvw h-dvh bg-cover bg-center`} style={{ backgroundImage: "url('/images/login-bg.png')" }}>
                 <Auth />
                 <GlobalConfig />
-                <QaBadge />
                 {children}
             </body>
         </html>

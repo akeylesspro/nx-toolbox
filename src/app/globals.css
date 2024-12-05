@@ -8,12 +8,10 @@
     font-weight: bold;
     font-style: normal;
 }
-/* Rubik Black */
-
-@font-face {
+/* @font-face {
     font-family: "Rubik";
     src: url("/fonts/Rubik-Regular.ttf") format("truetype");
-    font-weight: normal;
+    font-weight:normal;
     font-style: normal;
 }
 @font-face {
@@ -22,13 +20,12 @@
     font-weight: normal;
     font-style: normal;
 }
-/* Rubik Bold */
 @font-face {
     font-family: "Rubik-Bold";
     src: url("/fonts/Rubik-Bold.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
-}
+} */
 
 ::-webkit-scrollbar {
     width: 4px;
@@ -49,8 +46,9 @@
     background: #547f229e;
 }
 * {
+    /* font-family: "Rubik"; */
     box-sizing: border-box;
-    font-family: "Rubik";
+    font-weight: 400;
     margin: 0;
     padding: 0;
 }
@@ -79,14 +77,14 @@
         --card-foreground: 222.2 84% 4.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 222.2 84% 4.9%;
-        --primary: 222.2 47.4% 11.2%;
+        --primary: 181.85, 25.49%, 50%;
         --primary-foreground: 210 40% 98%;
         --secondary: 210 40% 96.1%;
-        --secondary-foreground: 222.2 47.4% 11.2%;
+        --secondary-foreground: 181.85, 25.49%, 50%;
         --muted: 210 40% 96.1%;
         --muted-foreground: 215.4 16.3% 46.9%;
         --accent: 210 40% 96.1%;
-        --accent-foreground: 222.2 47.4% 11.2%;
+        --accent-foreground: 181.85, 25.49%, 50%;
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 210 40% 98%;
         --border: 214.3 31.8% 91.4%;
@@ -107,7 +105,7 @@
         --popover: 222.2 84% 4.9%;
         --popover-foreground: 210 40% 98%;
         --primary: 210 40% 98%;
-        --primary-foreground: 222.2 47.4% 11.2%;
+        --primary-foreground: 181.85, 25.49%, 50%;
         --secondary: 217.2 32.6% 17.5%;
         --secondary-foreground: 210 40% 98%;
         --muted: 217.2 32.6% 17.5%;
@@ -139,5 +137,8 @@
 @layer utilities {
     .children_container > * {
         @apply _full;
+    }
+    .disable-hover * {
+        pointer-events: none;
     }
 }

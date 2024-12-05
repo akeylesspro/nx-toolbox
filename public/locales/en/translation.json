@@ -6,7 +6,7 @@
     "phone_login_headline": "log in with phone number",
     "phone_input_placeholder": "phone number",
     "code_input_placeholder": "enter code",
-    "phone_button": "LOG IN ",
+    "phone_button": "LOGIN ",
     "code_button": "verify code",
     "number_not_valid": "number not funded",
     "number_not_in_system": "number not in system",
@@ -14,8 +14,8 @@
     "filter": "Filter",
     "filter_by": "Filter by",
     "sort_by": "Sort by",
-    "imei": "imei",
-    "sim": "Sim",
+    "imei": "IMEI",
+    "sim": "SIM",
     "status": "Status",
     "type": "Type",
     "comments": "Comments",
@@ -28,7 +28,13 @@
     "search": "Search",
     "home": "Home",
     "boards": "Boards",
-    "home_message": "welcome {name}"
-
-
+    "home_message": "Welcome {name}",
+    "maxRowsLabel1": "Displaying",
+    "maxRowsLabel2": "lines out of",
+    "popup_error": "Error in popup {id}",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close",
+    "restore": "Restore",
+    "resize": "Resize"
 }

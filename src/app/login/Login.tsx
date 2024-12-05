@@ -15,7 +15,7 @@ const Login = () => {
     const { i18n, t } = useTranslation();
     const router = useRouter();
 
-    const isLangHe = SettingsStore.isLangHe();
+    const isRtl = SettingsStore.isRtl();
     const setDirection = SettingsStore.setDirection();
     const setActiveUser = UserStore.setActiveUser();
 
@@ -23,6 +23,7 @@ const Login = () => {
     const [technician, setTechnician] = useState<Installer | null>(null);
     const [codeDisplay, setCodeDisplay] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const handleSubmit = async (e: FormEvent) => {
         try {
             e.preventDefault();
@@ -53,7 +54,7 @@ const Login = () => {
                         <Input
                             name="input"
                             type="text"
-                            className={`${isLangHe ? "text-end" : "text-start"} ltr`}
+                            className={`${isRtl ? "text-end" : "text-start"} ltr`}
                             placeholder={codeDisplay ? t("code_input_placeholder") : t("phone_input_placeholder")}
                             {...useValidation("numbers")}
                         />

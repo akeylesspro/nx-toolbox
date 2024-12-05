@@ -51,15 +51,16 @@ export const AsideButton = ({ content, to, disabled }: AsideButtonsProps) => {
     return (
         <Button
             disabled={disabled}
-            variant={pathname?.includes(to) ? "default" : "ghost"}
+            variant={pathname?.includes(to) ? "default" : "secondary"}
             onClick={() => router.push(to)}
-            className={"w-full"}
+            className={"w-full hover:bg-gray-400"}
             title={t(content)}
         >
             {t(content)}
         </Button>
     );
 };
+
 export const ClickableLogo = () => {
     const router = useRouter();
     const { t } = useTranslation();
@@ -69,6 +70,7 @@ export const ClickableLogo = () => {
         </button>
     );
 };
+
 export const HomePageMessage = () => {
     const { t } = useTranslation();
     useDocumentTitle(t("home"));

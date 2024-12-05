@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { AsideButtonsProps } from "@/types";
 import { Badge, Button } from "./";
 import { useDocumentTitle } from "akeyless-client-commons/hooks";
+import packageJson from "../../package.json";
 
 export const Logout = () => {
     const router = useRouter();
@@ -82,4 +83,8 @@ export const HomePageMessage = () => {
             <div>{t("home_message").replace("{name}", activeUser?.fullName || "")}</div>
         </div>
     );
+};
+
+export const Version = () => {
+    return <div className="absolute text-black z-30 bottom-[0px] text-xs right-0 px-1 ">v{packageJson.version}</div>;
 };

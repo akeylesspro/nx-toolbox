@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import i18n from "@/i18n";
-import { QaBadge } from "../global";
+import { QaBadge, Version } from "../global";
 
 export function GlobalConfig() {
     useEffect(() => {
@@ -10,7 +10,7 @@ export function GlobalConfig() {
     }, []);
     return (
         <>
-            
+            <Version />
             <QaBadge />
         </>
     );

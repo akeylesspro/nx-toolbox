@@ -1,5 +1,6 @@
-import { get_all_documents, get_document_by_id } from "akeyless-client-commons/helpers";
+import { collections, fire_base_TIME_TEMP, get_all_documents, get_document_by_id, set_document } from "akeyless-client-commons/helpers";
 import { TObject } from "akeyless-types-commons";
+import { doc, setDoc } from "firebase/firestore";
 
 export const getCameraProtectionsTypes = async () => {
     const data = await get_document_by_id("settings", "protection_features");
@@ -24,4 +25,24 @@ export const getCameraBoardsTypes = async () => {
         .map((v) => v.name);
 
     return filter_data;
+};
+
+export const updateBoardFB = async (id: string, data: TObject<any>) => {
+    try {
+        await set_document("boards", id, { ...data, update: fire_base_TIME_TEMP() });
+    } catch (error) {
+        console.log("error from addBoardFB ", error);
+    }
+};
+
+export const addBoardFB = async (data: TObject<any>) => {
+    try {
+        const ref = doc(collections.boards);
+        const update: TObject<any> = { ...data, id: ref.id, token: [...ref.id].reverse().join("") };
+        await setDoc(ref, update);
+        return update;
+    } catch (error) {
+        console.log("error from addBoardFB ", error);
+        return false;
+    }
 };

@@ -10,7 +10,6 @@ export function GlobalConfig() {
     }, []);
     return (
         <>
-            
             <QaBadge />
         </>
     );

@@ -6,13 +6,24 @@ import React from "react";
 
 export default function InitialCache() {
     const setBoards = CacheStore.setBoards();
-    const setCameraBoards = CacheStore.setCameraBoards();
+    const setCameraBoardsTypes = CacheStore.setCameraBoardsTypes();
+    const setBoardsTypes = CacheStore.setBoardsTypes();
+    useSafeEffect(() => {
+        const init = async () => {
+            const cameraBoardsTypes = await getCameraBoardsTypes();
+            console.log("cameraBoardsTypes", cameraBoardsTypes);
+            setCameraBoardsTypes(cameraBoardsTypes);
+        };
+        init();
+    }, []);
     useSnapshotBulk(
         [
             {
                 collectionName: "boards",
                 onFirstTime: (data) => {
                     setBoards(data);
+                    const boardTypes = Array.from(new Set(data.map((v) => v.type as string)));
+                    setBoardsTypes(boardTypes);
                 },
                 onAdd: (data) => {
                     setBoards((prev) => {
@@ -37,12 +48,5 @@ export default function InitialCache() {
         ],
         "init snapshot"
     );
-    useSafeEffect(() => {
-        (async () => {
-            const cameraBoards = await getCameraBoardsTypes();
-            console.log("cameraBoards", cameraBoards);
-            setCameraBoards(cameraBoards);
-        })();
-    }, []);
-    return <></>;
+    return null;
 }

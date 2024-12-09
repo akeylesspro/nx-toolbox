@@ -53,7 +53,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
         popupRef,
     });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (contentRef.current) {
             const contentWidth = contentRef.current.offsetWidth;
             const contentHeight = contentRef.current.offsetHeight;
@@ -80,11 +80,15 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
     });
 
     const exitPopUp = useCallback(async () => {
-        const toStopClosing = await close?.onClose?.();
-        if (toStopClosing) {
-            return;
+        try {
+            const toStopClosing = await close?.onClose?.();
+            if (toStopClosing) {
+                return;
+            }
+            deletePopup(id);
+        } catch (error) {
+            console.log("error in exitPopUp", error);
         }
-        deletePopup(id);
     }, [deletePopup, JSON.stringify(close?.onClose), id]);
 
     const maximizePopupHandler = useCallback(() => {
@@ -158,8 +162,13 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                 >
                     <div className="flex items-center justify-start h-full">
                         {!close?.noClose && (
-                            <button title={t("close")} onClick={exitPopUp} className="center text-white w-8 h-full hover:bg-[#d90d0d] rounded-tl-md">
-                                <i className="fa-solid fa-x"></i>
+                            <button
+                                style={{ pointerEvents: "auto" }}
+                                title={t("close")}
+                                onClick={exitPopUp}
+                                className="center text-white w-8 h-full hover:bg-[#d90d0d] rounded-tl-md"
+                            >
+                                <i className="fa-solid fa-x "></i>
                             </button>
                         )}
                         {maximize?.enabled && (

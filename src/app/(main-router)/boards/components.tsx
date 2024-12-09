@@ -3,24 +3,24 @@ import { Board, BoardStatus } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { timestamp_to_string } from "@/lib/helpers";
 import { CacheStore, SettingsStore } from "@/lib/store";
-import { Loader, Table } from "akeyless-client-commons/components";
-import { memo, useMemo } from "react";
+import { Loader, ModularForm, Table } from "akeyless-client-commons/components";
+import { memo, useEffect, useMemo, useState } from "react";
 import { Timestamp } from "firebase/firestore";
-import { usePrintQR } from "./helpers";
 import { TableProps } from "akeyless-client-commons/types";
+import { Button } from "@/components";
+import { useAddBoard, useEditBoard, usePrintQR } from "./hooks";
 
-interface BoardProps {
+interface PropsWithBoard {
     board: Board;
 }
 
-interface BoardsProps {
+interface PropsWithBoards {
     data: Board[];
 }
 
-export const BoardsTable = memo(({ data }: BoardsProps) => {
+export const BoardsTable = memo(({ data }: PropsWithBoards) => {
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
-
     const headers = [t("imei"), t("sim"), t("status"), t("type"), t("comments"), t("created_date"), t("actions")];
 
     const keysToRender = ["imei", "sim_ui", "ui_status", "type", "comments", "ui_uploaded", "actions"];
@@ -51,6 +51,7 @@ export const BoardsTable = memo(({ data }: BoardsProps) => {
             };
         });
     }, [data]);
+
     const tableProps: TableProps = useMemo(() => {
         return {
             // settings
@@ -76,8 +77,10 @@ export const BoardsTable = memo(({ data }: BoardsProps) => {
             sortLabel: t("sort_by"),
             maxRowsLabel1: t("maxRowsLabel1"),
             maxRowsLabel2: t("maxRowsLabel2"),
+            optionalElement: <AddBoard />,
         };
     }, [formattedData]);
+
     return (
         <div style={{ direction: direction }} className="w-full h-full _center">
             {formattedData.length ? <Table {...tableProps} /> : <Loader size={200} />}
@@ -86,20 +89,50 @@ export const BoardsTable = memo(({ data }: BoardsProps) => {
 });
 BoardsTable.displayName = "BoardsTable";
 
-export const BoardOptions = ({ board }: BoardProps) => {
-    const cameraBoards = CacheStore.cameraBoards();
-    return <div className={`_center gap-3 `}>{cameraBoards.includes(board.type) && <PrintQR board={board} />}</div>;
+const BoardOptions = ({ board }: PropsWithBoard) => {
+    const cameraBoardsTypes = CacheStore.cameraBoardsTypes();
+    const displayPrintQR = useMemo<boolean>(() => cameraBoardsTypes.includes(board.type), [board.type]);
+    return (
+        <div className={`_center gap-3 `}>
+            <EditBoard board={board} />
+            {displayPrintQR && <PrintQR board={board} />}
+        </div>
+    );
 };
 
-const PrintQR = ({ board }: BoardProps) => {
+const PrintQR = ({ board }: PropsWithBoard) => {
     const { t } = useTranslation();
-    const { onPrintClick, PrintableContent } = usePrintQR(board);
+    const { onPrintClick, PrintableContent } = usePrintQR();
     return (
         <>
-            <button title={t("print")} onClick={() => onPrintClick()}>
+            <button title={t("print")} onClick={() => onPrintClick(board)}>
                 <i className="fa-light fa-print text-xl "></i>
             </button>
             <PrintableContent />
         </>
+    );
+};
+
+const AddBoard = () => {
+    const { t } = useTranslation();
+    const { onAddClick, PrintableContent } = useAddBoard();
+    return (
+        <>
+            <Button title={t("add_board")} onClick={onAddClick}>
+                {<i className="fa-regular fa-plus text-2xl"></i>}
+            </Button>
+            <PrintableContent />
+        </>
+    );
+};
+
+const EditBoard = ({ board }: PropsWithBoard) => {
+    const onEditClick = useEditBoard();
+    const { t } = useTranslation();
+
+    return (
+        <button title={t("edit_board")} onClick={() => onEditClick(board)}>
+            <i className="fa-light fa-pen-to-square text-xl"></i>
+        </button>
     );
 };

@@ -36,5 +36,14 @@
     "maximize": "הגדל",
     "close": "סגירה",
     "restore": "שחזר",
-    "resize": "שנה גודל"
+    "resize": "שנה גודל",
+    "add_board": "הוסף מערכת",
+    "edit_board": "עריכת מערכת",
+    "save": "שמור",
+    "imei_error_board": "Imei חייב להיות 15 ספרות",
+    "sim_error_board": "סים חייב להיות 10 ספרות",
+    "update_board_error": "לא ניתן להוסיף מערכת",
+    "exist_imei_error": "Imei כבר קיים",
+    "exist_phone_number_error": "מספר טלפון כבר קיים",
+    "print_confirmation": "האם ברצונך להדפיס את ה QR של {imei} ?"
 }

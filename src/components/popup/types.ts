@@ -6,10 +6,8 @@ export interface PopUpProps {
         noClose?: boolean;
         onClose?: () => void | boolean | Promise<void | boolean>;
     };
-    top?: string;
-    left?: string;
-    bottom?: string;
-    right?: string;
+    initialPosition?: Position;
+    className?: string;
     headerBackground?: string;
     zIndex?: number;
     move?: boolean;

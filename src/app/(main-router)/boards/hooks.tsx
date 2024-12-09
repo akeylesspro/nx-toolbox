@@ -177,7 +177,7 @@ export const useAddBoard = () => {
                 buttonContent={t("save")}
                 elements={elements}
                 buttonClassName="_center pb-2"
-                formClassName="w-[500px] "
+                formClassName="min-w-[400px]"
                 submitFunction={submit}
                 headerContent={
                     <div className="start gap-2">
@@ -195,72 +195,88 @@ export const useEditBoard = () => {
     const { t } = useTranslation();
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
-    const onEditClick = (board: Board) => {
-        const header_content = "edit_board";
-        const elements: FormElement[] = [
-            {
-                type: "select",
-                name: "status",
-                containerClassName: "_center w-full",
-                labelContent: t("status"),
-                defaultValue: board.status,
-                options: [
-                    { value: BoardStatus["ReadyForInstallation"], label: t(BoardStatus[1]) },
-                    { value: BoardStatus["Installed"], label: t(BoardStatus[2]) },
-                    { value: BoardStatus["Malfunction"], label: t(BoardStatus[3]) },
-                    { value: BoardStatus["NoSim"], label: t(BoardStatus[4]) },
-                ],
-            },
-            {
-                type: "input",
-                name: "sim",
-                containerClassName: "_center w-full",
-                onKeyDown: onSimInputKeyDown,
-                labelContent: t("sim"),
-                defaultValue: board.sim || "",
-                validationName: "numbers",
-            },
-            {
-                type: "input",
-                name: "comments",
-                containerClassName: "_center w-full",
-                labelContent: t("comments"),
-                defaultValue: board.comments || "",
-                validationName: "textNumbers",
-            },
-        ];
+    const boardsTypes = CacheStore.boardsTypes();
 
-        const submit = async (e: FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            const form = e.currentTarget;
-            const sim = (form.elements.namedItem("sim") as HTMLInputElement)?.value || "";
-            const status = Number((form.elements.namedItem("status") as HTMLInputElement)?.value);
-            const comments = (form.elements.namedItem("comments") as HTMLInputElement)?.value || "";
+    const onEditClick = useCallback(
+        (board: Board) => {
+            const header_content = "edit_board";
+            const elements: FormElement[] = [
+                {
+                    type: "select",
+                    name: "status",
+                    containerClassName: "_center w-full",
+                    labelContent: t("status"),
+                    defaultValue: board.status,
+                    options: [
+                        { value: BoardStatus["ReadyForInstallation"], label: t(BoardStatus[1]) },
+                        { value: BoardStatus["Installed"], label: t(BoardStatus[2]) },
+                        { value: BoardStatus["Malfunction"], label: t(BoardStatus[3]) },
+                        { value: BoardStatus["NoSim"], label: t(BoardStatus[4]) },
+                    ],
+                },
+                {
+                    type: "select",
+                    name: "type",
+                    containerClassName: "_center w-full",
+                    labelContent: t("type"),
+                    defaultValue: board.type,
+                    options: boardsTypes.map((bt) => ({ value: bt, label: bt })),
+                    optionsContainerClassName: "max-h-80",
+                },
+                {
+                    type: "input",
+                    name: "sim",
+                    containerClassName: "_center w-full",
+                    onKeyDown: onSimInputKeyDown,
+                    labelContent: t("sim"),
+                    defaultValue: board.sim || "",
+                    validationName: "numbers",
+                },
+                {
+                    type: "input",
+                    name: "comments",
+                    containerClassName: "_center w-full",
+                    labelContent: t("comments"),
+                    defaultValue: board.comments || "",
+                    validationName: "textNumbers",
+                },
+            ];
 
-            if (sim.length !== 10 && status !== BoardStatus["Malfunction"] && status !== BoardStatus["NoSim"]) {
-                throw new Error(t("sim_error_camera_board"));
-            }
+            const submit = async (e: FormEvent<HTMLFormElement>) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const sim = (form.elements.namedItem("sim") as HTMLInputElement)?.value || "";
+                const status = Number((form.elements.namedItem("status") as HTMLInputElement)?.value);
+                const type = (form.elements.namedItem("type") as HTMLInputElement)?.value || "";
+                const comments = (form.elements.namedItem("comments") as HTMLInputElement)?.value || "";
 
-            await validateBoardPhoneAndStatus({ sim, comments, status }, t, board);
-            const update = { sim: status === BoardStatus["NoSim"] ? "" : sim, comments, status };
-            await updateBoardFB(board.id, update);
-            deletePopup("edit_board");
-        };
-
-        const form = (
-            <ModularForm
-                buttonContent={t("save")}
-                elements={elements}
-                formClassName="w-[420px]"
-                submitFunction={submit}
-                headerContent={
-                    <div className="start gap-2">
-                        <div>{t(header_content)}</div>
-                    </div>
+                if (sim.length !== 10 && status !== BoardStatus["Malfunction"] && status !== BoardStatus["NoSim"]) {
+                    throw new Error(t("sim_error_camera_board"));
                 }
-            />
-        );
-        addPopup({ element: form, id: "edit_board", type: "custom" });
-    };
+
+                await validateBoardPhoneAndStatus({ sim, comments, status }, t, board);
+                const update = { sim: status === BoardStatus["NoSim"] ? "" : sim, comments, status, type };
+                await updateBoardFB(board.id, update);
+                deletePopup("edit_board");
+            };
+
+            const form = (
+                <ModularForm
+                    buttonContent={t("save")}
+                    elements={elements}
+                    formClassName="min-w-[400px]"
+                    submitFunction={submit}
+                    headerContent={
+                        <div className="start gap-2">
+                            <div>{t(header_content)}</div>
+                        </div>
+                    }
+                />
+            );
+            addPopup({ element: form, id: "edit_board", type: "custom" });
+        },
+        [deletePopup, addPopup, boardsTypes]
+    );
+
     return onEditClick;
 };

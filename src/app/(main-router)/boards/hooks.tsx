@@ -9,7 +9,9 @@ import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, UserStore } from "@/lib/store";
 import { addBoardFB, updateBoardFB } from "@/lib/helpers";
 import { onImeiInputKeyDown, onSimInputKeyDown, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
-import { initialPosition } from "./consts";
+
+const initialPosition = { top: "25%", left: "30%" };
+
 export const usePrintQR = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);

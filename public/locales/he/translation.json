@@ -45,5 +45,7 @@
     "update_board_error": "לא ניתן להוסיף מערכת",
     "exist_imei_error": "Imei כבר קיים",
     "exist_phone_number_error": "מספר טלפון כבר קיים",
-    "print_confirmation": "האם ברצונך להדפיס את ה QR של {imei} ?"
+    "print_confirmation": "האם ברצונך להדפיס את ה QR של {imei} ?",
+    "delete_board": "מחיקת מערכת",
+    "delete_confirmation": "האם ברצונך למחוק את {imei} ?"
 }

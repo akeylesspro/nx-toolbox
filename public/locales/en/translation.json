@@ -45,5 +45,7 @@
     "update_board_error": "Unable to add board",
     "exist_imei_error": "Imei already exists",
     "exist_phone_number_error": "Phone number already exists",
-    "print_confirmation": "Do you want to print the QR for {imei} ?"
+    "print_confirmation": "Do you want to print the QR for {imei} ?",
+    "delete_board": "Delete Board",
+    "delete_confirmation": "Do you want to delete {imei} ?"
 }

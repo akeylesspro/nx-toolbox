@@ -6,16 +6,13 @@ import { PopupsStore } from "@/lib/store";
 import { useDragAndDrop, useResize } from "./hooks";
 import { PopUpProps } from "./types";
 import { MinimizePopup, Wrapper, ResizeHandle } from "./components";
+import { cn } from "@/lib/utils";
 
 const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElement> }) => {
     const {
         id,
         element,
         type,
-        right,
-        left,
-        top = "0px",
-        bottom,
         headerBackground = "linear-gradient(180deg, #7D7D7D 0%, #495359 73.44%, #364046 100%)",
         zIndex = 10,
         errorMsg,
@@ -33,6 +30,8 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
         headerIcon,
         headerTitle,
         parentRef,
+        className = " ",
+        initialPosition,
     } = props;
 
     const { t } = useTranslation();
@@ -48,11 +47,10 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
     const [minSize, setMinSize] = useState({ width: 300, height: 150 });
 
     const { isDragging, startDragging, position, setPosition } = useDragAndDrop({
-        initialPosition: { top, left: left || isRtl ? "0px" : "auto", right: right || isRtl ? "auto" : "0px", bottom },
+        initialPosition: initialPosition || { top: "0", left: isRtl ? "auto" : "0px", right: isRtl ? "0px" : "auto" },
         parentRef,
         popupRef,
     });
-
     useLayoutEffect(() => {
         if (contentRef.current) {
             const contentWidth = contentRef.current.offsetWidth;
@@ -128,7 +126,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
     return (
         <div
             ref={popupRef}
-            className={`bg-[#fff] absolute flex flex-col rounded-md ${borderColor && "border-2 " + borderColor}`}
+            className={cn(`bg-[#fff] absolute flex flex-col rounded-md ${borderColor && "border-2 " + borderColor}`, className)}
             style={{
                 direction,
                 zIndex,

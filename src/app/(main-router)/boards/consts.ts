@@ -1,0 +1,1 @@
+export const initialPosition = { top: "25%", left: "30%" };

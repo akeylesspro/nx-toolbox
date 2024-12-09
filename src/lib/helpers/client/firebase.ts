@@ -1,4 +1,11 @@
-import { collections, fire_base_TIME_TEMP, get_all_documents, get_document_by_id, set_document } from "akeyless-client-commons/helpers";
+import {
+    collections,
+    delete_document,
+    fire_base_TIME_TEMP,
+    get_all_documents,
+    get_document_by_id,
+    set_document,
+} from "akeyless-client-commons/helpers";
 import { TObject } from "akeyless-types-commons";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -46,3 +53,4 @@ export const addBoardFB = async (data: TObject<any>) => {
         return false;
     }
 };
+

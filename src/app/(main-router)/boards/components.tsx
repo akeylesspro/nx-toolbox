@@ -8,7 +8,7 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { TableProps } from "akeyless-client-commons/types";
 import { Button } from "@/components";
-import { useAddBoard, useEditBoard, usePrintQR } from "./hooks";
+import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
 
 interface PropsWithBoard {
     board: Board;
@@ -95,6 +95,7 @@ const BoardOptions = ({ board }: PropsWithBoard) => {
     return (
         <div className={`_center gap-3 `}>
             <EditBoard board={board} />
+            <DeleteBoard board={board} />
             {displayPrintQR && <PrintQR board={board} />}
         </div>
     );
@@ -133,6 +134,16 @@ const EditBoard = ({ board }: PropsWithBoard) => {
     return (
         <button title={t("edit_board")} onClick={() => onEditClick(board)}>
             <i className="fa-light fa-pen-to-square text-xl"></i>
+        </button>
+    );
+};
+
+const DeleteBoard = ({ board }: PropsWithBoard) => {
+    const { t } = useTranslation();
+    const onDeleteClick = useDeleteBoard();
+    return (
+        <button title={t("delete_board")} onClick={() => onDeleteClick(board)}>
+            {<i className="fa-light fa-trash text-2xl"></i>}
         </button>
     );
 };

@@ -1,4 +1,4 @@
-import { fire_base_TIME_TEMP, set_document } from "akeyless-client-commons/helpers";
+import { delete_document, fire_base_TIME_TEMP, set_document } from "akeyless-client-commons/helpers";
 import { Board, BoardStatus, TObject } from "akeyless-types-commons";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -9,7 +9,7 @@ import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, UserStore } from "@/lib/store";
 import { addBoardFB, updateBoardFB } from "@/lib/helpers";
 import { onImeiInputKeyDown, onSimInputKeyDown, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
-
+import { initialPosition } from "./consts";
 export const usePrintQR = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
@@ -186,7 +186,7 @@ export const useAddBoard = () => {
                 }
             />
         );
-        addPopup({ element: form, id: "add_board", type: "custom" });
+        addPopup({ element: form, id: "add_board", type: "custom", initialPosition });
     }, [activeUser, boardsTypes, cameraBoardsTypes, addPopup, deletePopup]);
     return { onAddClick, PrintableContent };
 };
@@ -257,7 +257,7 @@ export const useEditBoard = () => {
                 await validateBoardPhoneAndStatus({ sim, comments, status }, t, board);
                 const update = { sim: status === BoardStatus["NoSim"] ? "" : sim, comments, status, type };
                 await updateBoardFB(board.id, update);
-                deletePopup("edit_board");
+                deletePopup("edit_board " + board.imei);
             };
 
             const form = (
@@ -268,15 +268,53 @@ export const useEditBoard = () => {
                     submitFunction={submit}
                     headerContent={
                         <div className="start gap-2">
-                            <div>{t(header_content)}</div>
+                            <div>
+                                {t(header_content)} - {board.imei}
+                            </div>
                         </div>
                     }
                 />
             );
-            addPopup({ element: form, id: "edit_board", type: "custom" });
+            addPopup({ element: form, id: "edit_board " + board.imei, type: "custom", initialPosition });
         },
         [deletePopup, addPopup, boardsTypes]
     );
 
     return onEditClick;
+};
+
+export const useDeleteBoard = () => {
+    const deletePopup = PopupsStore.deletePopup();
+    const addPopup = PopupsStore.addPopup();
+    const { t } = useTranslation();
+
+    const onDeleteClick = useCallback(
+        (board: Board) => {
+            const onX = async () => {
+                deletePopup("delete_board " + board.imei);
+            };
+            const onV = async () => {
+                await delete_document("boards", board.id);
+                onX();
+            };
+
+            addPopup({
+                element: (
+                    <ConfirmForm
+                        onV={onV}
+                        onX={onX}
+                        headline={t("delete_confirmation").replace("{imei}", board.imei)}
+                        containerClassName="w-80 flex flex-col gap-4"
+                        buttonsContainerClassName="_center gap-4"
+                    />
+                ),
+                id: "delete_board " + board.imei,
+                initialPosition,
+                type: "custom",
+            });
+        },
+        [deletePopup, addPopup]
+    );
+
+    return onDeleteClick;
 };

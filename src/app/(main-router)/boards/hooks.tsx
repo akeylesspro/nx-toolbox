@@ -184,17 +184,12 @@ export const useAddBoard = () => {
                 direction={direction}
                 buttonContent={t("save")}
                 elements={elements}
-                buttonClassName="_center pb-2"
+                buttonClassName="_center pb-2 bg-[#5f9ea0]"
                 formClassName="min-w-[400px]"
                 submitFunction={submit}
-                headerContent={
-                    <div className="start gap-2">
-                        <div>{t(headerContent)}</div>
-                    </div>
-                }
             />
         );
-        addPopup({ element: form, id: "add_board", type: "custom", initialPosition });
+        addPopup({ element: form, id: "add_board", type: "custom", initialPosition, headerContent: t(headerContent) });
     }, [activeUser, boardTypes, cameraBoardTypes, addPopup, deletePopup]);
     return { onAddClick, PrintableContent };
 };
@@ -276,16 +271,20 @@ export const useEditBoard = () => {
                     elements={elements}
                     formClassName="min-w-[400px]"
                     submitFunction={submit}
-                    headerContent={
-                        <div className="start gap-2">
-                            <div>
-                                {t(header_content)} - {board.imei}
-                            </div>
-                        </div>
-                    }
+                    buttonClassName="bg-[#5f9ea0]"
                 />
             );
-            addPopup({ element: form, id: "edit_board " + board.imei, type: "custom", initialPosition });
+            addPopup({
+                element: form,
+                id: "edit_board " + board.imei,
+                type: "custom",
+                initialPosition,
+                headerContent: (
+                    <>
+                        {t(header_content)} - {board.imei}
+                    </>
+                ),
+            });
         },
         [deletePopup, addPopup, boardTypes]
     );
@@ -323,6 +322,7 @@ export const useDeleteBoard = () => {
                 id: "delete_board " + board.imei,
                 initialPosition,
                 type: "custom",
+                headerContent: t("delete_board"),
             });
         },
         [deletePopup, addPopup]

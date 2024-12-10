@@ -13,7 +13,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
         id,
         element,
         type,
-        headerBackground = "linear-gradient(180deg, #7D7D7D 0%, #495359 73.44%, #364046 100%)",
+        headerBackground = "#5f9ea0",
         zIndex = 10,
         errorMsg,
         move = true,
@@ -28,6 +28,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
             enabled: false,
         },
         headerIcon,
+        headerContent,
         headerTitle,
         parentRef,
         className = " ",
@@ -150,7 +151,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                 {/* Header */}
                 <div
                     title={headerTitle}
-                    className={`flex items-center justify-between w-full h-8 ${borderColor ? "rounded-t-sm" : "rounded-t-md"} `}
+                    className={`flex items-center justify-between w-full h-8 text-white ${borderColor ? "rounded-t-sm" : "rounded-t-md"} `}
                     onMouseDown={(e) => move && startDragging(e)}
                     style={{
                         direction: "ltr",
@@ -158,13 +159,13 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                         background: headerBackground,
                     }}
                 >
-                    <div className="flex items-center justify-start h-full">
+                    <div className="flex items-center justify-start h-full ">
                         {!close?.noClose && (
                             <button
                                 style={{ pointerEvents: "auto" }}
                                 title={t("close")}
                                 onClick={exitPopUp}
-                                className="center text-white w-8 h-full hover:bg-[#d90d0d] rounded-tl-md"
+                                className="_center w-8 h-full hover:bg-[#d90d0d] rounded-tl-md"
                             >
                                 <i className="fa-solid fa-x "></i>
                             </button>
@@ -184,7 +185,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                             </button>
                         )}
                     </div>
-                    {headerIcon && <div className="px-1 _center">{headerIcon}</div>}
+                    {headerContent && <div className={cn("flex-1 h-full _center")}>{headerContent}</div>}
                 </div>
 
                 {/* Content */}

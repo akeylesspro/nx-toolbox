@@ -19,6 +19,7 @@ export interface PopUpProps {
         isMinimized?: boolean;
     };
     headerIcon?: React.ReactNode;
+    headerContent?: React.ReactNode;
     headerTitle?: string;
     maximize?: {
         enabled?: boolean;

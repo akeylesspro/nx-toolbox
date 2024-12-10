@@ -19,6 +19,10 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
     minimizedPopups: [],
     addPopup: (props) => {
         const newZIndex = get().maxZIndex + 1;
+        const popups = get().popups;
+        if (props.singleton || popups.some((popup) => popup.id === props.id)) {
+            return;
+        }
         set((state) => ({
             popups: [
                 ...state.popups,

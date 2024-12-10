@@ -5,4 +5,3 @@ export default function BoardsPage() {
 }
 
 export const dynamic = "force-dynamic";
-

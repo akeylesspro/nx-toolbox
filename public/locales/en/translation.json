@@ -36,5 +36,16 @@
     "maximize": "Maximize",
     "close": "Close",
     "restore": "Restore",
-    "resize": "Resize"
+    "resize": "Resize",
+    "add_board": "Add Board",
+    "edit_board": "Edit Board",
+    "save": "Save",
+    "imei_error_board": "IMEI must be 15 digits",
+    "sim_error_board": "Sim must be 10 digits",
+    "update_board_error": "Unable to add board",
+    "exist_imei_error": "IMEI already exists",
+    "exist_phone_number_error": "Phone number already exists",
+    "print_confirmation": "Do you want to print the QR for {imei} ?",
+    "delete_board": "Delete Board",
+    "delete_confirmation": "Do you want to delete {imei} ? "
 }

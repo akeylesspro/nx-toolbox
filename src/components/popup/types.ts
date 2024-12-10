@@ -6,10 +6,8 @@ export interface PopUpProps {
         noClose?: boolean;
         onClose?: () => void | boolean | Promise<void | boolean>;
     };
-    top?: string;
-    left?: string;
-    bottom?: string;
-    right?: string;
+    initialPosition?: Position;
+    className?: string;
     headerBackground?: string;
     zIndex?: number;
     move?: boolean;
@@ -21,6 +19,7 @@ export interface PopUpProps {
         isMinimized?: boolean;
     };
     headerIcon?: React.ReactNode;
+    headerContent?: React.ReactNode;
     headerTitle?: string;
     maximize?: {
         enabled?: boolean;

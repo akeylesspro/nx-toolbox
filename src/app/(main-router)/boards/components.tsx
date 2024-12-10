@@ -92,25 +92,24 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
 BoardsTable.displayName = "BoardsTable";
 
 const BoardOptions = ({ board }: PropsWithBoard) => {
-    const cameraBoardTypes = CacheStore.cameraBoardTypes();
     const direction = SettingsStore.direction();
-    const displayPrintQR = useMemo<boolean>(() => cameraBoardTypes.includes(board.type), [board.type]);
 
     return (
         <div style={{ direction }} className={`flex justify-start gap-3 `}>
             <EditBoard board={board} />
             <DeleteBoard board={board} />
-            {displayPrintQR && <PrintQR board={board} />}
+            <PrintQR board={board} />
         </div>
     );
 };
 
 const PrintQR = ({ board }: PropsWithBoard) => {
     const { t } = useTranslation();
+    const cameraBoardTypes = CacheStore.cameraBoardTypes();
     const { onPrintClick, PrintableContent } = usePrintQR();
     return (
         <>
-            <button title={t("print")} onClick={() => onPrintClick(board)}>
+            <button title={t("print")} onClick={() => onPrintClick(board, cameraBoardTypes.includes(board.type))}>
                 <Image src={"/images/qr.png"} alt="qr.png" width={23} height={23} />
             </button>
             <PrintableContent />

@@ -21,32 +21,35 @@ export const usePrintQR = () => {
         documentTitle: "QR Code",
     });
 
-    const generateQRCodeImage = useCallback(async (board: Board) => {
-        let token: string;
-        if (board.token) {
-            token = board.token;
-        } else {
-            token = [...board.id].reverse().join("");
-            await set_document("boards", board.id, { token, update: fire_base_TIME_TEMP() });
-        }
+    const generateQRCodeImage = useCallback(async (board: Board, isCamera: boolean) => {
         const canvas = document.createElement("canvas");
-
-        QRCodeGenerator.toCanvas(canvas, `https://installerapp.online/camera_installation/${token}`, { width: 250 }, (error) => {
-            if (error) {
-                console.error(error);
+        let qrContent = board.imei;
+        if (isCamera) {
+            let token = "";
+            if (board.token) {
+                token = board.token;
             } else {
-                const imgData = canvas.toDataURL("image/png");
-                const imgElement = imgRef.current;
-                if (imgElement) {
-                    imgElement.src = imgData;
-                }
+                token = [...board.id].reverse().join("");
+                await set_document("boards", board.id, { token, update: fire_base_TIME_TEMP() });
+            }
+            qrContent = `https://installerapp.online/camera_installation/${token}`;
+        }
+
+        QRCodeGenerator.toCanvas(canvas, qrContent, { width: 350 }, (error) => {
+            if (error) {
+                return console.error(error);
+            }
+            const imgData = canvas.toDataURL("image/png");
+            const imgElement = imgRef.current;
+            if (imgElement) {
+                imgElement.src = imgData;
             }
         });
     }, []);
 
     const onPrintClick = useCallback(
-        async (board: Board) => {
-            await generateQRCodeImage(board);
+        async (board: Board, isCamera: boolean) => {
+            await generateQRCodeImage(board, isCamera);
             handlePrint();
         },
         [generateQRCodeImage, handlePrint]
@@ -54,6 +57,7 @@ export const usePrintQR = () => {
 
     const PrintableContent = () => (
         <div style={{ display: "none" }}>
+            {/* this div will be send to print  */}
             <div ref={containerRef} className="flex justify-center items-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img className="w-[80px] h-[80px]" ref={imgRef} alt="QR Code" />
@@ -154,7 +158,7 @@ export const useAddBoard = () => {
                     deletePopup("print_confirmation");
                 };
                 const onV = async () => {
-                    await onPrintClick(update as Board);
+                    await onPrintClick(update as Board, cameraBoardTypes.includes(type));
                     onX();
                 };
 

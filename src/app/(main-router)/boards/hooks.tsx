@@ -1,4 +1,4 @@
-import { delete_document, fire_base_TIME_TEMP, set_document } from "akeyless-client-commons/helpers";
+import { delete_document, fire_base_TIME_TEMP } from "akeyless-client-commons/helpers";
 import { Board, BoardStatus, TObject } from "akeyless-types-commons";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -30,7 +30,7 @@ export const usePrintQR = () => {
                 token = board.token;
             } else {
                 token = [...board.id].reverse().join("");
-                await set_document("boards", board.id, { token, update: fire_base_TIME_TEMP() });
+                await updateBoardDB(board.id, { token });
             }
             qrContent = `https://installerapp.online/camera_installation/${token}`;
         }

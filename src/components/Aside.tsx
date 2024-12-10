@@ -1,3 +1,4 @@
+"use client";
 import { AsideButton, ClickableLogo, Logout } from "./global";
 
 function Aside() {
@@ -17,3 +18,4 @@ function Aside() {
 }
 
 export default Aside;
+

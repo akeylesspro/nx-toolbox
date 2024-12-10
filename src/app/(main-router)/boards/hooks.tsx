@@ -6,9 +6,8 @@ import QRCodeGenerator from "qrcode";
 import { ModularForm, ConfirmForm } from "akeyless-client-commons/components";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "akeyless-client-commons/types";
-import { CacheStore, PopupsStore, UserStore } from "@/lib/store";
-import { addBoardFB, updateBoardFB } from "@/lib/helpers";
-import { onImeiInputKeyDown, onSimInputKeyDown, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
+import { CacheStore, PopupsStore, SettingsStore, UserStore } from "@/lib/store";
+import { addBoardDB, onImeiInputKeyDown, onSimInputKeyDown, updateBoardDB, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
 
 const initialPosition = { top: "25%", left: "30%" };
 
@@ -67,8 +66,9 @@ export const usePrintQR = () => {
 
 export const useAddBoard = () => {
     const activeUser = UserStore.activeUser();
-    const boardsTypes = CacheStore.boardsTypes();
-    const cameraBoardsTypes = CacheStore.cameraBoardsTypes();
+    const direction = SettingsStore.direction();
+    const boardTypes = CacheStore.boardTypes();
+    const cameraBoardTypes = CacheStore.cameraBoardTypes();
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
     const { t } = useTranslation();
@@ -82,7 +82,7 @@ export const useAddBoard = () => {
                 labelContent: t("type"),
                 elementClassName: "h-6 ",
                 containerClassName: "_center w-full",
-                options: boardsTypes.map((bt) => ({ value: bt, label: bt })),
+                options: boardTypes.map((bt) => ({ value: bt, label: bt })),
                 optionsContainerClassName: "max-h-80",
             },
             {
@@ -144,12 +144,12 @@ export const useAddBoard = () => {
 
             await validateBoardImei(data, t);
             await validateBoardPhoneAndStatus(data, t);
-            const update = await addBoardFB(data);
+            const update = await addBoardDB(data);
             if (!update) {
                 throw new Error(t("update_board_error"));
             }
 
-            if (cameraBoardsTypes.includes(type)) {
+            if (cameraBoardTypes.includes(type)) {
                 const onX = async () => {
                     deletePopup("print_confirmation");
                 };
@@ -161,6 +161,7 @@ export const useAddBoard = () => {
                 addPopup({
                     element: (
                         <ConfirmForm
+                            direction={direction}
                             onV={onV}
                             onX={onX}
                             headline={t("print_confirmation").replace("{imei}", update.imei)}
@@ -176,6 +177,7 @@ export const useAddBoard = () => {
         };
         const form = (
             <ModularForm
+                direction={direction}
                 buttonContent={t("save")}
                 elements={elements}
                 buttonClassName="_center pb-2"
@@ -189,7 +191,7 @@ export const useAddBoard = () => {
             />
         );
         addPopup({ element: form, id: "add_board", type: "custom", initialPosition });
-    }, [activeUser, boardsTypes, cameraBoardsTypes, addPopup, deletePopup]);
+    }, [activeUser, boardTypes, cameraBoardTypes, addPopup, deletePopup]);
     return { onAddClick, PrintableContent };
 };
 
@@ -197,7 +199,8 @@ export const useEditBoard = () => {
     const { t } = useTranslation();
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
-    const boardsTypes = CacheStore.boardsTypes();
+    const boardTypes = CacheStore.boardTypes();
+    const direction = SettingsStore.direction();
 
     const onEditClick = useCallback(
         (board: Board) => {
@@ -222,7 +225,7 @@ export const useEditBoard = () => {
                     containerClassName: "_center w-full",
                     labelContent: t("type"),
                     defaultValue: board.type,
-                    options: boardsTypes.map((bt) => ({ value: bt, label: bt })),
+                    options: boardTypes.map((bt) => ({ value: bt, label: bt })),
                     optionsContainerClassName: "max-h-80",
                 },
                 {
@@ -258,12 +261,13 @@ export const useEditBoard = () => {
 
                 await validateBoardPhoneAndStatus({ sim, comments, status }, t, board);
                 const update = { sim: status === BoardStatus["NoSim"] ? "" : sim, comments, status, type };
-                await updateBoardFB(board.id, update);
+                await updateBoardDB(board.id, update);
                 deletePopup("edit_board " + board.imei);
             };
 
             const form = (
                 <ModularForm
+                    direction={direction}
                     buttonContent={t("save")}
                     elements={elements}
                     formClassName="min-w-[400px]"
@@ -279,7 +283,7 @@ export const useEditBoard = () => {
             );
             addPopup({ element: form, id: "edit_board " + board.imei, type: "custom", initialPosition });
         },
-        [deletePopup, addPopup, boardsTypes]
+        [deletePopup, addPopup, boardTypes]
     );
 
     return onEditClick;
@@ -287,6 +291,7 @@ export const useEditBoard = () => {
 
 export const useDeleteBoard = () => {
     const deletePopup = PopupsStore.deletePopup();
+    const direction = SettingsStore.direction();
     const addPopup = PopupsStore.addPopup();
     const { t } = useTranslation();
 
@@ -303,6 +308,7 @@ export const useDeleteBoard = () => {
             addPopup({
                 element: (
                     <ConfirmForm
+                        direction={direction}
                         onV={onV}
                         onX={onX}
                         headline={t("delete_confirmation").replace("{imei}", board.imei)}

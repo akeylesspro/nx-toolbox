@@ -6,19 +6,19 @@ import { Board } from "akeyless-types-commons";
 export interface CacheStoreType {
     boards: Board[];
     setBoards: SetState<Board[]>;
-    boardsTypes: string[];
-    setBoardsTypes: SetState<string[]>;
-    cameraBoardsTypes: string[];
-    setCameraBoardsTypes: SetState<string[]>;
+    boardTypes: string[];
+    setBoardTypes: SetState<string[]>;
+    cameraBoardTypes: string[];
+    setCameraBoardTypes: SetState<string[]>;
 }
 
 export const CacheStoreBase = create<CacheStoreType>((set) => ({
     boards: [],
     setBoards: (updater) => setState(updater, set, "boards"),
-    boardsTypes: [],
-    setBoardsTypes: (updater) => setState(updater, set, "boardsTypes"),
-    cameraBoardsTypes: [],
-    setCameraBoardsTypes: (updater) => setState(updater, set, "cameraBoardsTypes"),
+    boardTypes: [],
+    setBoardTypes: (updater) => setState(updater, set, "boardTypes"),
+    cameraBoardTypes: [],
+    setCameraBoardTypes: (updater) => setState(updater, set, "cameraBoardTypes"),
 }));
 
 export const CacheStore = createSelectors<CacheStoreType>(CacheStoreBase);

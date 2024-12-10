@@ -1,7 +1,15 @@
 import { query_document, query_documents } from "akeyless-client-commons/helpers";
 import { BoardStatus, TObject } from "akeyless-types-commons";
 
-import { updateBoardFB } from "@/lib/helpers";
+import {
+    collections,
+    delete_document,
+    fire_base_TIME_TEMP,
+    get_all_documents,
+    get_document_by_id,
+    set_document,
+} from "akeyless-client-commons/helpers";
+import { doc, setDoc } from "firebase/firestore";
 
 type TranslationFun = (val: string) => string;
 
@@ -26,10 +34,10 @@ export const validateBoardPhoneAndStatus = async (boardData: TObject<any>, t: Tr
         }
         if (board.status === BoardStatus["ReadyForInstallation"]) {
             console.log("ready");
-            await updateBoardFB(board.id, { status: BoardStatus["NoSim"], sim: "" });
+            await updateBoardDB(board.id, { status: BoardStatus["NoSim"], sim: "" });
         }
         if (board.status === BoardStatus["Malfunction"]) {
-            await updateBoardFB(board.id, { sim: "" });
+            await updateBoardDB(board.id, { sim: "" });
         }
     });
     await Promise.all(promises);
@@ -76,5 +84,51 @@ export const validateBoardImei = async (boardData: TObject<any>, t: TranslationF
     const boardExist = await query_document("boards", "imei", "==", boardData.imei, true);
     if (boardExist) {
         throw t("exist_imei_error");
+    }
+};
+
+export const getCameraProtectionTypes = async () => {
+    const data = (await get_document_by_id("settings", "protection_features")) as Record<string, any>;
+    const result: TObject<any> = {};
+
+    for (const key in data) {
+        if (data[key]?.camera) {
+            result[key] = { ...data[key] };
+        }
+    }
+    return result;
+};
+
+export const getCameraBoardTypes = async () => {
+    const cameraProtections = await getCameraProtectionTypes();
+    const protectionTypes = await get_all_documents("protectionTypes");
+    const filter_data: string[] = protectionTypes
+        .filter((val) => {
+            return Object.keys(cameraProtections).includes(val.name);
+        })
+        .map((val) => val.boardTypes)
+        .flat()
+        .map((v) => v.name);
+
+    return filter_data;
+};
+
+export const updateBoardDB = async (id: string, data: TObject<any>) => {
+    try {
+        await set_document("boards", id, { ...data, update: fire_base_TIME_TEMP() });
+    } catch (error) {
+        console.error("error from updateBoardDB ", error);
+    }
+};
+
+export const addBoardDB = async (data: TObject<any>) => {
+    try {
+        const ref = doc(collections.boards);
+        const update: TObject<any> = { ...data, id: ref.id, token: [...ref.id].reverse().join("") };
+        await setDoc(ref, update);
+        return update;
+    } catch (error) {
+        console.error("error from addBoardDB ", error);
+        return false;
     }
 };

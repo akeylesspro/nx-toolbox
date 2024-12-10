@@ -90,8 +90,8 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
 BoardsTable.displayName = "BoardsTable";
 
 const BoardOptions = ({ board }: PropsWithBoard) => {
-    const cameraBoardsTypes = CacheStore.cameraBoardsTypes();
-    const displayPrintQR = useMemo<boolean>(() => cameraBoardsTypes.includes(board.type), [board.type]);
+    const cameraBoardTypes = CacheStore.cameraBoardTypes();
+    const displayPrintQR = useMemo<boolean>(() => cameraBoardTypes.includes(board.type), [board.type]);
     return (
         <div className={`_center gap-3 `}>
             <EditBoard board={board} />

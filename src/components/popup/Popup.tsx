@@ -85,7 +85,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
             }
             deletePopup(id);
         } catch (error) {
-            console.log("error in exitPopUp", error);
+            console.error("error in exitPopUp", error);
         }
     }, [deletePopup, JSON.stringify(close?.onClose), id]);
 

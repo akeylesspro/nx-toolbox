@@ -9,6 +9,7 @@ import { Timestamp } from "firebase/firestore";
 import { TableProps } from "akeyless-client-commons/types";
 import { Button } from "@/components";
 import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
+import Image from "next/image";
 
 interface PropsWithBoard {
     board: Board;
@@ -21,11 +22,12 @@ interface PropsWithBoards {
 export const BoardsTable = memo(({ data }: PropsWithBoards) => {
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
-    const headers = [t("imei"), t("sim"), t("status"), t("type"), t("comments"), t("created_date"), t("actions")];
+    const isRtl = SettingsStore.isRtl();
+    const headers = useMemo(() => [t("imei"), t("sim"), t("status"), t("type"), t("comments"), t("created_date"), t("actions")], []);
 
-    const keysToRender = ["imei", "sim_ui", "ui_status", "type", "comments", "ui_uploaded", "actions"];
+    const keysToRender = useMemo(() => ["imei", "sim_ui", "ui_status", "type", "comments", "ui_uploaded", "actions"], []);
 
-    const sortKeys = ["imei", "sim", "status", "type", "comments", "created_date", "actions"];
+    const sortKeys = useMemo(() => ["imei", "sim", "status", "type", "comments", "created_date", "actions"], []);
 
     const filterableColumns = [
         { header: t("type"), dataKey: "type" },
@@ -44,13 +46,13 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
                     </div>
                 ),
                 sim_ui: (
-                    <div style={{ direction: "ltr" }} className="text-end">
+                    <div style={{ direction: "ltr" }} className={`w-full ${isRtl ? "text-end" : "text-start"}`}>
                         {val.sim}
                     </div>
                 ),
             };
         });
-    }, [data]);
+    }, [data, isRtl]);
 
     const tableProps: TableProps = useMemo(() => {
         return {
@@ -79,7 +81,7 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
             maxRowsLabel2: t("maxRowsLabel2"),
             optionalElement: <AddBoard />,
         };
-    }, [formattedData]);
+    }, [formattedData, direction, isRtl]);
 
     return (
         <div style={{ direction: direction }} className="w-full h-full _center">
@@ -91,9 +93,11 @@ BoardsTable.displayName = "BoardsTable";
 
 const BoardOptions = ({ board }: PropsWithBoard) => {
     const cameraBoardTypes = CacheStore.cameraBoardTypes();
+    const direction = SettingsStore.direction();
     const displayPrintQR = useMemo<boolean>(() => cameraBoardTypes.includes(board.type), [board.type]);
+
     return (
-        <div className={`_center gap-3 `}>
+        <div style={{ direction }} className={`flex justify-start gap-3 `}>
             <EditBoard board={board} />
             <DeleteBoard board={board} />
             {displayPrintQR && <PrintQR board={board} />}
@@ -107,7 +111,7 @@ const PrintQR = ({ board }: PropsWithBoard) => {
     return (
         <>
             <button title={t("print")} onClick={() => onPrintClick(board)}>
-                <i className="fa-light fa-print text-xl "></i>
+                <Image src={"/images/qr.png"} alt="qr.png" width={23} height={23} />
             </button>
             <PrintableContent />
         </>
@@ -143,7 +147,7 @@ const DeleteBoard = ({ board }: PropsWithBoard) => {
     const onDeleteClick = useDeleteBoard();
     return (
         <button title={t("delete_board")} onClick={() => onDeleteClick(board)}>
-            {<i className="fa-light fa-trash text-2xl"></i>}
+            {<i className="fa-light fa-trash text-xl"></i>}
         </button>
     );
 };

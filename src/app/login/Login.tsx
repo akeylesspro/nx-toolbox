@@ -4,15 +4,14 @@ import { useState, FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { SettingsStore, UserStore } from "@/lib/store";
-import { changeLanguage, onCodeSubmit, onPhoneSubmit } from "@/lib/helpers";
+import { onCodeSubmit, onPhoneSubmit } from "@/lib/helpers";
 import { useValidation } from "akeyless-client-commons/helpers";
 import { Loader } from "akeyless-client-commons/components";
-import { israelFlagSvg, usFlagSvg } from "akeyless-assets-commons";
 import { Installer } from "akeyless-types-commons";
-import { Button, Input } from "@/components";
+import { Button, ChangeLanguageButton, Input } from "@/components";
 
 const Login = () => {
-    const { i18n, t } = useTranslation();
+    const { t } = useTranslation();
     const router = useRouter();
 
     const isRtl = SettingsStore.isRtl();
@@ -64,12 +63,8 @@ const Login = () => {
                     </Button>
                 </form>
                 <div className={`_center gap-2 w-full h-8`}>
-                    <div title={t("hebrew")} className={"cursor-pointer"} onClick={() => changeLanguage("en", i18n, setDirection)}>
-                        {usFlagSvg}
-                    </div>
-                    <div title={t("english")} className={"cursor-pointer"} onClick={() => changeLanguage("he", i18n, setDirection)}>
-                        {israelFlagSvg}
-                    </div>
+                    <ChangeLanguageButton lang="en" />
+                    <ChangeLanguageButton lang="he" />
                 </div>
             </div>
         </div>

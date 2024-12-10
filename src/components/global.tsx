@@ -10,10 +10,15 @@ import { useTranslation } from "react-i18next";
 import { AsideButtonsProps } from "@/types";
 import { Badge, Button } from "./";
 import { useDocumentTitle } from "akeyless-client-commons/hooks";
+import { israelFlagSvgFun, usFlagSvgFun } from "akeyless-assets-commons";
+import { changeLanguage } from "@/lib/helpers";
+import { useEffect, useState } from "react";
 
 export const Logout = () => {
     const router = useRouter();
     const setActiveUser = UserStore.setActiveUser();
+    const direction = SettingsStore.direction();
+    const isRtl = SettingsStore.isRtl();
     const { t } = useTranslation();
 
     const logOut = async () => {
@@ -23,7 +28,8 @@ export const Logout = () => {
         router.push("/login");
     };
     return (
-        <Button className="bg-inherit" variant={"outline"} onClick={logOut}>
+        <Button style={{ direction }} className="bg-inherit " variant={"outline"} onClick={logOut}>
+            <i className={`fa-solid fa-arrow-${isRtl ? "right" : "left"}-from-bracket pt-1`}></i>
             {t("logout")}
         </Button>
     );
@@ -64,8 +70,14 @@ export const AsideButton = ({ content, to, disabled }: AsideButtonsProps) => {
 export const ClickableLogo = () => {
     const router = useRouter();
     const { t } = useTranslation();
+    const [title, setTitle] = useState("");
+
+    useEffect(() => {
+        setTitle(t("home"));
+    }, [t]);
+
     return (
-        <button onClick={() => router.push("/")} title={t("home")}>
+        <button onClick={() => router.push("/")} title={title}>
             <Image src="/images/akeyless_logo_big.png" alt="logo" width={200} height={200} />
         </button>
     );
@@ -83,4 +95,20 @@ export const HomePageMessage = () => {
         </div>
     );
 };
-
+interface ChangeLanguageButtonProps {
+    lang: "en" | "he";
+    width?: number;
+    height?: number;
+    className?: string;
+    title?: string;
+}
+export const ChangeLanguageButton = ({ lang, width, height, className, title }: ChangeLanguageButtonProps) => {
+    const { i18n, t } = useTranslation();
+    const setDirection = SettingsStore.setDirection();
+    const icons = { en: usFlagSvgFun(width, height), he: israelFlagSvgFun(width, height) };
+    return (
+        <button className={className} title={title} onClick={() => changeLanguage(lang, i18n, setDirection)}>
+            {icons[lang]}
+        </button>
+    );
+};

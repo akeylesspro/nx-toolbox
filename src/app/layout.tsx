@@ -4,8 +4,8 @@ import { Auth, GlobalConfig, QaBadge } from "@/components";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-    title: "nx-toolbox",
-    description: "nx-toolbox app",
+    title: "Akeyless Toolbox",
+    description: "Akeyless Toolbox App",
 };
 
 export default async function RootLayout({

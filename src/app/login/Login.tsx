@@ -63,8 +63,8 @@ const Login = () => {
                     </Button>
                 </form>
                 <div className={`_center gap-2 w-full h-8`}>
-                    <ChangeLanguageButton lang="en" />
-                    <ChangeLanguageButton lang="he" />
+                    <ChangeLanguageButton lang="en" width={32} height={22} />
+                    <ChangeLanguageButton lang="he" width={32} height={22} />
                 </div>
             </div>
         </div>

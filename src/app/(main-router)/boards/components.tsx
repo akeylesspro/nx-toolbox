@@ -150,3 +150,19 @@ const DeleteBoard = ({ board }: PropsWithBoard) => {
         </button>
     );
 };
+
+interface PrintQrContentProps {
+    imgData: string;
+    board: Board | null;
+}
+export const PrintQrContent = ({ imgData, board }: PrintQrContentProps) => {
+    return (
+        <div className="h-1/2 flex">
+            <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData} />
+            <div className="flex flex-col gap-1 items-center justify-center">
+                <div className="max-w-[90px] text-[10px]  break-words">{board?.imei}</div>
+                <div className="max-w-[90px] text-[10px]  break-words">{board?.type}</div>
+            </div>
+        </div>
+    );
+};

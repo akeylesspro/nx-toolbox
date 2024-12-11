@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, SettingsStore, UserStore } from "@/lib/store";
 import { addBoardDB, onImeiInputKeyDown, onSimInputKeyDown, updateBoardDB, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
+import { PrintQrContent } from "./components";
 
 const initialPosition = { top: "25%", left: "30%" };
 
@@ -35,7 +36,7 @@ export const usePrintQR = () => {
         await new Promise<void>((resolve, reject) => {
             QRCodeGenerator.toCanvas(canvas, qrContent, { width: 350 }, (error) => {
                 if (error) {
-                    console.error("error from generateQRCodeImage",error);
+                    console.error("error from generateQRCodeImage", error);
                     return reject(error);
                 }
                 const data = canvas.toDataURL("image/png");
@@ -57,20 +58,8 @@ export const usePrintQR = () => {
     const PrintableContent = () => (
         <div style={{ display: "none" }}>
             <div ref={containerRef} className="h-full">
-                <div className="h-1/2 flex">
-                    <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData} />
-                    <div className="flex flex-col gap-1 items-center justify-center">
-                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.imei}</div>
-                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.type}</div>
-                    </div>
-                </div>
-                <div className="h-1/2 flex">
-                    <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData} />
-                    <div className="flex flex-col gap-1 items-center justify-center">
-                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.imei}</div>
-                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.type}</div>
-                    </div>
-                </div>
+                <PrintQrContent board={boardState} imgData={imgData} />
+                <PrintQrContent board={boardState} imgData={imgData} />
             </div>
         </div>
     );

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, SettingsStore, UserStore } from "@/lib/store";
 import { addBoardDB, onImeiInputKeyDown, onSimInputKeyDown, updateBoardDB, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
-import { PrintQrContent } from "./components";
+import { PrintableContent } from "./components";
 
 const initialPosition = { top: "25%", left: "30%" };
 
@@ -55,16 +55,7 @@ export const usePrintQR = () => {
         [generateQRCodeImage, handlePrint]
     );
 
-    const PrintableContent = () => (
-        <div style={{ display: "none" }}>
-            <div ref={containerRef} className="h-full">
-                <PrintQrContent board={boardState} imgData={imgData} />
-                <PrintQrContent board={boardState} imgData={imgData} />
-            </div>
-        </div>
-    );
-
-    return { onPrintClick, PrintableContent };
+    return { onPrintClick, PrintableContent: () => <PrintableContent boardState={boardState} imgData={imgData || null} ref={containerRef} /> };
 };
 
 export const useAddBoard = () => {

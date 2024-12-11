@@ -10,7 +10,7 @@ else {
 npm run uc client
 
 Start-Job -ScriptBlock {
-    Start-Sleep -Seconds 5
+    Start-Sleep -Seconds 10
     Start-Process "http://localhost:8003/boards"
 } | Out-Null
 

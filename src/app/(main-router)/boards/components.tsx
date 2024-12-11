@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { timestamp_to_string } from "@/lib/helpers";
 import { CacheStore, SettingsStore } from "@/lib/store";
 import { Loader, ModularForm, Table } from "akeyless-client-commons/components";
-import { memo, useEffect, useMemo, useState } from "react";
+import { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { TableProps } from "akeyless-client-commons/types";
 import { Button } from "@/components";
@@ -151,18 +151,21 @@ const DeleteBoard = ({ board }: PropsWithBoard) => {
     );
 };
 
-interface PrintQrContentProps {
-    imgData: string;
-    board: Board | null;
-}
-export const PrintQrContent = ({ imgData, board }: PrintQrContentProps) => {
-    return (
-        <div className="h-1/2 flex">
-            <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData} />
-            <div className="flex flex-col gap-1 items-center justify-center">
-                <div className="max-w-[90px] text-[10px]  break-words">{board?.imei}</div>
-                <div className="max-w-[90px] text-[10px]  break-words">{board?.type}</div>
-            </div>
+const PrintableContent = forwardRef<HTMLDivElement, { imgData: string | null; boardState: Board | null }>(({ imgData, boardState }, ref) => (
+    <div style={{ display: "none" }}>
+        <div ref={ref} className="h-full">
+            {[1, 2].map((v) => (
+                <div key={v} className="h-1/2 flex">
+                    <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData || undefined} />
+                    <div className="flex flex-col gap-1 items-center justify-center">
+                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.imei}</div>
+                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.type}</div>
+                    </div>
+                </div>
+            ))}
         </div>
-    );
-};
+    </div>
+));
+PrintableContent.displayName = "PrintableContent";
+
+export { PrintableContent };

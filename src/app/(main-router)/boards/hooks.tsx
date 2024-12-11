@@ -18,7 +18,6 @@ export const usePrintQR = () => {
     const handlePrint = useReactToPrint({
         contentRef: containerRef,
         bodyClass: "h-screen",
-        documentTitle: "QR Code",
     });
 
     const generateQRCodeImage = useCallback(async (board: Board, isCamera: boolean) => {

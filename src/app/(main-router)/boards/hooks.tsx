@@ -8,42 +8,42 @@ import { useTranslation } from "react-i18next";
 import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, SettingsStore, UserStore } from "@/lib/store";
 import { addBoardDB, onImeiInputKeyDown, onSimInputKeyDown, updateBoardDB, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
+import { PrintableContent } from "./components";
 
 const initialPosition = { top: "25%", left: "30%" };
 
 export const usePrintQR = () => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const imgRef = useRef<HTMLImageElement>(null);
-
+    const [boardState, setBoardState] = useState<Board | null>(null);
+    const [imgData, setImgData] = useState<string>("");
     const handlePrint = useReactToPrint({
         contentRef: containerRef,
-        bodyClass: "",
-        documentTitle: "QR Code",
+        bodyClass: "h-screen",
     });
 
     const generateQRCodeImage = useCallback(async (board: Board, isCamera: boolean) => {
         const canvas = document.createElement("canvas");
         let qrContent = board.imei;
+
         if (isCamera) {
-            let token = "";
-            if (board.token) {
-                token = board.token;
-            } else {
-                token = [...board.id].reverse().join("");
+            const token = board.token || [...board.id].reverse().join("");
+            if (!board.token) {
                 await updateBoardDB(board.id, { token });
             }
             qrContent = `https://installerapp.online/camera_installation/${token}`;
         }
 
-        QRCodeGenerator.toCanvas(canvas, qrContent, { width: 350 }, (error) => {
-            if (error) {
-                return console.error(error);
-            }
-            const imgData = canvas.toDataURL("image/png");
-            const imgElement = imgRef.current;
-            if (imgElement) {
-                imgElement.src = imgData;
-            }
+        await new Promise<void>((resolve, reject) => {
+            QRCodeGenerator.toCanvas(canvas, qrContent, { width: 350 }, (error) => {
+                if (error) {
+                    console.error("error from generateQRCodeImage", error);
+                    return reject(error);
+                }
+                const data = canvas.toDataURL("image/png");
+                setImgData(data);
+                setBoardState(board);
+                resolve();
+            });
         });
     }, []);
 
@@ -55,17 +55,7 @@ export const usePrintQR = () => {
         [generateQRCodeImage, handlePrint]
     );
 
-    const PrintableContent = () => (
-        <div style={{ display: "none" }}>
-            {/* this div will be send to print  */}
-            <div ref={containerRef} className="flex justify-center items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="w-[80px] h-[80px]" ref={imgRef} alt="QR Code" />
-            </div>
-        </div>
-    );
-
-    return { onPrintClick, PrintableContent };
+    return { onPrintClick, PrintableContent: () => <PrintableContent boardState={boardState} imgData={imgData || null} ref={containerRef} /> };
 };
 
 export const useAddBoard = () => {

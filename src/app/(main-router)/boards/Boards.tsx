@@ -8,11 +8,7 @@ function Boards() {
     const { t } = useTranslation();
     useDocumentTitle(t("boards"));
     const boardsData = CacheStore.boards();
-    return (
-        <div className="p-3">
-            <BoardsTable data={boardsData} />
-        </div>
-    );
+    return <BoardsTable data={boardsData} />;
 }
 
 export default Boards;

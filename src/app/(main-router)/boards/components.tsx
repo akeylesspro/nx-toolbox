@@ -84,8 +84,10 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
     }, [formattedData, direction, isRtl]);
 
     return (
-        <div style={{ direction: direction }} className="w-full h-full _center">
-            {formattedData.length ? <Table {...tableProps} /> : <Loader size={200} />}
+        <div className="p-3">
+            <div style={{ direction: direction }} className="w-full h-full _center">
+                {formattedData.length ? <Table {...tableProps} /> : <Loader size={200} />}
+            </div>
         </div>
     );
 });
@@ -93,7 +95,6 @@ BoardsTable.displayName = "BoardsTable";
 
 const BoardOptions = ({ board }: PropsWithBoard) => {
     const direction = SettingsStore.direction();
-
     return (
         <div style={{ direction }} className={`flex justify-start gap-3 `}>
             <EditBoard board={board} />
@@ -150,22 +151,32 @@ const DeleteBoard = ({ board }: PropsWithBoard) => {
         </button>
     );
 };
+interface PrintableContentProps {
+    imgData: string | null;
+    boardState: Board | null;
+}
+const PrintUi = ({ boardState, imgData }: PrintableContentProps) => {
+    return (
+        <div className="h-1/2 flex">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData || undefined} />
+            <div className="flex flex-col gap-1 items-center justify-center">
+                <div className="max-w-[90px] text-[10px]  break-words">{boardState?.imei}</div>
+                <div className="max-w-[90px] text-[10px]  break-words">{boardState?.type}</div>
+            </div>
+        </div>
+    );
+};
 
-const PrintableContent = forwardRef<HTMLDivElement, { imgData: string | null; boardState: Board | null }>(({ imgData, boardState }, ref) => (
+const PrintableContent = forwardRef<HTMLDivElement, PrintableContentProps>(({ imgData, boardState }, ref) => (
     <div style={{ display: "none" }}>
         <div ref={ref} className="h-full">
-            {[1, 2].map((v) => (
-                <div key={v} className="h-1/2 flex">
-                    <img className="w-[90px] h-[90px]" alt="QR Code" src={imgData || undefined} />
-                    <div className="flex flex-col gap-1 items-center justify-center">
-                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.imei}</div>
-                        <div className="max-w-[90px] text-[10px]  break-words">{boardState?.type}</div>
-                    </div>
-                </div>
-            ))}
+            <PrintUi imgData={imgData} boardState={boardState} />
+            <PrintUi imgData={imgData} boardState={boardState} />
         </div>
     </div>
 ));
+
 PrintableContent.displayName = "PrintableContent";
 
 export { PrintableContent };

@@ -10,32 +10,28 @@ export const NotActiveTable = memo(({ data }: { data: TObject<any>[] }) => {
     const direction = SettingsStore.direction();
     const isRtl = SettingsStore.isRtl();
     const headers = useMemo(
-        () => [t("car_number"), t("board_provider"), t("deactivated"), t("on_akeyless_server"), t("state_time"), t("event_time"), t("location_time")],
-        [direction]
+        () => [t("car_number"), t("board_provider"), t("on_akeyless_server"), t("events_time"), t("location_time")],
+        [direction, t]
     );
 
-    const keysToRender = useMemo(
-        () => ["car_number", "board_provider", "deactivated_ui", "on_akeyless_server_ui", "state_time", "event_time", "location_time"],
-        []
-    );
+    const keysToRender = useMemo(() => ["car_number", "board_provider", "on_akeyless_server_ui", "event_time", "location_time"], []);
 
-    const sortKeys = useMemo(
-        () => ["car_number", "board_provider", "deactivated", "on_akeyless_server", "state_sort", "event_sort", "location_sort"],
-        []
-    );
+    const sortKeys = useMemo(() => ["car_number", "board_provider", "on_akeyless_server", "event_sort", "location_sort"], []);
+
+    const filterableColumns = [
+        { header: t("board_provider"), dataKey: "board_provider" },
+        { header: t("on_akeyless_server"), dataKey: "on_akeyless_server", ui: (value: any) => <TrueFalseIcon value={value} size="small" /> },
+    ];
 
     const formattedData = useMemo(() => {
         return data.map((val) => {
             return {
                 ...val,
-                state_time: <TimeUi time={val.erm_state} />,
                 event_time: <TimeUi time={val.last_event} />,
                 location_time: <TimeUi time={val.last_location} />,
-                deactivated_ui: <TrueFalseIcon value={val.deactivated} />,
                 on_akeyless_server_ui: <TrueFalseIcon value={val.on_akeyless_server} />,
-                state_sort: val.erm_state?.short || "",
-                event_sort: val.erm_state?.short || "",
-                location_sort: val.erm_state?.short || "",
+                event_sort: val.last_event?.seconds_passed || 0,
+                location_sort: val.last_location?.seconds_passed || 0,
             };
         });
     }, [data, direction]);
@@ -44,7 +40,7 @@ export const NotActiveTable = memo(({ data }: { data: TObject<any>[] }) => {
         return {
             // settings
             includeSearch: true,
-            maxRows: 100,
+            // maxRows: 100,
             // data
             data: formattedData,
             direction: direction,
@@ -64,21 +60,20 @@ export const NotActiveTable = memo(({ data }: { data: TObject<any>[] }) => {
             sortLabel: t("sort_by"),
             maxRowsLabel1: t("maxRowsLabel1"),
             maxRowsLabel2: t("maxRowsLabel2"),
-            // optionalElement: <AddBoard />,
+            filterableColumns,
         };
-    }, [formattedData, direction, isRtl]);
+    }, [formattedData, direction, isRtl, headers]);
 
     return <Table {...tableProps} />;
 });
 NotActiveTable.displayName = "NotActiveTable";
 
-const TrueFalseIcon = ({ value }: { value: boolean }) => {
+const TrueFalseIcon = ({ value, size }: { value: boolean; size?: "big" | "small" }) => {
     const className = value ? "fa-light fa-check text-green-500" : "fa-light fa-xmark text-red-500";
-    return <i className={`${className} text-2xl`}></i>;
+    return <i className={`${className} ${size === "small" ? "text-lg" : "text-2xl"}`}></i>;
 };
 
 const TimeUi = ({ time }: { time: { short: string; long: string } | null }) => {
-    const isRtl = SettingsStore.isRtl();
     const { t } = useTranslation();
     const formattedValue = (time?.long || "")
         .replace("d", t("days"))
@@ -86,8 +81,9 @@ const TimeUi = ({ time }: { time: { short: string; long: string } | null }) => {
         .replace("min", t("minutes"))
         .replace("sec", t("seconds"));
     return (
-        <div title={formattedValue} className={`w-full ${isRtl ? "text-end" : "text-start"}`} style={{ direction: "ltr" }}>
-            {time?.short || <TrueFalseIcon value={false} />}
+        <div className="_full flex justify-start items-center" title={formattedValue}>
+            {/* {time?.short || <TrueFalseIcon value={false} />} */}
+            {formattedValue || <TrueFalseIcon value={false} />}
         </div>
     );
 };

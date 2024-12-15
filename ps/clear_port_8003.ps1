@@ -1,7 +1,7 @@
 Write-Host "Checking for processes using port 8003..."
 
-$Processes = Get-NetTCPConnection -LocalPort 8003 -State Listen | ForEach-Object {
-    Get-Process -Id $_.OwningProcess
+$Processes = Get-NetTCPConnection -LocalPort 8003 -State Listen -ErrorAction SilentlyContinue | ForEach-Object {
+    Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
 }
 
 if ($Processes) {

@@ -47,5 +47,16 @@
     "exist_phone_number_error": "מספר טלפון כבר קיים",
     "print_confirmation": "האם ברצונך להדפיס את ה QR של {imei} ?",
     "delete_board": "מחיקת מערכת",
-    "delete_confirmation": "האם ברצונך למחוק את {imei} ?"
+    "delete_confirmation": "האם ברצונך למחוק את {imei} ?",
+    "not_active_cars": "רכבים לא פעילים",
+    "car_number": "מספר רכב",
+    "board_provider": "ספק חומרה",
+    "deactivated": "מושבת",
+    "on_akeyless_server": "בשרת Akeyless",
+    "events_time": "זמן מאירוע אחרון",
+    "location_time": "זמן ממיקום אחרון",
+    "days": "ימים",
+    "hours": "שעות",
+    "minutes": "דקות",
+    "seconds": "שניות"
 }

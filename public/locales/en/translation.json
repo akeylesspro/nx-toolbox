@@ -47,5 +47,16 @@
     "exist_phone_number_error": "Phone number already exists",
     "print_confirmation": "Do you want to print the QR for {imei} ?",
     "delete_board": "Delete Board",
-    "delete_confirmation": "Do you want to delete {imei} ? "
+    "delete_confirmation": "Do you want to delete {imei} ? ",
+    "not_active_cars": "Not active cars",
+    "car_number": "Car number",
+    "board_provider": "Board provider",
+    "deactivated": "Deactivated",
+    "on_akeyless_server": "Akeyless Server",
+    "events_time": "Time from last event",
+    "location_time": "Time from last location",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
 }

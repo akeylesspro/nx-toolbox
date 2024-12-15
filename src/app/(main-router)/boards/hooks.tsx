@@ -143,30 +143,27 @@ export const useAddBoard = () => {
                 throw new Error(t("update_board_error"));
             }
 
-            if (cameraBoardTypes.includes(type)) {
-                const onX = async () => {
-                    deletePopup("print_confirmation");
-                };
-                const onV = async () => {
-                    await onPrintClick(update as Board, cameraBoardTypes.includes(type));
-                    onX();
-                };
-
-                addPopup({
-                    element: (
-                        <ConfirmForm
-                            direction={direction}
-                            onV={onV}
-                            onX={onX}
-                            headline={t("print_confirmation").replace("{imei}", update.imei)}
-                            containerClassName="w-80 flex flex-col gap-4"
-                            buttonsContainerClassName="_center gap-4"
-                        />
-                    ),
-                    id: "print_confirmation",
-                    type: "custom",
-                });
-            }
+            const onX = async () => {
+                deletePopup("print_confirmation");
+            };
+            const onV = async () => {
+                await onPrintClick(update as Board, cameraBoardTypes.includes(type));
+                onX();
+            };
+            addPopup({
+                element: (
+                    <ConfirmForm
+                        direction={direction}
+                        onV={onV}
+                        onX={onX}
+                        headline={t("print_confirmation").replace("{imei}", update.imei)}
+                        containerClassName="w-80 flex flex-col gap-4"
+                        buttonsContainerClassName="_center gap-4"
+                    />
+                ),
+                id: "print_confirmation",
+                type: "custom",
+            });
             deletePopup("add_board");
         };
         const form = (

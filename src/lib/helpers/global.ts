@@ -10,7 +10,7 @@ export const baseUrl = () => {
 
 export const isBrowser = (): boolean => typeof window !== "undefined";
 
-export const QAmode = process.env.NEXT_PUBLIC_MODE === "true";
+export const QAmode = process.env.NEXT_PUBLIC_MODE === "qa";
 
 export const is_local = process.env.NEXT_PUBLIC_IS_LOCAL === "true";
 

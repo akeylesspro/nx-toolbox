@@ -1,5 +1,5 @@
 "use client";
-import { get_user_by_phone, setAuthCookie } from "@/lib/helpers";
+import { get_user_by_phone, setAuthCookie } from "@/app/login/helpers";
 import { UserStore } from "@/lib/store";
 import { onIdTokenChanged, RecaptchaVerifier } from "@firebase/auth";
 import { auth } from "akeyless-client-commons/helpers";

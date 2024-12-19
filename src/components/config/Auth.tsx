@@ -25,6 +25,7 @@ export function Auth() {
         (async () => {
             if (!activeUser && window.location.pathname !== "/login") {
                 console.log("activeUser is null redirect to login");
+                deleteCookie("token")
                 router.push("/login");
             }
             if (activeUser && !activeUser.fullName) {

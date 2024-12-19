@@ -1,7 +1,7 @@
 import { setCookie } from "cookies-next";
 import moment from "moment";
 import { signInWithPhoneNumber } from "@firebase/auth";
-import { auth, isInternationalIsraelPhone, local_israel_phone_format, query_document } from "akeyless-client-commons/helpers";
+import { auth, local_israel_phone_format, query_document } from "akeyless-client-commons/helpers";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { Installer } from "akeyless-types-commons";
 
@@ -15,8 +15,9 @@ export const setAuthCookie = (token: string) => {
 };
 
 export const get_user_by_phone = async (phone: string): Promise<Installer | null> => {
-    const user = await query_document("technicians", "phone", "==", phone);
-    return user as Installer | null;
+    const phones = [phone, local_israel_phone_format(phone)];
+    const user = await query_document("technicians", "phone", "in", phones);
+    return user;
 };
 
 export const onPhoneSubmit = async (phone: string, setTechnician: (t: Installer) => void, setCodeDisplay: (t: boolean) => void) => {
@@ -24,9 +25,7 @@ export const onPhoneSubmit = async (phone: string, setTechnician: (t: Installer)
         throw new Error("number_not_valid");
     }
     const appVerifier = window?.recaptchaVerifier || null;
-    const userPhone = isInternationalIsraelPhone(phone) ? local_israel_phone_format(phone) : phone;
-
-    const user = await get_user_by_phone(userPhone.replace(/[- ]/g, ""));
+    const user = await get_user_by_phone(phone.replace(/[- ]/g, ""));
     if (!user || !user.superTechnician) {
         throw new Error("number_not_in_system");
     }

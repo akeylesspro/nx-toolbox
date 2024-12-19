@@ -20,6 +20,7 @@ export function Auth() {
         };
         generateRecaptchaContainer();
     }, []);
+
     useEffect(() => {
         (async () => {
             if (!activeUser && window.location.pathname !== "/login") {

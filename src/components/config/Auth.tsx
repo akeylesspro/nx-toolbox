@@ -24,7 +24,7 @@ export function Auth() {
     useEffect(() => {
         (async () => {
             if (!activeUser && window.location.pathname !== "/login") {
-                console.log("redirect to login");
+                console.log("activeUser is null redirect to login");
                 router.push("/login");
             }
             if (activeUser && !activeUser.fullName) {
@@ -32,7 +32,6 @@ export function Auth() {
                 setActiveUser(technician);
             }
         })();
-        console.log("activeUser change from Auth", activeUser);
     }, [activeUser]);
     useEffect(() => {
         const unsubscribe = onIdTokenChanged(auth, async (user) => {

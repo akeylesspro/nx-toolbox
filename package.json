@@ -12,6 +12,7 @@
         "tc": "powershell -ExecutionPolicy Bypass -File ./ps/test_commons.ps1",
         "clear8003": "powershell -ExecutionPolicy Bypass -File ./ps/clear_port_8003.ps1",
         "deploy": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/deployment.ps1",
+        "deployAll": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/deployAll.ps1",
         "gs": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/get_status.ps1",
         "switch": "powershell -ExecutionPolicy Bypass -File ./ps/devOps/switch_project.ps1",
         "git": "powershell -ExecutionPolicy Bypass -File ./ps/create_branch.ps1",

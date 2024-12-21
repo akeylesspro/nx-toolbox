@@ -1,5 +1,6 @@
 param (
-    [string]$v
+    [string]$v,
+    [string]$c
 )
 $versionFilePath = "./package.json"
 $versionJson = Get-Content $versionFilePath | ConvertFrom-Json
@@ -12,10 +13,12 @@ else {
 }
 $version = $versionJson.version
 $currentProject = gcloud config get-value project
-$response = Read-Host "You are in $currentProject. Do you want to continue with the deployment version $version ? (y/n)"
-if ($response -ne "y") {
-    Write-Output "Deployment aborted by the user."
-    exit 0
+if (-not $c) {
+    $response = Read-Host "You are in $currentProject. Do you want to continue with the deployment version $version ? (y/n)"
+    if ($response -ne "y") {
+        Write-Output "Deployment aborted by the user."
+        exit 0
+    }
 }
 
 if ($v) {

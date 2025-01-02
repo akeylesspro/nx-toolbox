@@ -29,8 +29,8 @@ COPY --from=build /usr/src/app/.env ./.env
 COPY --from=build /usr/src/app/next.config.ts ./next.config.ts
 COPY package*.json ./
 
-RUN npm install --omit=dev
-
+# RUN npm install --omit=dev
+RUN npm ci --omit=dev
 ENV NODE_ENV=production
 
 EXPOSE 8003

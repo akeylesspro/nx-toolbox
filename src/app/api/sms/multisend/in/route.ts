@@ -18,10 +18,10 @@ export async function POST(request: Request) {
             service: "multisend",
             timestamp: Timestamp.now(),
         });
-        logger.log("multisend incoming message successfully saved in db", { ...data, service: "multisend" });
+        logger.log("multisend incoming message successfully saved in db", { ...data });
         return NextResponse.json({ success: true, msg: "ok" });
     } catch (error) {
         logger.error("multisend exception in api/sms/multisend/in route", error);
-        return NextResponse.json({ success: false, error: "failed to process request" }, { status: 400 });
+        return NextResponse.json({ success: false, error: "failed to process request" }, { status: 500 });
     }
 }

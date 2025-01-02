@@ -17,10 +17,10 @@ export async function POST(request: Request) {
             service: "twilio",
             timestamp: Timestamp.now(),
         });
-        logger.log("twilio incoming message successfully saved in db", { ...data, service: "twilio" });
+        logger.log("twilio incoming message successfully saved in db", { ...data });
         return NextResponse.json({ success: true, msg: "ok" });
     } catch (error) {
         logger.error("twilio exception in api/sms/twilio/in route", error);
-        return NextResponse.json({ success: false, error: "failed to process request" }, { status: 400 });
+        return NextResponse.json({ success: false, error: "failed to process request" }, { status: 500 });
     }
 }

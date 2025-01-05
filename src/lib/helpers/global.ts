@@ -21,3 +21,5 @@ export const devicesUrl = is_local
     : QAmode
     ? "https://nx-api.xyz/api/devices"
     : "https://nx-api.info/api/devices";
+
+

@@ -1,4 +1,4 @@
-import { set_document, sleep } from "akeyless-server-commons/helpers";
+import { set_document } from "akeyless-server-commons/helpers";
 import { logger } from "akeyless-server-commons/managers";
 import { NextResponse } from "next/server";
 import { Timestamp } from "firebase-admin/firestore";
@@ -11,7 +11,6 @@ export const config = {
 
 export async function POST(request: Request) {
     try {
-        await sleep(5000);
         const data = await request.json();
         const { message, status, customerMessageId } = data;
         const messageFromDb = await getOutSmsById(customerMessageId);

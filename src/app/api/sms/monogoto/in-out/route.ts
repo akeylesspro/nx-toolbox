@@ -1,4 +1,4 @@
-import { add_document, set_document, sleep } from "akeyless-server-commons/helpers";
+import { add_document, set_document } from "akeyless-server-commons/helpers";
 import { logger } from "akeyless-server-commons/managers";
 import { NextResponse } from "next/server";
 import { Timestamp } from "firebase-admin/firestore";
@@ -25,7 +25,6 @@ export async function POST(request: Request) {
             logger.log("monogoto incoming message successfully saved in db", parseTextToObject(text));
             return NextResponse.json({ success: true, msg: "ok" });
         }
-        await sleep(5000);
         const messageFromDb = await getOutSmsByContent(ICCID!, Message!);
         if (messageFromDb) {
             await set_document("nx-sms-out", messageFromDb.id, {

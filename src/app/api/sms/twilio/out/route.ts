@@ -1,4 +1,4 @@
-import { add_document, set_document, sleep } from "akeyless-server-commons/helpers";
+import { add_document, set_document } from "akeyless-server-commons/helpers";
 import { logger } from "akeyless-server-commons/managers";
 import { NextResponse } from "next/server";
 import { Timestamp } from "firebase-admin/firestore";
@@ -11,7 +11,6 @@ export const config = {
 
 export async function POST(request: Request) {
     try {
-        await sleep(5000);
         const data = parseFormData(await request.formData());
         const { MessageStatus, SmsSid, To, From } = data;
         if (!["queued", "sent"].includes(MessageStatus)) {

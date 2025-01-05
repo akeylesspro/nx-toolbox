@@ -37,8 +37,10 @@ export const getOutSmsByContent = async (recipient: string, content: string): Pr
             ],
             false
         )) as OutSms;
-    } catch (error) {
-        console.error("getOutSmsByContent  error", error);
+    } catch (error: any) {
+        if (typeof error !== "string" || !error.includes("no data returned")) {
+            logger.error("getOutSmsByContent error", { error, recipient, content });
+        }
         return null;
     }
 };
@@ -47,7 +49,7 @@ export const getOutSmsById = async (id: string): Promise<OutSms | null> => {
     try {
         return (await query_document("nx-sms-out", "external_id", "==", id)) as OutSms;
     } catch (error) {
-        logger.error("getOutSmsById error", error);
+        logger.error(`getOutSmsById error, external_id: ${id}`, error);
         return null;
     }
 };

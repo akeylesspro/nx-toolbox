@@ -75,6 +75,7 @@ export const useAddBoard = () => {
                 name: "type",
                 labelContent: t("type"),
                 elementClassName: "h-6 ",
+                required: true,
                 containerClassName: "_center w-full",
                 options: boardTypes.map((bt) => ({ value: bt, label: bt })),
                 optionsContainerClassName: "max-h-80",
@@ -82,6 +83,8 @@ export const useAddBoard = () => {
             {
                 type: "input",
                 name: "imei",
+                required: true,
+                validationError: t("imei_error_board"),
                 containerClassName: "_center w-full",
                 onKeyDown: onImeiInputKeyDown,
                 labelContent: t("imei"),
@@ -90,6 +93,8 @@ export const useAddBoard = () => {
             {
                 type: "input",
                 name: "sim",
+                required: true,
+                validationError: t("sim_error_board"),
                 containerClassName: "_center w-full",
                 onKeyDown: onSimInputKeyDown,
                 labelContent: t("sim"),
@@ -195,6 +200,7 @@ export const useEditBoard = () => {
                 {
                     type: "select",
                     name: "status",
+                    required: true,
                     containerClassName: "_center w-full",
                     labelContent: t("status"),
                     defaultValue: board.status,
@@ -208,6 +214,7 @@ export const useEditBoard = () => {
                 {
                     type: "select",
                     name: "type",
+                    required: true,
                     containerClassName: "_center w-full",
                     labelContent: t("type"),
                     defaultValue: board.type,
@@ -217,11 +224,13 @@ export const useEditBoard = () => {
                 {
                     type: "input",
                     name: "sim",
+                    required: true,
                     containerClassName: "_center w-full",
                     onKeyDown: onSimInputKeyDown,
                     labelContent: t("sim"),
                     defaultValue: board.sim || "",
                     validationName: "numbers",
+                    validationError: t("sim_error_board"),
                 },
                 {
                     type: "input",
@@ -301,7 +310,7 @@ export const useDeleteBoard = () => {
                         direction={direction}
                         onV={onV}
                         onX={onX}
-                        headline={t("delete_confirmation").replace("{imei}", board.imei)}
+                        headline={t("board_delete_confirmation").replace("{imei}", board.imei)}
                         containerClassName="w-80 flex flex-col gap-4"
                         buttonsContainerClassName="_center gap-4"
                     />

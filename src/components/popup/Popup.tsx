@@ -185,7 +185,11 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                             </button>
                         )}
                     </div>
-                    {headerContent && <div className={cn("flex-1 h-full _center")}>{headerContent}</div>}
+                    {headerContent && (
+                        <div style={{ direction: direction }} className={cn("flex-1 h-full _center")}>
+                            {headerContent}
+                        </div>
+                    )}
                 </div>
 
                 {/* Content */}

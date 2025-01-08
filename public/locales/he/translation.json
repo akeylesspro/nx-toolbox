@@ -65,6 +65,7 @@
     "key": "Key",
     "add_client": "הוספת לקוח",
     "edit_client": "עריכת לקוח - {name}",
+    "edit_client_title": "עריכת לקוח",
     "delete_client": "מחיקת לקוח",
     "features": "פיצ'רים",
     "client_details": "פרטי לקוח",

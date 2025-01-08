@@ -95,7 +95,7 @@ const EditClient = ({ client }: PropsWithClient) => {
     const onEditClick = useEditClient();
     const { t } = useTranslation();
 
-    return <TableButton type="edit" title={t("edit_client").replace("- {name}", "")} onClick={() => onEditClick(client)} />;
+    return <TableButton type="edit" title={t("edit_client_title")} onClick={() => onEditClick(client)} />;
 };
 const DeleteClient = ({ client }: PropsWithClient) => {
     const { t } = useTranslation();

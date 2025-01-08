@@ -65,6 +65,7 @@
     "key": "Key",
     "add_client": "Add Client",
     "edit_client": "Edit Client - {name}",
+    "edit_client_title": "Edit Client",
     "delete_client": "Delete Client",
     "features": "Features",
     "client_details": "Client Details",

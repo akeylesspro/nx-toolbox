@@ -1,6 +1,6 @@
 {
     "name": "nx-tool-box",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "private": true,
     "scripts": {
         "start": "npm run clear8003 && next dev -p 8003",

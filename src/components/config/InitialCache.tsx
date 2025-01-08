@@ -35,6 +35,7 @@ export default function InitialCache() {
                     setBoards((prev) => {
                         return [...prev, ...data];
                     });
+                    setBoardTypes((prev) => (prev.includes(data[0].type) ? prev : [...prev, data[0].type]));
                 },
                 onModify: (data) => {
                     setBoards((prev) => {

@@ -1,4 +1,4 @@
-import { delete_document, fire_base_TIME_TEMP } from "akeyless-client-commons/helpers";
+import { delete_document, fire_base_TIME_TEMP, is_iccid } from "akeyless-client-commons/helpers";
 import { Board, BoardStatus, TObject } from "akeyless-types-commons";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -70,6 +70,7 @@ export const useAddBoard = () => {
     const onAddClick = useCallback(async () => {
         const headerContent = "add_board";
         const elements: FormElement[] = [
+            // type
             {
                 type: "select",
                 name: "type",
@@ -80,6 +81,7 @@ export const useAddBoard = () => {
                 options: boardTypes.map((bt) => ({ value: bt, label: bt })),
                 optionsContainerClassName: "max-h-80",
             },
+            // imei
             {
                 type: "input",
                 name: "imei",
@@ -90,6 +92,7 @@ export const useAddBoard = () => {
                 labelContent: t("imei"),
                 validationName: "numbers",
             },
+            // sim
             {
                 type: "input",
                 name: "sim",
@@ -100,6 +103,7 @@ export const useAddBoard = () => {
                 labelContent: t("sim"),
                 validationName: "numbers",
             },
+            // comments
             {
                 type: "input",
                 name: "comments",
@@ -122,11 +126,9 @@ export const useAddBoard = () => {
             }
             imei = match[0];
             (form.elements.namedItem("imei") as HTMLInputElement).value = match[0];
-
-            if (sim.length !== 10) {
+            if (sim.length !== 10 && !is_iccid(sim)) {
                 throw new Error(t("sim_error_board"));
             }
-
             const data = {
                 imei,
                 sim,

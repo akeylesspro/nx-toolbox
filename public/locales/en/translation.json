@@ -83,7 +83,6 @@
     "client_installation_name_placeholder": "Enter default installation name",
     "client_installation_number_placeholder": "Enter default installation number",
     "client_delete_confirmation": "Do you want to delete {name} ? ",
-    "new_installations": "New Installations",
     "he": "Hebrew",
     "en": "English"
 }

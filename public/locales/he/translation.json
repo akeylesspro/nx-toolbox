@@ -83,7 +83,6 @@
     "client_installation_name_placeholder": "הכנס שם ברירת מחדל בהתקנה חדשה",
     "client_installation_number_placeholder": "הכנס טלפון ברירת מחדל בהתקנה חדשה",
     "client_delete_confirmation": "האם ברצונך למחוק את {name} ?",
-    "new_installations": "התקנות חדשות",
     "he": "עברית",
     "en": "אנגלית"
 }

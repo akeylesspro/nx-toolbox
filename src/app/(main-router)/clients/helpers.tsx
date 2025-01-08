@@ -44,7 +44,7 @@ export const addClient = async (data: TObject<any>, t: (key: string) => string) 
             updated,
             location: { lat: 0, lng: 0 },
             client: clientRef.id,
-            name: t("new_installations"),
+            name: data.language === "he" ? "התקנות חדשות" : "New installations",
             color: "#000000",
             type: "installation_site_root",
             sites: [],

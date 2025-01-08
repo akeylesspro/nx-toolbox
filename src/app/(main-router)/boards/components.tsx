@@ -24,7 +24,7 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
     const isRtl = SettingsStore.isRtl();
-    const headers = useMemo(() => [t("imei"), t("sim"), t("status"), t("type"), t("comments"), t("created_date"), t("actions")], []);
+    const headers = [t("imei"), t("sim"), t("status"), t("type"), t("comments"), t("created_date"), t("actions")];
 
     const keysToRender = useMemo(() => ["imei", "sim_ui", "ui_status", "type", "comments", "ui_uploaded", "actions"], []);
 
@@ -57,34 +57,32 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         });
     }, [data, isRtl]);
 
-    const tableProps: TableProps = useMemo(() => {
-        return {
-            // settings
-            includeSearch: true,
-            maxRows: 100,
-            // data
-            data: formattedData,
-            direction: direction,
-            headers: headers,
-            keysToRender: keysToRender,
-            filterableColumns: filterableColumns,
-            sortKeys: sortKeys,
-            // styles
-            headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
-            containerHeaderClassName: "h-12 justify-between",
-            containerClassName: "_full",
-            cellClassName: "_ellipsis text-start h-10 px-3",
-            tableContainerClass: "flex-1",
-            searchInputClassName: "h-10 w-1/4",
-            // labels
-            searchPlaceHolder: t("search"),
-            filterLabel: t("filter_by"),
-            sortLabel: t("sort_by"),
-            maxRowsLabel1: t("maxRowsLabel1"),
-            maxRowsLabel2: t("maxRowsLabel2"),
-            optionalElement: <AddBoard />,
-        };
-    }, [formattedData, direction, isRtl]);
+    const tableProps: TableProps = {
+        // settings
+        includeSearch: true,
+        maxRows: 100,
+        // data
+        data: formattedData,
+        direction: direction,
+        headers: headers,
+        keysToRender: keysToRender,
+        filterableColumns: filterableColumns,
+        sortKeys: sortKeys,
+        // styles
+        headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
+        containerHeaderClassName: "h-12 justify-between",
+        containerClassName: "_full",
+        cellClassName: "_ellipsis text-start h-10 px-3",
+        tableContainerClass: "flex-1",
+        searchInputClassName: "h-10 w-1/4",
+        // labels
+        searchPlaceHolder: t("search"),
+        filterLabel: t("filter_by"),
+        sortLabel: t("sort_by"),
+        maxRowsLabel1: t("maxRowsLabel1"),
+        maxRowsLabel2: t("maxRowsLabel2"),
+        optionalElement: <AddBoard />,
+    };
 
     return (
         <div className="p-3">

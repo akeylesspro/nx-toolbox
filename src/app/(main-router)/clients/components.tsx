@@ -41,34 +41,32 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
         });
     }, [data, isRtl]);
 
-    const tableProps: TableProps = useMemo(() => {
-        return {
-            // settings
-            includeSearch: true,
-            maxRows: 100,
-            // data
-            data: formattedData,
-            direction: direction,
-            headers: headers,
-            keysToRender: keysToRender,
-            // filterableColumns: filterableColumns,
-            sortKeys: sortKeys,
-            // styles
-            headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
-            containerHeaderClassName: "h-12 justify-between",
-            containerClassName: "_full",
-            cellClassName: "_ellipsis text-start h-10 px-3",
-            tableContainerClass: "flex-1",
-            searchInputClassName: "h-10 w-1/4",
-            // labels
-            searchPlaceHolder: t("search"),
-            filterLabel: t("filter_by"),
-            sortLabel: t("sort_by"),
-            maxRowsLabel1: t("maxRowsLabel1"),
-            maxRowsLabel2: t("maxRowsLabel2"),
-            optionalElement: <AddClient />,
-        };
-    }, [formattedData, direction, isRtl]);
+    const tableProps: TableProps = {
+        // settings
+        includeSearch: true,
+        maxRows: 100,
+        // data
+        data: formattedData,
+        direction: direction,
+        headers: headers,
+        keysToRender: keysToRender,
+        // filterableColumns: filterableColumns,
+        sortKeys: sortKeys,
+        // styles
+        headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
+        containerHeaderClassName: "h-12 justify-between",
+        containerClassName: "_full",
+        cellClassName: "_ellipsis text-start h-10 px-3",
+        tableContainerClass: "flex-1",
+        searchInputClassName: "h-10 w-1/4",
+        // labels
+        searchPlaceHolder: t("search"),
+        filterLabel: t("filter_by"),
+        sortLabel: t("sort_by"),
+        maxRowsLabel1: t("maxRowsLabel1"),
+        maxRowsLabel2: t("maxRowsLabel2"),
+        optionalElement: <AddClient />,
+    };
 
     return (
         <div className="p-3">

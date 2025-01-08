@@ -41,7 +41,7 @@
     "edit_board": "עריכת מערכת",
     "save": "שמור",
     "imei_error_board": "IMEI חייב להיות 15 ספרות",
-    "sim_error_board": "סים חייב להיות 10 ספרות",
+    "sim_error_board": "סים חייב ליהיות מספר טלפון ישראלי או ICCID",
     "update_board_error": "לא ניתן להוסיף מערכת",
     "exist_imei_error": "IMEI כבר קיים",
     "exist_phone_number_error": "מספר טלפון כבר קיים",

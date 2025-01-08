@@ -119,13 +119,13 @@ export const ClientWizard = ({ elements, submitFunction, client }: ClientWizardP
 
     const submit = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {
+            setIsLoading(true);
             try {
-                setIsLoading(true);
                 await submitFunction(e, features);
-                setIsLoading(false);
             } catch (error) {
-                setIsLoading(false);
                 throw error;
+            } finally {
+                setIsLoading(false);
             }
         },
         [features]

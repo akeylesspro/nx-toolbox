@@ -64,8 +64,6 @@ export default function InitialCache() {
                     });
                 },
                 onModify: (data) => {
-                    if (data) {
-                    }
                     setClients((prev) => {
                         const updatedClients = prev.map((item) => {
                             const updatedItem = data.find((v) => v.id === item.id);

@@ -50,7 +50,6 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
         direction: direction,
         headers: headers,
         keysToRender: keysToRender,
-        // filterableColumns: filterableColumns,
         sortKeys: sortKeys,
         // styles
         headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
@@ -168,7 +167,7 @@ export const WizardHeader = memo(({ activeForm, setActiveForm }: WizardHeaderPro
             <div className="h-6 bg-[#00000076] w-[1px]"></div>
             <button
                 onClick={() => setActiveForm("features")}
-                className={` ${activeForm === "features" ? "text-[#5f9ea0]" : "text-[#00000076]"} font-bold text-lg`}
+                className={` ${activeForm === "features" ? "text-[#5f9ea0]" : "text-[#00000076]"} font-bold text-[16px]`}
             >
                 {t("features")}
             </button>

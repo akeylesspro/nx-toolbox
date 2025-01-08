@@ -16,6 +16,7 @@ export const useAddClient = () => {
     const onAddClick = useCallback(async () => {
         const headerContent = "add_client";
         const elements: FormElement[] = [
+            // status
             {
                 type: "select",
                 name: "status",
@@ -28,6 +29,7 @@ export const useAddClient = () => {
                 ],
                 optionsContainerClassName: "max-h-80",
             },
+            // name
             {
                 type: "input",
                 name: "name",
@@ -39,6 +41,7 @@ export const useAddClient = () => {
                 validationError: t("client_name_error"),
                 placeholder: t("client_name_placeholder"),
             },
+            // key
             {
                 type: "input",
                 name: "key",
@@ -50,6 +53,7 @@ export const useAddClient = () => {
                 validationError: t("client_key_error"),
                 placeholder: t("client_key_placeholder"),
             },
+            // language
             {
                 type: "select",
                 name: "language",
@@ -61,6 +65,7 @@ export const useAddClient = () => {
                 ],
                 optionsContainerClassName: "max-h-80",
             },
+            // api_token
             {
                 type: "input",
                 name: "api_token",
@@ -69,14 +74,7 @@ export const useAddClient = () => {
                 validationName: "textNumbers",
                 placeholder: t("client_api_token_placeholder"),
             },
-            {
-                type: "input",
-                name: "api_token",
-                containerClassName: "_center w-full",
-                labelContent: t("api_token"),
-                validationName: "textNumbers",
-                placeholder: t("client_api_token_placeholder"),
-            },
+            // installation_name
             {
                 type: "input",
                 name: "installation_name",
@@ -85,6 +83,7 @@ export const useAddClient = () => {
                 validationName: "textNumbers",
                 placeholder: t("client_installation_name_placeholder"),
             },
+            // installation_phone
             {
                 type: "input",
                 name: "installation_number",
@@ -132,6 +131,7 @@ export const useEditClient = () => {
         (client: Client) => {
             const headerContent = "edit_client";
             const elements: FormElement[] = [
+                // status
                 {
                     type: "select",
                     name: "status",
@@ -145,6 +145,7 @@ export const useEditClient = () => {
                     ],
                     optionsContainerClassName: "max-h-80",
                 },
+                // name
                 {
                     type: "input",
                     name: "name",
@@ -157,6 +158,7 @@ export const useEditClient = () => {
                     validationError: t("client_name_error"),
                     placeholder: t("client_name_placeholder"),
                 },
+                // key
                 {
                     type: "input",
                     name: "key",
@@ -169,6 +171,7 @@ export const useEditClient = () => {
                     validationError: t("client_key_error"),
                     placeholder: t("client_key_placeholder"),
                 },
+                // language
                 {
                     type: "select",
                     name: "language",
@@ -181,6 +184,7 @@ export const useEditClient = () => {
                     ],
                     optionsContainerClassName: "max-h-80",
                 },
+                // api_token
                 {
                     type: "input",
                     name: "api_token",
@@ -190,15 +194,7 @@ export const useEditClient = () => {
                     validationName: "textNumbers",
                     placeholder: t("client_api_token_placeholder"),
                 },
-                {
-                    type: "input",
-                    name: "api_token",
-                    defaultValue: client.api_token || "",
-                    containerClassName: "_center w-full",
-                    labelContent: t("api_token"),
-                    validationName: "textNumbers",
-                    placeholder: t("client_api_token_placeholder"),
-                },
+                // installation_name
                 {
                     type: "input",
                     name: "installation_name",
@@ -208,6 +204,7 @@ export const useEditClient = () => {
                     validationName: "textNumbers",
                     placeholder: t("client_installation_name_placeholder"),
                 },
+                // installation_phone
                 {
                     type: "input",
                     name: "installation_number",

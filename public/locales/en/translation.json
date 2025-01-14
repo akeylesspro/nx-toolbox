@@ -85,5 +85,6 @@
     "client_installation_number_placeholder": "Enter default installation number",
     "client_delete_confirmation": "Do you want to delete {name} ? ",
     "he": "Hebrew",
-    "en": "English"
+    "en": "English",
+    "user_not_allowed": "User not allowed"
 }

@@ -2,19 +2,19 @@ import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
 import { createSelectors, setState } from "akeyless-client-commons/helpers";
 import { DecodedUser } from "@/types";
-import { Installer } from "akeyless-types-commons";
+import { NxUser } from "akeyless-types-commons";
 import { SetState } from "akeyless-client-commons/types";
 import { getCookie } from "cookies-next";
 
 export interface UserStorType {
-    activeUser: Installer | null;
-    setActiveUser: SetState<Installer | null>;
+    activeUser: NxUser | null;
+    setActiveUser: SetState<NxUser | null>;
 }
 
-function get_user_by_token(token?: string): Installer | null {
+function get_user_by_token(token?: string): NxUser | null {
     const user = token ? jwtDecode<DecodedUser>(token) : null;
     if (user) {
-        return { id: user.user_id, phone: user.phone_number };
+        return { id: user.user_id, phone_number: user.phone_number };
     }
     return null;
 }

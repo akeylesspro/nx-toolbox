@@ -85,5 +85,6 @@
     "client_installation_number_placeholder": "הכנס טלפון ברירת מחדל בהתקנה חדשה",
     "client_delete_confirmation": "האם ברצונך למחוק את {name} ?",
     "he": "עברית",
-    "en": "אנגלית"
+    "en": "אנגלית",
+    "user_not_allowed": "משתמש לא מורשה"
 }

@@ -1,5 +1,5 @@
 import { UserStore } from "@/lib/store";
-import { Installer } from "akeyless-types-commons";
+import { NxUser } from "akeyless-types-commons";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { onCodeSubmit, onPhoneSubmit } from "./helpers";
@@ -16,7 +16,7 @@ export const LoginForm = ({ setError }: { setError: Dispatch<SetStateAction<stri
     const [isLoading, setIsLoading] = useState(false);
     const [phoneValue, setPhoneValue] = useState("");
     const [codeValue, setCodeValue] = useState("");
-    const [technician, setTechnician] = useState<Installer | null>(null);
+    const [tempUser, setTempUser] = useState<NxUser | null>(null);
 
     const setActiveUser = UserStore.setActiveUser();
 
@@ -25,9 +25,9 @@ export const LoginForm = ({ setError }: { setError: Dispatch<SetStateAction<stri
             e.preventDefault();
             setIsLoading(true);
             if (codeDisplay) {
-                return await onCodeSubmit(codeValue, technician!, setActiveUser, router);
+                return await onCodeSubmit(codeValue, tempUser!, setActiveUser, router);
             }
-            await onPhoneSubmit(phoneValue, setTechnician, setCodeDisplay);
+            await onPhoneSubmit(phoneValue, setTempUser, setCodeDisplay);
             setIsLoading(false);
         } catch (error: any) {
             setError(t(error.message || "general error"));

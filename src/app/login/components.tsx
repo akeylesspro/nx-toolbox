@@ -16,18 +16,19 @@ export const LoginForm = ({ setError }: { setError: Dispatch<SetStateAction<stri
     const [isLoading, setIsLoading] = useState(false);
     const [phoneValue, setPhoneValue] = useState("");
     const [codeValue, setCodeValue] = useState("");
-    const [tempUser, setTempUser] = useState<NxUser | null>(null);
+    const [loginUser, setLoginUser] = useState<NxUser | null>(null);
 
     const setActiveUser = UserStore.setActiveUser();
+    const setUserPermeations = UserStore.setUserPermeations();
 
     const handleSubmit = async (e: FormEvent) => {
         try {
             e.preventDefault();
             setIsLoading(true);
             if (codeDisplay) {
-                return await onCodeSubmit(codeValue, tempUser!, setActiveUser, router);
+                return await onCodeSubmit(codeValue, loginUser!, setActiveUser, router);
             }
-            await onPhoneSubmit(phoneValue, setTempUser, setCodeDisplay);
+            await onPhoneSubmit(phoneValue, setLoginUser, setCodeDisplay, setUserPermeations);
             setIsLoading(false);
         } catch (error: any) {
             setError(t(error.message || "general error"));

@@ -3,7 +3,8 @@ import moment from "moment";
 import { signInWithPhoneNumber } from "@firebase/auth";
 import { auth, local_israel_phone_format, query_document } from "akeyless-client-commons/helpers";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import type { NxUser } from "akeyless-types-commons";
+import type { NxUser, NxUserPermeations } from "akeyless-types-commons";
+import { getUserPermeations } from "akeyless-client-commons/hooks";
 
 export const setAuthCookie = (token: string) => {
     const expiresAt = moment().set({ hour: 6, minute: 0, second: 0, millisecond: 0 });
@@ -20,7 +21,12 @@ export const get_user_by_phone = async (phone: string): Promise<NxUser | null> =
     return user;
 };
 
-export const onPhoneSubmit = async (phone: string, setTempUser: (t: NxUser) => void, setCodeDisplay: (t: boolean) => void) => {
+export const onPhoneSubmit = async (
+    phone: string,
+    setLoginUser: (t: NxUser) => void,
+    setCodeDisplay: (t: boolean) => void,
+    setUserPermeations: (t: NxUserPermeations) => void
+) => {
     if (phone.length < 10) {
         throw new Error("number_not_valid");
     }
@@ -29,19 +35,21 @@ export const onPhoneSubmit = async (phone: string, setTempUser: (t: NxUser) => v
     if (!user) {
         throw new Error("number_not_in_system");
     }
-    if (!user.roles?.includes("toolbox") && !user.roles?.includes("super_admin")) {
+    const userPermeations = getUserPermeations(user);
+    if (!userPermeations.super_admin) {
         throw new Error("user_not_allowed");
     }
-    setTempUser(user);
+    setLoginUser(user);
+    setUserPermeations(userPermeations);
     const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
     window.confirmationResult = confirmationResult;
     setCodeDisplay(true);
 };
 
-export const onCodeSubmit = async (code: string, tempUser: NxUser, setActiveUser: (t: NxUser) => void, router: AppRouterInstance) => {
+export const onCodeSubmit = async (code: string, loginUser: NxUser, setActiveUser: (t: NxUser) => void, router: AppRouterInstance) => {
     const result = await window.confirmationResult.confirm(code);
     const token = await result.user.getIdToken();
     setAuthCookie(token);
-    setActiveUser(tempUser);
+    setActiveUser(loginUser);
     router.push("/");
 };

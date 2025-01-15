@@ -89,7 +89,7 @@ export const HomePageMessage = () => {
     const direction = SettingsStore.direction();
     return (
         <div className="flex justify-center gap-2 items-start _full pt-16 text-3xl" style={{ direction: direction }}>
-            <div>{t("home_message").replace("{name}", `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`)}</div>
+            <div>{t("home_message").replace("{name}", `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`.trim())}</div>
         </div>
     );
 };

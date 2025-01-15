@@ -3,6 +3,7 @@ import { get_user_by_phone, setAuthCookie } from "@/app/login/helpers";
 import { UserStore } from "@/lib/store";
 import { Auth as AuthType, onIdTokenChanged, RecaptchaVerifier } from "@firebase/auth";
 import { auth } from "akeyless-client-commons/helpers";
+import { getUserPermeations } from "akeyless-client-commons/hooks";
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -42,10 +43,12 @@ export function Auth() {
                 }
                 if (activeUser && !activeUser.clients) {
                     const user = await get_user_by_phone(activeUser!.phone_number!);
+
                     if (!user) {
                         throw new Error("user not found");
                     }
-                    if (!user.roles?.includes("toolbox") && !user.roles?.includes("super_admin")) {
+                    const userPermeations = getUserPermeations(user);
+                    if (!userPermeations.super_admin) {
                         throw new Error("user not allowed");
                     }
                     setActiveUser(user);

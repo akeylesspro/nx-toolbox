@@ -140,7 +140,7 @@ export const useAddBoard = () => {
                 mac: "",
                 swVer: "",
                 installedDate: "",
-                userId: `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`,
+                userId: `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`.trim(),
             };
 
             await validateBoardImei(data, t);

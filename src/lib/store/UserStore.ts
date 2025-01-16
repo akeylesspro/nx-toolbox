@@ -2,15 +2,15 @@ import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
 import { createSelectors, setState } from "akeyless-client-commons/helpers";
 import { DecodedUser } from "@/types";
-import { NxUser, NxUserPermeations } from "akeyless-types-commons";
+import { NxUser, TObject } from "akeyless-types-commons";
 import { SetState } from "akeyless-client-commons/types";
 import { getCookie } from "cookies-next";
 
 export interface UserStorType {
     activeUser: NxUser | null;
     setActiveUser: SetState<NxUser | null>;
-    userPermeations: NxUserPermeations;
-    setUserPermeations: SetState<NxUserPermeations>;
+    userPermissions: TObject<TObject<boolean>>;
+    setUserPermissions: SetState<TObject<TObject<boolean>>>;
 }
 
 function get_user_by_token(token?: string): NxUser | null {
@@ -24,8 +24,8 @@ function get_user_by_token(token?: string): NxUser | null {
 export const UserStoreBase = create<UserStorType>((set) => ({
     activeUser: get_user_by_token(getCookie("token") as string),
     setActiveUser: (updater) => setState(updater, set, "activeUser"),
-    userPermeations: {},
-    setUserPermeations: (updater) => setState(updater, set, "userPermeations"),
+    userPermissions: {},
+    setUserPermissions: (updater) => setState(updater, set, "userPermissions"),
 }));
 
 export const UserStore = createSelectors<UserStorType>(UserStoreBase);

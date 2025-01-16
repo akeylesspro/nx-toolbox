@@ -3,8 +3,8 @@ import moment from "moment";
 import { signInWithPhoneNumber } from "@firebase/auth";
 import { auth, local_israel_phone_format, query_document } from "akeyless-client-commons/helpers";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import type { NxUser, NxUserPermeations } from "akeyless-types-commons";
-import { getUserPermeations } from "akeyless-client-commons/hooks";
+import type { NxUser, TObject } from "akeyless-types-commons";
+import { parsePermissions } from "akeyless-client-commons/helpers";
 
 export const setAuthCookie = (token: string) => {
     const expiresAt = moment().set({ hour: 6, minute: 0, second: 0, millisecond: 0 });
@@ -21,12 +21,7 @@ export const get_user_by_phone = async (phone: string): Promise<NxUser | null> =
     return user;
 };
 
-export const onPhoneSubmit = async (
-    phone: string,
-    setLoginUser: (t: NxUser) => void,
-    setCodeDisplay: (t: boolean) => void,
-    setUserPermeations: (t: NxUserPermeations) => void
-) => {
+export const onPhoneSubmit = async (phone: string, setLoginUser: (t: NxUser) => void, setCodeDisplay: (t: boolean) => void) => {
     if (phone.length < 10) {
         throw new Error("number_not_valid");
     }
@@ -35,12 +30,11 @@ export const onPhoneSubmit = async (
     if (!user) {
         throw new Error("number_not_in_system");
     }
-    const userPermeations = getUserPermeations(user);
-    if (!userPermeations.super_admin) {
+    const userPermissions = parsePermissions(user);
+    if (!userPermissions.dashboard.super_admin) {
         throw new Error("user_not_allowed");
     }
     setLoginUser(user);
-    setUserPermeations(userPermeations);
     const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
     window.confirmationResult = confirmationResult;
     setCodeDisplay(true);

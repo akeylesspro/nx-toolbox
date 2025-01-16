@@ -9,9 +9,6 @@ function Clients() {
     const { t } = useTranslation();
     useDocumentTitle(t("clients"));
     const clientsData = CacheStore.clients();
-    useEffect(() => {
-        console.log("clientsData", clientsData);
-    }, [clientsData]);
     return <ClientsTable data={clientsData} />;
 }
 

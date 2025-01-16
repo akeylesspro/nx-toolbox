@@ -59,11 +59,7 @@ export function Auth() {
                         },
                     });
 
-                    if (!snapshotResult.success) {
-                        throw new Error("unable to get permissions");
-                    }
-
-                    if (!snapshotResult.permissions!.dashboard?.super_admin) {
+                    if (!snapshotResult.permissions.toolbox?.super_admin) {
                         throw new Error("user not allowed");
                     }
                     cleanSnapshot = snapshotResult.unsubscribe;

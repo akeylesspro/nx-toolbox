@@ -10,6 +10,7 @@ export default function InitialCache() {
     const setSettings = CacheStore.setSettings();
     const setNxSettings = CacheStore.setNxSettings();
     const setTranslation = CacheStore.setTranslation();
+    const setFeatures = CacheStore.setFeatures();
     const setCameraBoardTypes = CacheStore.setCameraBoardTypes();
     const setBoardTypes = CacheStore.setBoardTypes();
 
@@ -190,6 +191,22 @@ export default function InitialCache() {
                         });
                         return update;
                     });
+                },
+            },
+            // nx-features
+            {
+                collectionName: "nx-features",
+                onFirstTime: (data) => {                    
+                    setFeatures(data[0]);
+                },
+                onAdd: (data) => {
+                    setFeatures(data[0]);
+                },
+                onModify: (data) => {
+                    setFeatures(data[0]);
+                },
+                onRemove: (data) => {
+                    setFeatures({});
                 },
             },
         ],

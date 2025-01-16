@@ -201,6 +201,7 @@ interface FeaturesFormProps {
 export const FeaturesForm = memo(
     ({ display, setFeatures, features }: FeaturesFormProps) => {
         const clientFeatures = CacheStore.getFeaturesByScope()("client");
+
         const onChecked = useCallback(
             (feature: string) => {
                 setFeatures((prev) => {
@@ -217,7 +218,7 @@ export const FeaturesForm = memo(
             <div style={{ display: display }} className="overflow-auto max-h-[320px]">
                 <div className="w-full flex  flex-wrap items-center justify-start ">
                     {clientFeatures.map((feature) => (
-                        <CheckBox defaultCheck={features.includes(feature.name)} name={feature.name} onChecked={onChecked} key={feature.name} />
+                        <CheckBox defaultCheck={features.includes(feature)} feature={feature} onChecked={onChecked} key={feature} />
                     ))}
                 </div>
             </div>
@@ -230,28 +231,28 @@ export const FeaturesForm = memo(
 FeaturesForm.displayName = "FeaturesForm";
 
 interface CheckBoxProps {
-    name: string;
+    feature: string;
     onChecked: (name: string) => void;
     defaultCheck: boolean;
 }
 export const CheckBox = memo(
-    ({ name, onChecked, defaultCheck }: CheckBoxProps) => {
-        const featuresTranslation = CacheStore.getFeaturesTranslation()("features", name);
+    ({ feature, onChecked, defaultCheck }: CheckBoxProps) => {
+        const featuresName = CacheStore.getFeaturesTranslation()("client", feature);
         const isRtl = SettingsStore.isRtl();
         return (
             <div
-                title={featuresTranslation}
+                title={featuresName}
                 className={`transition-colors duration-300 w-80 h-10 flex items-center px-2 hover:bg-[#a1824a] justify-start gap-3 rounded-xl`}
             >
                 <input
                     type="checkbox"
                     defaultChecked={defaultCheck}
-                    onChange={() => onChecked(name)}
+                    onChange={() => onChecked(feature)}
                     className={`cursor-pointer appearance-none w-9 focus:outline-none checked:bg-[#0080009b] h-5 bg-gray-300 rounded-full after:inline-block after:rounded-full after:bg-[#0000005b] after:h-4 after:w-4 checked:after:bg-[#fff] ${
                         isRtl ? "checked:after:-translate-x-full" : "checked:after:-translate-x-[-15px]"
                     } shadow-inner transition-all duration-300 before:mr-0.5`}
                 />
-                <div className="ellipsis max-w-[79%]">{featuresTranslation}</div>
+                <div className="ellipsis max-w-[79%]">{featuresName}</div>
             </div>
         );
     },

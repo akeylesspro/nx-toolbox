@@ -19,7 +19,9 @@ export interface CacheStoreType {
     setNxSettings: SetState<TObject<any>>;
     translation: TObject<any>;
     setTranslation: SetState<TObject<any>>;
-    getFeaturesByScope: (scope: string) => TObject<any>[];
+    features: TObject<any>;
+    setFeatures: SetState<TObject<any>>;
+    getFeaturesByScope: (scope: string) => string[];
     getTranslation: (entity: string) => TObject<any> | null;
     getFeaturesTranslation: (dictionary: string, key: string) => string;
 }
@@ -35,15 +37,15 @@ export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
     setNxSettings: (updater) => setState(updater, set, "nxSettings"),
     translation: {},
     setTranslation: (updater) => setState(updater, set, "translation"),
+    features: {},
+    setFeatures: (updater) => setState(updater, set, "features"),
     boardTypes: [],
     setBoardTypes: (updater) => setState(updater, set, "boardTypes"),
     cameraBoardTypes: [],
     setCameraBoardTypes: (updater) => setState(updater, set, "cameraBoardTypes"),
     getFeaturesByScope: (scope: string) => {
-        const { nxSettings } = get();
-        return nxSettings.features.features.filter((val: TObject<any>) => {
-            return val.scopes.includes(scope);
-        });
+        const { features } = get();
+        return features[scope];
     },
     getTranslation: (entity) => {
         const { translation } = get();

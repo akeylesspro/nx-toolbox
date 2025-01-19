@@ -15,7 +15,6 @@ import { changeLanguage } from "@/lib/helpers";
 import { useEffect, useState } from "react";
 
 export const Logout = () => {
-    const router = useRouter();
     const setActiveUser = UserStore.setActiveUser();
     const direction = SettingsStore.direction();
     const isRtl = SettingsStore.isRtl();
@@ -25,7 +24,6 @@ export const Logout = () => {
         deleteCookie("token");
         setActiveUser(null);
         await signOut(auth);
-        router.push("/login");
     };
     return (
         <Button style={{ direction }} className="bg-inherit " variant={"outline"} onClick={logOut}>
@@ -91,7 +89,7 @@ export const HomePageMessage = () => {
     const direction = SettingsStore.direction();
     return (
         <div className="flex justify-center gap-2 items-start _full pt-16 text-3xl" style={{ direction: direction }}>
-            <div>{t("home_message").replace("{name}", activeUser?.fullName || "")}</div>
+            <div>{t("home_message").replace("{name}", `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`.trim())}</div>
         </div>
     );
 };

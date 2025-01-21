@@ -6,6 +6,8 @@ param (
 if ($common) {
     Write-Output "------------------- update $common commons from branch $branch -------------------"
     npm i "git+https://github.com/akeylesspro/akeyless-$common-commons.git#$branch"  
+    [System.Console]::Beep(1000, 500)
+    [System.Console]::Beep(1000, 500)
     exit 1
 }
 # update all commons if no common is specified
@@ -25,5 +27,6 @@ Write-Output "------------------- types commons have been updatede successfully!
 Write-Output "------------------- update assets commons... -------------------"
 npm i git+https://github.com/akeylesspro/akeyless-assets-commons.git 
 Write-Output "------------------- assets commons have been updatede successfully! -------------------"
-
+[System.Console]::Beep(1000, 500)
+[System.Console]::Beep(1000, 500)
 # --legacy-peer-deps

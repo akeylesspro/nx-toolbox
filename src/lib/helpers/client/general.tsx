@@ -45,3 +45,4 @@ export function timestamp_to_string(firebaseTimestamp: Timestamp, format: string
     const timestamp = new Timestamp(firebaseTimestamp?.seconds, firebaseTimestamp?.nanoseconds);
     return moment(timestamp.toDate()).utc().format(format);
 }
+

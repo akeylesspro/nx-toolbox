@@ -50,3 +50,6 @@ docker push gcr.io/${currentProject}/${imageName}:latest
 kubectl rollout restart deployment/${deploymentName}
 # Check the status of the pods to ensure the deployment was successful
 kubectl get pods
+
+[System.Console]::Beep(1000, 1500)
+Write-Output "Deployment completed successfully."

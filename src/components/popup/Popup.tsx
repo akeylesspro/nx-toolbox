@@ -124,6 +124,49 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
         );
     }
 
+    const renderHeader = (isError?: boolean) => {
+        return (
+            <div
+                title={headerTitle}
+                className={`flex items-center justify-between w-full h-8 text-white ${borderColor ? "rounded-t-sm" : "rounded-t-md"} `}
+                onMouseDown={(e) => move && startDragging(e)}
+                style={{
+                    direction: "ltr",
+                    cursor: !move ? "default" : isDragging ? "grabbing" : "grab",
+                    background: headerBackground,
+                }}
+            >
+                <div className="flex items-center justify-start h-full ">
+                    {(!close?.noClose || isError) && (
+                        <button
+                            style={{ pointerEvents: "auto" }}
+                            title={t("close")}
+                            onClick={exitPopUp}
+                            className="_center w-8 h-full hover:bg-[#d90d0d] rounded-tl-md"
+                        >
+                            <i className="fa-solid fa-x "></i>
+                        </button>
+                    )}
+                    {maximize?.enabled && (
+                        <button title={t("maximize")} onClick={maximizePopupHandler} className="center text-white w-8 h-full hover:bg-gray-500">
+                            <i className="fa-light fa-square"></i>
+                        </button>
+                    )}
+                    {minimize?.enabled && (
+                        <button title={t("minimize")} onClick={() => minimizePopup(id)} className="center text-white w-8 h-full hover:bg-gray-500">
+                            <i className="fa-solid fa-window-minimize"></i>
+                        </button>
+                    )}
+                </div>
+                {headerContent && (
+                    <div style={{ direction: direction }} className={cn("flex-1 h-full _center")}>
+                        {headerContent}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
         <div
             ref={popupRef}
@@ -135,8 +178,8 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                 top: position.top,
                 right: position.right,
                 left: position.left,
-                width: size?.width,
-                height: size?.height,
+                width: resize ? size?.width : undefined,
+                height: resize ? size?.height : undefined,
                 pointerEvents: "auto",
             }}
             onMouseDown={() => bringToFront(id)}
@@ -144,54 +187,13 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
             <ErrorBoundary
                 fallback={
                     <div className="full center">
+                        {renderHeader(true)}
                         <h1>{errorMsg || t("popup_error").replace("{id}", id)}</h1>
                     </div>
                 }
             >
                 {/* Header */}
-                <div
-                    title={headerTitle}
-                    className={`flex items-center justify-between w-full h-8 text-white ${borderColor ? "rounded-t-sm" : "rounded-t-md"} `}
-                    onMouseDown={(e) => move && startDragging(e)}
-                    style={{
-                        direction: "ltr",
-                        cursor: !move ? "default" : isDragging ? "grabbing" : "grab",
-                        background: headerBackground,
-                    }}
-                >
-                    <div className="flex items-center justify-start h-full ">
-                        {!close?.noClose && (
-                            <button
-                                style={{ pointerEvents: "auto" }}
-                                title={t("close")}
-                                onClick={exitPopUp}
-                                className="_center w-8 h-full hover:bg-[#d90d0d] rounded-tl-md"
-                            >
-                                <i className="fa-solid fa-x "></i>
-                            </button>
-                        )}
-                        {maximize?.enabled && (
-                            <button title={t("maximize")} onClick={maximizePopupHandler} className="center text-white w-8 h-full hover:bg-gray-500">
-                                <i className="fa-light fa-square"></i>
-                            </button>
-                        )}
-                        {minimize?.enabled && (
-                            <button
-                                title={t("minimize")}
-                                onClick={() => minimizePopup(id)}
-                                className="center text-white w-8 h-full hover:bg-gray-500"
-                            >
-                                <i className="fa-solid fa-window-minimize"></i>
-                            </button>
-                        )}
-                    </div>
-                    {headerContent && (
-                        <div style={{ direction: direction }} className={cn("flex-1 h-full _center")}>
-                            {headerContent}
-                        </div>
-                    )}
-                </div>
-
+                {renderHeader()}
                 {/* Content */}
                 <div className="flex-1 min-w-fit _center" ref={contentRef}>
                     <Wrapper element={element} exitPopUp={exitPopUp} position={position} />

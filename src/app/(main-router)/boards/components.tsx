@@ -6,7 +6,7 @@ import { CacheStore, SettingsStore } from "@/lib/store";
 import { Loader, ModularForm, Table } from "akeyless-client-commons/components";
 import { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import { Timestamp } from "firebase/firestore";
-import { TableProps } from "akeyless-client-commons/types";
+import { TableProps } from "akeyless-client-commons/components";
 import { Button } from "@/components";
 import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
 import Image from "next/image";

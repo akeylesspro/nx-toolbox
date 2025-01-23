@@ -1,4 +1,4 @@
-import { delete_document, fire_base_TIME_TEMP, is_iccid } from "akeyless-client-commons/helpers";
+import { delete_document, fire_base_TIME_TEMP, is_iccid, userNameFormat } from "akeyless-client-commons/helpers";
 import { Board, BoardStatus, TObject } from "akeyless-types-commons";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -140,7 +140,7 @@ export const useAddBoard = () => {
                 mac: "",
                 swVer: "",
                 installedDate: "",
-                userId: `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`.trim(),
+                userId: userNameFormat(activeUser!),
             };
 
             await validateBoardImei(data, t);

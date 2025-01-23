@@ -14,6 +14,7 @@ function Aside() {
             <div className="w-full px-4 py-2 flex flex-col gap-2 flex-1">
                 <AsideButton content="boards" to="/boards" />
                 <AsideButton content="clients" to="/clients" />
+                <AsideButton content="users" to="/users" />
                 <AsideButton content="not_active_cars" to="/reports/not-active-cars" />
             </div>
             <div className="flex items-center justify-between border-t-[2px] border-[#5f9ea0c2] py-1">

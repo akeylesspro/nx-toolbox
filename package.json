@@ -26,7 +26,7 @@
         "@radix-ui/react-slot": "^1.1.0",
         "@react-hook/resize-observer": "^2.0.2",
         "akeyless-assets-commons": "github:akeylesspro/akeyless-assets-commons",
-        "akeyless-client-commons": "github:akeylesspro/akeyless-client-commons#main",
+        "akeyless-client-commons": "github:akeylesspro/akeyless-client-commons#test",
         "akeyless-server-commons": "github:akeylesspro/akeyless-server-commons",
         "akeyless-types-commons": "github:akeylesspro/akeyless-types-commons#main",
         "autoprefixer": "^10.4.20",

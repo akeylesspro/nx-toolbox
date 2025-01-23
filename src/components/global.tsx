@@ -3,7 +3,7 @@ import { deleteCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import { SettingsStore, UserStore } from "@/lib/store";
 import { signOut } from "firebase/auth";
-import { auth } from "akeyless-client-commons/helpers";
+import { auth, userNameFormat } from "akeyless-client-commons/helpers";
 import { Loader } from "akeyless-client-commons/components";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
@@ -89,7 +89,7 @@ export const HomePageMessage = () => {
     const direction = SettingsStore.direction();
     return (
         <div className="flex justify-center gap-2 items-start _full pt-16 text-3xl" style={{ direction: direction }}>
-            <div>{t("home_message").replace("{name}", `${activeUser?.first_name || ""} ${activeUser?.last_name || ""}`.trim())}</div>
+            <div>{t("home_message").replace("{name}", userNameFormat(activeUser!))}</div>
         </div>
     );
 };

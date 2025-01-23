@@ -1,6 +1,6 @@
 import { SettingsStore } from "@/lib/store";
 import { Table } from "akeyless-client-commons/components";
-import { TableProps } from "akeyless-client-commons/types";
+import { TableProps } from "akeyless-client-commons/components";
 import { TObject } from "akeyless-types-commons";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";

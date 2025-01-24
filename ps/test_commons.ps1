@@ -7,10 +7,10 @@ else {
     Write-Host "next folder not found"
 }
 
-npm run uc client main
+npm run uc client test
 
 Start-Job -ScriptBlock {
-    Start-Sleep -Seconds 10
+    Start-Sleep -Seconds 20
     Start-Process "http://localhost:8003/users"
 } | Out-Null
 

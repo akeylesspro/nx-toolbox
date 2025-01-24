@@ -4,9 +4,15 @@ import { ConfirmForm } from "akeyless-client-commons/components";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, SettingsStore } from "@/lib/store";
-import { addUser, updateUser } from "./helpers";
+import { addUser, onSearchClients, updateUser } from "./helpers";
 import { UserWizard } from "./components";
-import { getFormElementValue, international_israel_phone_format, isInternational, parseMultiSelectInput, userNameFormat } from "akeyless-client-commons/helpers";
+import {
+    getFormElementValue,
+    international_israel_phone_format,
+    isInternational,
+    parseMultiSelectInput,
+    userNameFormat,
+} from "akeyless-client-commons/helpers";
 import { PRIMARY_COLOR } from "@/lib";
 
 const initialPosition = { top: "25%", left: "30%" };
@@ -18,6 +24,7 @@ export const useAddUser = () => {
     const { t } = useTranslation();
     const onAddClick = useCallback(async () => {
         const headerContent = "add_user";
+        const options = clients.map((client) => ({ value: client.id!, label: client.name!, key: client.key! }));
         const elements: FormElement[] = [
             // first name
             {
@@ -49,7 +56,7 @@ export const useAddUser = () => {
                 required: true,
                 name: "phone",
                 labelContent: t("phone"),
-                labelClassName: "w-24",
+                labelClassName: "w-[120px]",
                 className: "flex-1 flex ",
                 inputClassName: "flex-1",
                 minLength: 9,
@@ -57,11 +64,13 @@ export const useAddUser = () => {
             },
             // clients
             {
-                type: "multipleSelect",
+                type: "multiSelect",
                 name: "clients",
                 labelContent: t("clients"),
+                labelClassName: "w-[170px]",
                 placeholder: t("clients_placeholder"),
                 required: true,
+                onSearch: (q) => onSearchClients(q, options),
                 minLength: 27,
                 validationError: t("user_clients_error"),
                 styles: {
@@ -69,8 +78,7 @@ export const useAddUser = () => {
                     dropdownClassName: "max-h-44 overflow-y-auto",
                     badgeClassName: "px-1",
                 },
-
-                options: clients.map((client) => ({ value: client.id!, label: client.name! })),
+                options,
             },
         ];
         const submit = async (e: FormEvent<HTMLFormElement>, features: string[]) => {
@@ -109,10 +117,13 @@ export const useEditUser = () => {
             const headerContent = "edit_user";
             const userClients = user.clients || [];
             const unremovableClient = clients.find((client) => client.id === userClients[0]);
+            const unremovableOptions = unremovableClient ? [{ value: unremovableClient.id!, label: unremovableClient.name! }] : [];
+            const options = clients.map((client) => ({ value: client.id!, label: client.name!, key: client.key! }));
             const selectedOptions = clients
                 .filter((c) => userClients.includes(c.id!))
                 .map((client) => ({ value: client.id!, label: client.name! }))
                 .sort((a, b) => userClients.indexOf(a.value) - userClients.indexOf(b.value));
+
             const elements: FormElement[] = [
                 // first name
                 {
@@ -147,27 +158,29 @@ export const useEditUser = () => {
                     required: true,
                     labelContent: t("phone"),
                     defaultValue: isInternational(user.phone_number!) ? user.phone_number : international_israel_phone_format(user.phone_number!),
-                    labelClassName: "w-24",
+                    labelClassName: "w-[120px]",
                     className: "flex-1 flex ",
                     inputClassName: "flex-1",
                 },
                 // clients
                 {
-                    type: "multipleSelect",
+                    type: "multiSelect",
                     name: "clients",
                     labelContent: t("clients"),
+                    labelClassName: "w-[170px]",
                     placeholder: t("clients_placeholder"),
                     required: true,
                     minLength: 27,
                     validationError: t("user_clients_error"),
-                    unremovableOptions: unremovableClient ? [{ value: unremovableClient.id!, label: unremovableClient.name! }] : [],
-                    selectedOptions: selectedOptions,
+                    options,
+                    selectedOptions,
+                    unremovableOptions,
+                    onSearch: (q) => onSearchClients(q, options),
                     styles: {
                         className: "max-w-80",
                         dropdownClassName: "max-h-44 overflow-y-auto",
                         badgeClassName: `px-1`,
                     },
-                    options: clients.map((client) => ({ value: client.id!, label: client.name! })),
                 },
             ];
             const submit = async (e: FormEvent<HTMLFormElement>, features: string[]) => {
@@ -188,7 +201,6 @@ export const useEditUser = () => {
                     clients: clientsValue,
                 };
                 console.log("updatedUser", updatedUser);
-
                 await updateUser(user.id!, updatedUser);
                 deletePopup(headerContent + user.id);
             };

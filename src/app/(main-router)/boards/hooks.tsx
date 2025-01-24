@@ -1,4 +1,4 @@
-import { delete_document, fire_base_TIME_TEMP, is_iccid, userNameFormat } from "akeyless-client-commons/helpers";
+import { delete_document, fire_base_TIME_TEMP, getFormElementValue, is_iccid, userNameFormat } from "akeyless-client-commons/helpers";
 import { Board, BoardStatus, TObject } from "akeyless-types-commons";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -115,10 +115,11 @@ export const useAddBoard = () => {
         const submit = async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const form = e.currentTarget;
-            const sim = (form.elements.namedItem("sim") as HTMLInputElement)?.value || "";
-            const type = (form.elements.namedItem("type") as HTMLInputElement)?.value || "";
-            const comments = (form.elements.namedItem("comments") as HTMLInputElement)?.value || "";
-            let imei = (form.elements.namedItem("imei") as HTMLInputElement)?.value || "";
+
+            const sim = getFormElementValue(form, "sim");
+            const type = getFormElementValue(form, "type");
+            const comments = getFormElementValue(form, "comments");
+            let imei = getFormElementValue(form, "imei");
 
             const match = imei.match(/\b\d{15,17}\b/);
             if (imei.length < 15 || !match) {
@@ -247,10 +248,10 @@ export const useEditBoard = () => {
             const submit = async (e: FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 const form = e.currentTarget;
-                const sim = (form.elements.namedItem("sim") as HTMLInputElement)?.value || "";
-                const status = Number((form.elements.namedItem("status") as HTMLInputElement)?.value);
-                const type = (form.elements.namedItem("type") as HTMLInputElement)?.value || "";
-                const comments = (form.elements.namedItem("comments") as HTMLInputElement)?.value || "";
+                const sim = getFormElementValue(form, "sim");
+                const type = getFormElementValue(form, "type");
+                const comments = getFormElementValue(form, "comments");
+                const status = Number(getFormElementValue(form, "status"));
 
                 if (sim.length !== 10 && status !== BoardStatus["Malfunction"] && status !== BoardStatus["NoSim"]) {
                     throw new Error(t("sim_error_camera_board"));

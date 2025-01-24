@@ -6,7 +6,7 @@ import { Loader, ModularForm, PhoneUI, Table, TableProps } from "akeyless-client
 import { Dispatch, FormEvent, memo, RefObject, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormElement } from "akeyless-client-commons/types";
 import { Button } from "@/components";
-import { FeatureCheckbox, TableButton, TableOptionsWarper, TimesUI } from "@/components/utils";
+import { FeatureCheckbox, TableButton, TableOptionsWarper } from "@/components/utils";
 import { useAddUser, useDeleteUser, useEditUser } from "./hooks";
 import { cn } from "@/lib/utils";
 import { PRIMARY_COLOR } from "@/lib";
@@ -43,7 +43,7 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
                 ),
             };
         });
-    }, [data, isRtl]);
+    }, [data, isRtl, clientsObject]);
 
     const tableProps: TableProps = {
         // settings
@@ -74,7 +74,7 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
     return (
         <div className="p-3">
             <div style={{ direction: direction }} className="w-full h-full _center ">
-                {formattedData.length ? <Table {...tableProps} /> : <Loader size={200} />}
+                {formattedData.length && Object.keys(clientsObject).length ? <Table {...tableProps} /> : <Loader size={200} />}
             </div>
         </div>
     );
@@ -250,6 +250,7 @@ export const FeaturesForm = memo(
                 )}
                 <CheckBoxGroup entity="installer" features={displayFeatures} onChecked={onChecked} selectedFeatures={selectedFeatures} user={user} />
                 <CheckBoxGroup entity="toolbox" features={displayFeatures} onChecked={onChecked} selectedFeatures={selectedFeatures} user={user} />
+                <CheckBoxGroup entity="reports" features={displayFeatures} onChecked={onChecked} selectedFeatures={selectedFeatures} user={user} />
             </div>
         );
     },

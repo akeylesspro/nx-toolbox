@@ -1,3 +1,4 @@
+import { MultipleSelectorOption } from "akeyless-client-commons/components";
 import { add_document, collections, fire_base_TIME_TEMP, set_document } from "akeyless-client-commons/helpers";
 import { NxUser, TObject } from "akeyless-types-commons";
 import { doc, setDoc } from "firebase/firestore";
@@ -31,4 +32,11 @@ export const addUser = async (data: TObject<any>) => {
         console.error("error from addUser ", error);
         throw "error from addUser";
     }
+};
+
+export const onSearchClients = async (query: string, options: any[]) => {
+    const result = options.filter((op) => {
+        return op.label.toLocaleLowerCase().includes(query) || op.key.toLocaleLowerCase().includes(query);
+    });
+    return (result.length ? result : options) as MultipleSelectorOption[];
 };

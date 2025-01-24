@@ -83,18 +83,21 @@ export default function InitialCache() {
                     });
                 },
                 onModify: (data) => {
-                    const filterData = data.filter((val) => val.status !== "deleted");
-
                     setClients((prev) => {
                         const updatedClients = prev.map((item) => {
-                            const updatedItem = filterData.find((v) => v.id === item.id);
+                            const updatedItem = data.find((v) => v.id === item.id);
                             return updatedItem ? updatedItem : item;
                         });
-                        return updatedClients;
+                        return updatedClients.filter((val) => val.status !== "deleted");
                     });
+
                     setClientsObject((prev) => {
                         let newClients = prev;
-                        filterData.forEach((v) => {
+                        data.forEach((v) => {
+                            if (v.status === "deleted") {
+                                delete newClients[v.id];
+                                return;
+                            }
                             newClients[v.id] = v;
                         });
                         return newClients;

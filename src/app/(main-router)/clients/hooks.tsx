@@ -6,6 +6,7 @@ import { FormElement } from "akeyless-client-commons/types";
 import { PopupsStore, SettingsStore } from "@/lib/store";
 import { addClient, updateClient } from "./helpers";
 import { ClientWizard } from "./components";
+import { getFormElementValue } from "akeyless-client-commons/helpers";
 
 const initialPosition = { top: "25%", left: "30%" };
 
@@ -96,13 +97,13 @@ export const useAddClient = () => {
         const submit = async (e: FormEvent<HTMLFormElement>, features: string[]) => {
             e.preventDefault();
             const form = e.currentTarget;
-            const name = (form.elements.namedItem("name") as HTMLInputElement)?.value || "";
-            const api_token = (form.elements.namedItem("api_token") as HTMLInputElement)?.value || "";
-            const status = (form.elements.namedItem("status") as HTMLInputElement)?.value || "";
-            const language = (form.elements.namedItem("language") as HTMLInputElement)?.value || "";
-            const key = (form.elements.namedItem("key") as HTMLInputElement)?.value || "";
-            const installation_name = (form.elements.namedItem("installation_name") as HTMLInputElement)?.value || "";
-            const installation_phone = (form.elements.namedItem("installation_phone") as HTMLInputElement)?.value || "";
+            const api_token = getFormElementValue(form, "api_token");
+            const status = getFormElementValue(form, "status");
+            const language = getFormElementValue(form, "language");
+            const key = getFormElementValue(form, "key");
+            const installation_name = getFormElementValue(form, "installation_name");
+            const installation_phone = getFormElementValue(form, "installation_phone");
+
             const newClient = {
                 name,
                 status,
@@ -218,13 +219,12 @@ export const useEditClient = () => {
             const submit = async (e: FormEvent<HTMLFormElement>, features: string[]) => {
                 e.preventDefault();
                 const form = e.currentTarget;
-                const name = (form.elements.namedItem("name") as HTMLInputElement)?.value || "";
-                const api_token = (form.elements.namedItem("api_token") as HTMLInputElement)?.value || "";
-                const status = (form.elements.namedItem("status") as HTMLInputElement)?.value || "";
-                const language = (form.elements.namedItem("language") as HTMLInputElement)?.value || "";
-                const key = (form.elements.namedItem("key") as HTMLInputElement)?.value || "";
-                const installation_name = (form.elements.namedItem("installation_name") as HTMLInputElement)?.value || "";
-                const installation_phone = (form.elements.namedItem("installation_phone") as HTMLInputElement)?.value || "";
+                const api_token = getFormElementValue(form, "api_token");
+                const status = getFormElementValue(form, "status");
+                const language = getFormElementValue(form, "language");
+                const key = getFormElementValue(form, "key");
+                const installation_name = getFormElementValue(form, "installation_name");
+                const installation_phone = getFormElementValue(form, "installation_phone");
                 const updatedClient = {
                     name,
                     status,

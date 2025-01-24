@@ -50,14 +50,6 @@ export const TableButton = ({ onClick, title, className, type, children }: Table
     );
 };
 
-export const TimesUI = ({ timestamp }: { timestamp: any }) => {
-    return (
-        <div className="_ellipsis" title={timestamp_to_string(timestamp as Timestamp, "DD/MM/YYYY HH:mm:ss")}>
-            {timestamp_to_string(timestamp as Timestamp, "DD/MM/YYYY HH:mm:ss")}
-        </div>
-    );
-};
-
 interface FeatureCheckboxProps {
     feature: string;
     onChecked: (name: string) => void;

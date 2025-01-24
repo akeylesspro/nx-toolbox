@@ -62,7 +62,7 @@ export default function InitialCache() {
                     const filterData = data.filter((val) => val.status !== "deleted");
                     setClients(filterData);
                     setClientsObject((prev) => {
-                        let newClients = prev;
+                        const newClients = prev;
                         filterData.forEach((v) => {
                             newClients[v.id] = v;
                         });
@@ -75,7 +75,7 @@ export default function InitialCache() {
                         return [...prev, ...filterData];
                     });
                     setClientsObject((prev) => {
-                        let newClients = prev;
+                        const newClients = prev;
                         filterData.forEach((v) => {
                             newClients[v.id] = v;
                         });
@@ -92,7 +92,7 @@ export default function InitialCache() {
                     });
 
                     setClientsObject((prev) => {
-                        let newClients = prev;
+                        const newClients = prev;
                         data.forEach((v) => {
                             if (v.status === "deleted") {
                                 delete newClients[v.id];
@@ -108,7 +108,7 @@ export default function InitialCache() {
                         return prev.filter((item) => !data.some((v) => v.id === item.id));
                     });
                     setClientsObject((prev) => {
-                        let newClients = prev;
+                        const newClients = prev;
                         data.forEach((v) => {
                             delete newClients[v.id];
                         });

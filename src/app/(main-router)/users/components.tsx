@@ -216,7 +216,7 @@ export const FeaturesForm = memo(
             delete data["client"];
             const result: TObject<string[]> = {};
             Object.entries(data).forEach(([key, value]) => {
-                let features: string[] = [];
+                const features: string[] = [];
                 value.forEach((feature: string) => {
                     features.push(`${key}__${feature}`);
                 });

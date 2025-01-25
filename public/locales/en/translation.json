@@ -108,5 +108,6 @@
     "user_clients_error": "Please select at least one client",
     "user_phone_error": "Phone number must be at least 9 digits",
     "user_first_name_placeholder": "Enter first name",
-    "clients_placeholder": "Select clients"
+    "clients_placeholder": "Select clients",
+    "exist_user_error": "User already exists with this phone number"
 }

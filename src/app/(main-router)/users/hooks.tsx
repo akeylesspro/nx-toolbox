@@ -10,7 +10,9 @@ import {
     getFormElementValue,
     international_israel_phone_format,
     isInternational,
+    local_israel_phone_format,
     parseMultiSelectInput,
+    query_document,
     userNameFormat,
 } from "akeyless-client-commons/helpers";
 import { PRIMARY_COLOR } from "@/lib";
@@ -21,6 +23,7 @@ export const useAddUser = () => {
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
     const clients = CacheStore.clients();
+    const users = CacheStore.users();
     const { t } = useTranslation();
     const onAddClick = useCallback(async () => {
         const headerContent = "add_user";
@@ -90,6 +93,11 @@ export const useAddUser = () => {
             const clientsSelect = getFormElementValue(form, "clients");
             const clientsValue = parseMultiSelectInput(clientsSelect);
 
+            const existUser = users.find((u) => [phone, local_israel_phone_format(phone)].includes(u.phone_number!));
+            if (existUser) {
+                throw new Error(t("exist_user_error"));
+            }
+
             const newUser = {
                 features,
                 first_name: firstName,
@@ -97,12 +105,13 @@ export const useAddUser = () => {
                 phone_number: phone,
                 clients: clientsValue,
             };
+
             await addUser(newUser);
             deletePopup("add_user");
         };
         const form = <UserWizard elements={elements} submitFunction={submit} />;
         addPopup({ element: form, id: "add_user", type: "custom", initialPosition, headerContent: t(headerContent) });
-    }, [addPopup, deletePopup, clients]);
+    }, [addPopup, deletePopup, clients, users]);
     return onAddClick;
 };
 
@@ -111,6 +120,7 @@ export const useEditUser = () => {
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
     const clients = CacheStore.clients();
+    const users = CacheStore.users();
 
     const onEditClick = useCallback(
         (user: NxUser) => {
@@ -192,6 +202,10 @@ export const useEditUser = () => {
                 const clientsSelect = getFormElementValue(form, "clients");
                 const clientsValue = parseMultiSelectInput(clientsSelect);
 
+                const existUser = users.find((u) => [phone, local_israel_phone_format(phone)].includes(u.phone_number!) && u.id !== user.id);
+                if (existUser) {
+                    throw new Error(t("exist_user_error"));
+                }
                 const updatedUser = {
                     ...user,
                     features,
@@ -201,6 +215,7 @@ export const useEditUser = () => {
                     clients: clientsValue,
                 };
                 console.log("updatedUser", updatedUser);
+
                 await updateUser(user.id!, updatedUser);
                 deletePopup(headerContent + user.id);
             };
@@ -213,7 +228,7 @@ export const useEditUser = () => {
                 headerContent: t(headerContent).replace("{name}", userNameFormat(user)),
             });
         },
-        [deletePopup, addPopup, clients]
+        [deletePopup, addPopup, clients, users]
     );
 
     return onEditClick;

@@ -2,11 +2,12 @@
 import { Client } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { CacheStore, SettingsStore } from "@/lib/store";
-import { Loader, ModularForm, Table } from "akeyless-client-commons/components";
+import { Loader, ModularForm, Table, TableProps, TimesUI } from "akeyless-client-commons/components";
 import { Dispatch, FormEvent, memo, RefObject, SetStateAction, useCallback, useMemo, useRef, useState } from "react";
-import { FormElement, TableProps } from "akeyless-client-commons/types";
+import { FormElement } from "akeyless-client-commons/types";
 import { Button } from "@/components";
-import { TableButton, TableOptionsWarper, TimesUI } from "@/components/utils";
+import { FeatureCheckbox, TableButton, TableOptionsWarper } from "@/components/utils";
+// import { FeatureCheckbox, TableButton, TableOptionsWarper, TimesUI } from "@/components/utils";
 import { useAddClient, useDeleteClient, useEditClient } from "./hooks";
 
 // clients table
@@ -213,12 +214,20 @@ export const FeaturesForm = memo(
             },
             [setFeatures]
         );
+        const clientTranslation = CacheStore.getFeaturesTranslation()("client");
 
         return (
             <div style={{ display: display }} className="overflow-auto max-h-[320px]">
                 <div className="w-full flex  flex-wrap items-center justify-start ">
                     {clientFeatures.map((feature) => (
-                        <CheckBox defaultCheck={features.includes(feature)} feature={feature} onChecked={onChecked} key={feature} />
+                        <FeatureCheckbox
+                            featureName={clientTranslation["client__" + feature]}
+                            defaultCheck={features.includes(feature)}
+                            feature={feature}
+                            onChecked={onChecked}
+                            key={feature}
+                            containerClassName="w-80"
+                        />
                     ))}
                 </div>
             </div>
@@ -229,35 +238,3 @@ export const FeaturesForm = memo(
     }
 );
 FeaturesForm.displayName = "FeaturesForm";
-
-interface CheckBoxProps {
-    feature: string;
-    onChecked: (name: string) => void;
-    defaultCheck: boolean;
-}
-export const CheckBox = memo(
-    ({ feature, onChecked, defaultCheck }: CheckBoxProps) => {
-        const featuresName = CacheStore.getFeaturesTranslation()("client", feature);
-        const isRtl = SettingsStore.isRtl();
-        return (
-            <div
-                title={featuresName}
-                className={`transition-colors duration-300 w-80 h-10 flex items-center px-2 hover:bg-[#a1824a] justify-start gap-3 rounded-xl`}
-            >
-                <input
-                    type="checkbox"
-                    defaultChecked={defaultCheck}
-                    onChange={() => onChecked(feature)}
-                    className={`cursor-pointer appearance-none w-9 focus:outline-none checked:bg-[#0080009b] h-5 bg-gray-300 rounded-full after:inline-block after:rounded-full after:bg-[#0000005b] after:h-4 after:w-4 checked:after:bg-[#fff] ${
-                        isRtl ? "checked:after:-translate-x-full" : "checked:after:-translate-x-[-15px]"
-                    } shadow-inner transition-all duration-300 before:mr-0.5`}
-                />
-                <div className="ellipsis max-w-[79%]">{featuresName}</div>
-            </div>
-        );
-    },
-    (prev, next) => {
-        return prev.defaultCheck === next.defaultCheck;
-    }
-);
-CheckBox.displayName = "CheckBox";

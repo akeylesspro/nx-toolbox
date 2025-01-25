@@ -95,4 +95,5 @@ const PopupManager = () => {
     );
 };
 
+
 export { Wrapper, MinimizePopup, PopupManager, ResizeHandle };

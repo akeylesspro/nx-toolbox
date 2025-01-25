@@ -1,16 +1,13 @@
 "use client";
 import { Board, BoardStatus } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
-import { timestamp_to_string } from "@/lib/helpers";
 import { CacheStore, SettingsStore } from "@/lib/store";
-import { Loader, ModularForm, Table } from "akeyless-client-commons/components";
-import { forwardRef, memo, useEffect, useMemo, useState } from "react";
-import { Timestamp } from "firebase/firestore";
-import { TableProps } from "akeyless-client-commons/types";
-import { Button } from "@/components";
+import { Loader, Table, TimesUI } from "akeyless-client-commons/components";
+import { forwardRef, memo, useMemo } from "react";
+import { TableProps } from "akeyless-client-commons/components";
 import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
 import Image from "next/image";
-import { TableButton, TableOptionsWarper, TimesUI } from "@/components/utils";
+import { TableButton, TableOptionsWarper } from "@/components/utils";
 
 interface PropsWithBoard {
     board: Board;
@@ -58,24 +55,24 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
     }, [data, isRtl]);
 
     const tableProps: TableProps = {
-        // settings
+        /// settings
         includeSearch: true,
         maxRows: 100,
-        // data
+        /// data
         data: formattedData,
         direction: direction,
         headers: headers,
         keysToRender: keysToRender,
         filterableColumns: filterableColumns,
         sortKeys: sortKeys,
-        // styles
+        /// styles
         headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
         containerHeaderClassName: "h-12 justify-between",
         containerClassName: "_full",
         cellClassName: "_ellipsis text-start h-10 px-3",
         tableContainerClass: "flex-1",
         searchInputClassName: "h-10 w-1/4",
-        // labels
+        /// labels
         searchPlaceHolder: t("search"),
         filterLabel: t("filter_by"),
         sortLabel: t("sort_by"),

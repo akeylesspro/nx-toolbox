@@ -7,6 +7,8 @@ import { TObject } from "akeyless-types-commons";
 export default function InitialCache() {
     const setBoards = CacheStore.setBoards();
     const setClients = CacheStore.setClients();
+    const setClientsObject = CacheStore.setClientsObject();
+    const setUsers = CacheStore.setUsers();
     const setSettings = CacheStore.setSettings();
     const setNxSettings = CacheStore.setNxSettings();
     const setTranslation = CacheStore.setTranslation();
@@ -57,11 +59,27 @@ export default function InitialCache() {
             {
                 collectionName: "nx-clients",
                 onFirstTime: (data) => {
-                    setClients(data.filter((v) => v.status !== "deleted"));
+                    const filterData = data.filter((val) => val.status !== "deleted");
+                    setClients(filterData);
+                    setClientsObject((prev) => {
+                        const newClients = prev;
+                        filterData.forEach((v) => {
+                            newClients[v.id] = v;
+                        });
+                        return newClients;
+                    });
                 },
                 onAdd: (data) => {
+                    const filterData = data.filter((val) => val.status !== "deleted");
                     setClients((prev) => {
-                        return [...prev, ...data.filter((v) => v.status !== "deleted")];
+                        return [...prev, ...filterData];
+                    });
+                    setClientsObject((prev) => {
+                        const newClients = prev;
+                        filterData.forEach((v) => {
+                            newClients[v.id] = v;
+                        });
+                        return newClients;
                     });
                 },
                 onModify: (data) => {
@@ -70,11 +88,56 @@ export default function InitialCache() {
                             const updatedItem = data.find((v) => v.id === item.id);
                             return updatedItem ? updatedItem : item;
                         });
-                        return updatedClients.filter((v) => v.status !== "deleted");
+                        return updatedClients.filter((val) => val.status !== "deleted");
+                    });
+
+                    setClientsObject((prev) => {
+                        const newClients = prev;
+                        data.forEach((v) => {
+                            if (v.status === "deleted") {
+                                delete newClients[v.id];
+                                return;
+                            }
+                            newClients[v.id] = v;
+                        });
+                        return newClients;
                     });
                 },
                 onRemove: (data) => {
                     setClients((prev) => {
+                        return prev.filter((item) => !data.some((v) => v.id === item.id));
+                    });
+                    setClientsObject((prev) => {
+                        const newClients = prev;
+                        data.forEach((v) => {
+                            delete newClients[v.id];
+                        });
+                        return newClients;
+                    });
+                },
+            },
+            // nx-users
+            {
+                collectionName: "nx-users",
+                onFirstTime: (data) => {
+                    setUsers(data.filter((v) => v.status !== "deleted"));
+                },
+                onAdd: (data) => {
+                    setUsers((prev) => {
+                        return [...prev, ...data.filter((v) => v.status !== "deleted")];
+                    });
+                },
+                onModify: (data) => {
+                    setUsers((prev) => {
+                        const updatedClients = prev.map((item) => {
+                            const updatedItem = data.find((v) => v.id === item.id);
+                            return updatedItem ? updatedItem : item;
+                        });
+                        return updatedClients.filter((v) => v.status !== "deleted");
+                    });
+                },
+                onRemove: (data) => {
+                    setUsers((prev) => {
                         return prev.filter((item) => !data.some((v) => v.id === item.id));
                     });
                 },
@@ -196,13 +259,16 @@ export default function InitialCache() {
             // nx-features
             {
                 collectionName: "nx-features",
-                onFirstTime: (data) => {                    
+                onFirstTime: (data) => {
+                    delete data[0].id;
                     setFeatures(data[0]);
                 },
                 onAdd: (data) => {
+                    delete data[0].id;
                     setFeatures(data[0]);
                 },
                 onModify: (data) => {
+                    delete data[0].id;
                     setFeatures(data[0]);
                 },
                 onRemove: (data) => {

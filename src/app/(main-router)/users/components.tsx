@@ -21,29 +21,38 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
     const direction = SettingsStore.direction();
     const isRtl = SettingsStore.isRtl();
     const clientsObject = CacheStore.clientsObject();
-    const headers = [t("name"), t("phone_number"), t("main_client"), t("actions")];
+    const headers = [t("name"), t("permissions"), t("clients"), t("phone_number"), t("actions")];
 
-    const keysToRender = useMemo(() => ["name_ui", "phone_number_ui", "main_client", "actions"], []);
+    const keysToRender = useMemo(() => ["name_ui", "permissions_ui", "clients_ui", "phone_number_ui", "actions"], []);
 
-    const sortKeys = useMemo(() => ["name_ui", "phone_number_ui", "main_client"], []);
+    const sortKeys = useMemo(() => ["name_ui", "permissions_ui", "clients_ui", "phone_number_ui"], []);
 
     const formattedData = useMemo(() => {
         return data.map((user) => {
-            const currentClient = clientsObject[(user.clients || [])[0]];
+            const userClients = user.clients || [];
+            const clientsData = userClients.map((client) => clientsObject[client]);
+            const clientsUi = clientsData.map((c) => c?.name || "").join(", ");
+            const userFeatures = user.features || [];
+            const permissionsUi = Array.from(new Set(userFeatures.map((feature) => t(feature.split("__")[0]))))
+                .join(", ")
+                .trim();
+
             return {
                 ...user,
                 name_ui: userNameFormat(user),
-                main_client: multiStringFormat(currentClient?.name || "", "-", currentClient?.key),
+                permissions_ui: permissionsUi,
+                clients_ui: clientsUi,
                 phone_number_ui: <PhoneUI phone={user.phone_number!} direction={direction} />,
+                clients_for_search: clientsData.map((c) => c?.key || "").join(", "),
                 actions: (
-                    <TableOptionsWarper>
+                    <TableOptionsWarper className="_center">
                         <EditUser user={user} />
                         <DeleteUser user={user} />
                     </TableOptionsWarper>
                 ),
             };
         });
-    }, [data, isRtl, clientsObject]);
+    }, [data, isRtl, clientsObject, t]);
 
     const tableProps: TableProps = {
         // settings
@@ -178,7 +187,7 @@ export const WizardHeader = memo(({ activeForm, setActiveForm }: WizardHeaderPro
                 onClick={() => setActiveForm("features")}
                 className={` ${activeForm === "features" ? `text-[${PRIMARY_COLOR}]` : "text-[#00000076]"} font-bold text-[16px]`}
             >
-                {t("features")}
+                {t("permissions")}
             </button>
         </div>
     );
@@ -211,9 +220,14 @@ interface FeaturesFormProps {
 export const FeaturesForm = memo(
     ({ display, setSelectedFeatures, selectedFeatures, user }: FeaturesFormProps) => {
         const allFeatures = CacheStore.features();
+        const isRtl = SettingsStore.isRtl();
+
         const displayFeatures = useMemo(() => {
             const data = { ...allFeatures };
             delete data["client"];
+            if (!user) {
+                delete data["dashboard"];
+            }
             const result: TObject<string[]> = {};
             Object.entries(data).forEach(([key, value]) => {
                 const features: string[] = [];
@@ -223,7 +237,7 @@ export const FeaturesForm = memo(
                 result[key] = features;
             });
             return result;
-        }, [allFeatures]);
+        }, [allFeatures, user]);
 
         const onChecked = useCallback(
             (feature: string) => {
@@ -239,18 +253,20 @@ export const FeaturesForm = memo(
 
         return (
             <div style={{ display: display }} className="justify-evenly overflow-auto h-[320px] w-full">
-                {user && (
-                    <CheckBoxGroup
-                        entity="dashboard"
-                        features={displayFeatures}
-                        onChecked={onChecked}
-                        selectedFeatures={selectedFeatures}
-                        user={user}
-                    />
-                )}
-                <CheckBoxGroup entity="installer" features={displayFeatures} onChecked={onChecked} selectedFeatures={selectedFeatures} user={user} />
-                <CheckBoxGroup entity="toolbox" features={displayFeatures} onChecked={onChecked} selectedFeatures={selectedFeatures} user={user} />
-                <CheckBoxGroup entity="reports" features={displayFeatures} onChecked={onChecked} selectedFeatures={selectedFeatures} user={user} />
+                {Object.entries(displayFeatures).map(([entity, featureArray], index, array) => {
+                    const lineClassNames = index < array.length - 1 ? `${isRtl ? "border-l-[2px]" : "border-r-[2px]"}` : "";
+                    return (
+                        <div key={entity} className={cn(lineClassNames, `border-[#5f9ea0] px-1.5`)}>
+                            <CheckBoxGroup
+                                entity={entity}
+                                features={featureArray}
+                                onChecked={onChecked}
+                                selectedFeatures={selectedFeatures}
+                                user={user}
+                            />
+                        </div>
+                    );
+                })}
             </div>
         );
     },
@@ -261,7 +277,7 @@ export const FeaturesForm = memo(
 FeaturesForm.displayName = "FeaturesForm";
 
 interface CheckBoxGroupProps {
-    features: TObject<string[]>;
+    features: string[];
     onChecked: (name: string) => void;
     selectedFeatures: string[];
     entity: string;
@@ -272,6 +288,7 @@ export const CheckBoxGroup = ({ features, onChecked, selectedFeatures, entity, u
     const isDashboard = entity === "dashboard";
     const entityTranslation = CacheStore.getFeaturesTranslation()(entity);
     const clientsObject = CacheStore.clientsObject();
+
     const [title, setTitle] = useState("");
     useEffect(() => {
         if (user && user.site && isDashboard) {
@@ -287,22 +304,23 @@ export const CheckBoxGroup = ({ features, onChecked, selectedFeatures, entity, u
     }, []);
     return (
         <div className="flex flex-col gap-4 relative">
-            <div className={`w-full text-start border-b-[2px] border-[${PRIMARY_COLOR}] px-1 sticky top-0 bg-white`}>
+            <div className={`w-full text-start px-2 sticky top-0 bg-white`}>
                 {t("checkbox_group_headline").replace("{name}", t(entity))}
+                <div className="border-[#5f9ea0] border-b-[2px] "></div>
             </div>
-            <div>
-                {features[entity].map((feature) => {
-                    const featureName = entityTranslation[feature];
 
+            <div>
+                {features.map((feature) => {
+                    const featureName = entityTranslation[feature];
                     return (
                         <FeatureCheckbox
                             featureName={featureName}
                             defaultCheck={selectedFeatures.includes(feature)}
                             feature={feature}
                             onChecked={onChecked}
-                            key={feature}
                             disabled={isDashboard}
                             title={title}
+                            key={feature}
                         />
                     );
                 })}

@@ -12,7 +12,7 @@ interface TableOptionsWarperProps {
 export const TableOptionsWarper = ({ children, className }: TableOptionsWarperProps) => {
     const direction = SettingsStore.direction();
     return (
-        <div style={{ direction }} className={cn(`flex justify-start gap-3 `)}>
+        <div style={{ direction }} className={cn(`flex justify-start gap-3 `, className)}>
             {children}
         </div>
     );
@@ -89,7 +89,7 @@ export const FeatureCheckbox = memo(
         );
     },
     (prev, next) => {
-        return prev.defaultCheck === next.defaultCheck && prev.disabled === next.disabled && prev.title === next.title;
+        return JSON.stringify(prev) === JSON.stringify(next);
     }
 );
 FeatureCheckbox.displayName = "FeatureCheckbox";

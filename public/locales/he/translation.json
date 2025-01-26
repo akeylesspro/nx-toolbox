@@ -88,14 +88,13 @@
     "en": "אנגלית",
     "user_not_allowed": "משתמש לא מורשה",
     "users": "משתמשים",
-    "main_client": "לקוח ראשי",
     "phone_number": "מספר טלפון",
     "edit_user": "עריכת משתמש - {name}",
     "edit_user_title": "עריכת משתמש",
     "add_user": "הוספת משתמש",
     "delete_user": "מחיקת משתמש",
     "user_details": "פרטי משתמש",
-    "checkbox_group_headline": "פיצ'רים של {name}",
+    "checkbox_group_headline": "הרשאות של {name}",
     "installer": "מתקין",
     "dashboard": "דשבורד",
     "toolbox": "אתר ניהול",
@@ -109,5 +108,7 @@
     "user_phone_error": "מספר טלפון חייב להכיל 9 ספרות",
     "user_first_name_placeholder": "הכנס שם פרטי",
     "clients_placeholder": "בחר לקוחות",
-    "exist_user_error": "משתמש כבר קיים עם מספר טלפון זה"
+    "exist_user_error": "משתמש כבר קיים עם מספר טלפון זה",
+    "permissions": "הרשאות",
+    "reports": "דוחות"
 }

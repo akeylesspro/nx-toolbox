@@ -88,14 +88,13 @@
     "en": "English",
     "user_not_allowed": "User not allowed",
     "users": "Users",
-    "main_client": "Main Client",
     "phone_number": "Phone Number",
     "edit_user": "Edit User - {name}",
     "edit_user_title": "Edit User",
     "add_user": "Add User",
     "delete_user": "Delete User",
     "user_details": "User Details",
-    "checkbox_group_headline": "{name} Features",
+    "checkbox_group_headline": "{name} Permissions",
     "installer": "Installer",
     "dashboard": "Dashboard",
     "toolbox": "Toolbox",
@@ -109,5 +108,7 @@
     "user_phone_error": "Phone number must be at least 9 digits",
     "user_first_name_placeholder": "Enter first name",
     "clients_placeholder": "Select clients",
-    "exist_user_error": "User already exists with this phone number"
+    "exist_user_error": "User already exists with this phone number",
+    "permissions": "Permissions",
+    "reports": "Reports"
 }

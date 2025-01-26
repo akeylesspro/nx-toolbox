@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         const messageFromDb = await getOutSmsByContent(ICCID!, Message!);
         if (messageFromDb) {
             await set_document("nx-sms-out", messageFromDb.id, {
-                timestamp: Timestamp.now(),
+                updated: Timestamp.now(),
                 status: title.includes("success") ? OutSmsStatus.DELIVERED : OutSmsStatus.FAILED,
             });
             logger.log("monogoto outgoing message successfully saved in db", parseTextToObject(text));

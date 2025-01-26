@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         const messageFromDb = await getOutSmsById(customerMessageId);
         if (messageFromDb) {
             await set_document("nx-sms-out", messageFromDb.id, {
-                timestamp: Timestamp.now(),
+                updated: Timestamp.now(),
                 status: status === "delivered" ? OutSmsStatus.DELIVERED : OutSmsStatus.FAILED,
             });
             logger.log("multisend outgoing message successfully saved in db", { ...data });

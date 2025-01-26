@@ -18,7 +18,7 @@ export async function POST(request: Request) {
             const messageFromDb = await getOutSmsById(SmsSid);
             if (messageFromDb) {
                 await set_document("nx-sms-out", messageFromDb.id, {
-                    timestamp: Timestamp.now(),
+                    updated: Timestamp.now(),
                     status: MessageStatus === "delivered" ? OutSmsStatus.DELIVERED : OutSmsStatus.FAILED,
                 });
                 logger.log("twilio outgoing message successfully saved in db", { ...data });

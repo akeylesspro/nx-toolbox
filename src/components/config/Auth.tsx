@@ -13,7 +13,7 @@ export function Auth() {
     const setUserPermissions = UserStore.setUserPermissions();
     const router = useRouter();
     const snapshotsFirstTime = useRef<string[]>([]);
-
+    const unsubscribe = useRef<(() => void) | undefined>(undefined);
     // update cookie token on login
     useEffect(() => {
         const unsubscribe = onIdTokenChanged(auth, async (user) => {
@@ -39,8 +39,6 @@ export function Auth() {
     }, []);
     // check if user is allowed to access and redirect to login if not
     useEffect(() => {
-        let cleanSnapshot: (() => void) | undefined = undefined;
-
         (async () => {
             try {
                 if (!activeUser && window.location.pathname !== "/login") {
@@ -62,22 +60,25 @@ export function Auth() {
                     if (!snapshotResult.permissions.toolbox?.super_admin) {
                         throw new Error("user not allowed");
                     }
-                    cleanSnapshot = snapshotResult.unsubscribe;
+                    unsubscribe.current = snapshotResult.unsubscribe;
                     setActiveUser(user);
                 }
             } catch (error: any) {
-                cleanSnapshot?.();
                 console.log("exception in Auth, redirect to login ...", error.message);
                 deleteCookie("token");
                 auth.signOut();
                 router.push("/login");
             }
         })();
-
-        return () => {
-            cleanSnapshot?.();
-        };
     }, [activeUser]);
+    // clean up
+    useEffect(() => {
+        return () => {
+            if (unsubscribe.current) {
+                unsubscribe.current();
+            }
+        };
+    }, []);
 
     return <div style={{ display: "none" }} id="recaptcha"></div>;
 }

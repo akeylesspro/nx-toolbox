@@ -1,8 +1,10 @@
 "use client";
 import { getCameraBoardTypes } from "@/app/(main-router)/boards/helpers";
-import { CacheStore } from "@/lib/store";
+import { CacheStore, UserStore } from "@/lib/store";
 import { useSafeEffect, useSnapshotBulk } from "akeyless-client-commons/hooks";
+import { OnSnapshotConfig } from "akeyless-client-commons/types";
 import { TObject } from "akeyless-types-commons";
+import { useMemo, useRef } from "react";
 
 export default function InitialCache() {
     const setBoards = CacheStore.setBoards();
@@ -15,6 +17,8 @@ export default function InitialCache() {
     const setFeatures = CacheStore.setFeatures();
     const setCameraBoardTypes = CacheStore.setCameraBoardTypes();
     const setBoardTypes = CacheStore.setBoardTypes();
+    const userPermissions = UserStore.userPermissions();
+    const pushedRef = useRef<string[]>([]);
 
     useSafeEffect(() => {
         const init = async () => {
@@ -23,11 +27,138 @@ export default function InitialCache() {
         };
         init();
     }, []);
-
-    useSnapshotBulk(
-        [
-            // boards
-            {
+    const bulk = useMemo(() => {
+        if (Object.keys(userPermissions).length === 0) {
+            return [];
+        }
+        const isSuperAdmin = userPermissions.toolbox?.super_admin;
+        const result: OnSnapshotConfig[] = [];
+        // settings
+        if (!pushedRef.current.includes("settings")) {
+            result.push({
+                collectionName: "settings",
+                onFirstTime: (data) => {
+                    const settings: TObject<any> = {};
+                    data.forEach((v) => {
+                        settings[v.id] = v;
+                    });
+                    setSettings(settings);
+                },
+                onAdd: (data) => {
+                    setSettings((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            update[v.id] = v;
+                        });
+                        return update;
+                    });
+                },
+                onModify: (data) => {
+                    setSettings((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            update[v.id] = v;
+                        });
+                        return update;
+                    });
+                },
+                onRemove: (data) => {
+                    setSettings((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            delete update[v.id];
+                        });
+                        return update;
+                    });
+                },
+            });
+            pushedRef.current.push("settings");
+        }
+        // nx-settings
+        if (!pushedRef.current.includes("nx-settings")) {
+            result.push({
+                collectionName: "nx-settings",
+                onFirstTime: (data) => {
+                    const update: TObject<any> = {};
+                    data.forEach((v) => {
+                        update[v.id] = v;
+                    });
+                    setNxSettings(update);
+                },
+                onAdd: (data) => {
+                    setNxSettings((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            update[v.id] = v;
+                        });
+                        return update;
+                    });
+                },
+                onModify: (data) => {
+                    setNxSettings((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            update[v.id] = v;
+                        });
+                        return update;
+                    });
+                },
+                onRemove: (data) => {
+                    setNxSettings((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            delete update[v.id];
+                        });
+                        return update;
+                    });
+                },
+            });
+            pushedRef.current.push("nx-settings");
+        }
+        // nx-translations
+        if (!pushedRef.current.includes("nx-translations")) {
+            result.push({
+                collectionName: "nx-translations",
+                onFirstTime: (data) => {
+                    const update: TObject<any> = {};
+                    data.forEach((v) => {
+                        update[v.id] = v;
+                    });
+                    setTranslation(update);
+                },
+                onAdd: (data) => {
+                    setTranslation((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            update[v.id] = v;
+                        });
+                        return update;
+                    });
+                },
+                onModify: (data) => {
+                    setTranslation((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            update[v.id] = v;
+                        });
+                        return update;
+                    });
+                },
+                onRemove: (data) => {
+                    setTranslation((prev) => {
+                        const update = { ...prev };
+                        data.forEach((v) => {
+                            delete update[v.id];
+                        });
+                        return update;
+                    });
+                },
+            });
+            pushedRef.current.push("nx-translations");
+        }
+        /// boards
+        if (isSuperAdmin && !pushedRef.current.includes("boards")) {
+            result.push({
                 collectionName: "boards",
                 onFirstTime: (data) => {
                     setBoards(data);
@@ -54,9 +185,12 @@ export default function InitialCache() {
                         return prev.filter((item) => !data.some((v) => v.id === item.id));
                     });
                 },
-            },
-            // nx-clients
-            {
+            });
+            pushedRef.current.push("boards");
+        }
+        /// nx-clients
+        if (isSuperAdmin && !pushedRef.current.includes("nx-clients")) {
+            result.push({
                 collectionName: "nx-clients",
                 onFirstTime: (data) => {
                     const filterData = data.filter((val) => val.status !== "deleted");
@@ -115,9 +249,12 @@ export default function InitialCache() {
                         return newClients;
                     });
                 },
-            },
-            // nx-users
-            {
+            });
+            pushedRef.current.push("nx-clients");
+        }
+        // nx-users
+        if (isSuperAdmin && !pushedRef.current.includes("nx-users")) {
+            result.push({
                 collectionName: "nx-users",
                 onFirstTime: (data) => {
                     setUsers(data.filter((v) => v.status !== "deleted"));
@@ -141,123 +278,12 @@ export default function InitialCache() {
                         return prev.filter((item) => !data.some((v) => v.id === item.id));
                     });
                 },
-            },
-            // settings
-            {
-                collectionName: "settings",
-                onFirstTime: (data) => {
-                    const settings: TObject<any> = {};
-                    data.forEach((v) => {
-                        settings[v.id] = v;
-                    });
-                    setSettings(settings);
-                },
-                onAdd: (data) => {
-                    setSettings((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            update[v.id] = v;
-                        });
-                        return update;
-                    });
-                },
-                onModify: (data) => {
-                    setSettings((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            update[v.id] = v;
-                        });
-                        return update;
-                    });
-                },
-                onRemove: (data) => {
-                    setSettings((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            delete update[v.id];
-                        });
-                        return update;
-                    });
-                },
-            },
-            // nx-settings
-            {
-                collectionName: "nx-settings",
-                onFirstTime: (data) => {
-                    const update: TObject<any> = {};
-                    data.forEach((v) => {
-                        update[v.id] = v;
-                    });
-                    setNxSettings(update);
-                },
-                onAdd: (data) => {
-                    setNxSettings((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            update[v.id] = v;
-                        });
-                        return update;
-                    });
-                },
-                onModify: (data) => {
-                    setNxSettings((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            update[v.id] = v;
-                        });
-                        return update;
-                    });
-                },
-                onRemove: (data) => {
-                    setNxSettings((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            delete update[v.id];
-                        });
-                        return update;
-                    });
-                },
-            },
-            // nx-translations
-            {
-                collectionName: "nx-translations",
-                onFirstTime: (data) => {
-                    const update: TObject<any> = {};
-                    data.forEach((v) => {
-                        update[v.id] = v;
-                    });
-                    setTranslation(update);
-                },
-                onAdd: (data) => {
-                    setTranslation((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            update[v.id] = v;
-                        });
-                        return update;
-                    });
-                },
-                onModify: (data) => {
-                    setTranslation((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            update[v.id] = v;
-                        });
-                        return update;
-                    });
-                },
-                onRemove: (data) => {
-                    setTranslation((prev) => {
-                        const update = { ...prev };
-                        data.forEach((v) => {
-                            delete update[v.id];
-                        });
-                        return update;
-                    });
-                },
-            },
-            // nx-features
-            {
+            });
+            pushedRef.current.push("nx-users");
+        }
+        // nx-features
+        if (isSuperAdmin && !pushedRef.current.includes("nx-features")) {
+            result.push({
                 collectionName: "nx-features",
                 onFirstTime: (data) => {
                     delete data[0].id;
@@ -274,10 +300,13 @@ export default function InitialCache() {
                 onRemove: (data) => {
                     setFeatures({});
                 },
-            },
-        ],
-        "init snapshot"
-    );
+            });
+            pushedRef.current.push("nx-features");
+        }
+
+        return result;
+    }, [userPermissions, pushedRef]);
+    useSnapshotBulk(bulk, "init snapshot");
 
     return null;
 }

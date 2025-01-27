@@ -57,7 +57,7 @@ export function Auth() {
                         },
                     });
 
-                    if (!snapshotResult.permissions.toolbox?.super_admin) {
+                    if (!snapshotResult.permissions.toolbox) {
                         throw new Error("user not allowed");
                     }
                     unsubscribe.current = snapshotResult.unsubscribe;

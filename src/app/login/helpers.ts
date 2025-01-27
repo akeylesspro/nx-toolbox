@@ -31,7 +31,7 @@ export const onPhoneSubmit = async (phone: string, setLoginUser: (t: NxUser) => 
         throw new Error("number_not_in_system");
     }
     const userPermissions = parsePermissions(user);
-    if (!userPermissions.toolbox?.super_admin) {
+    if (!userPermissions.toolbox) {
         throw new Error("user_not_allowed");
     }
     setLoginUser(user);

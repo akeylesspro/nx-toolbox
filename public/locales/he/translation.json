@@ -110,5 +110,7 @@
     "clients_placeholder": "בחר לקוחות",
     "exist_user_error": "משתמש כבר קיים עם מספר טלפון זה",
     "permissions": "הרשאות",
-    "reports": "דוחות"
+    "reports": "דוחות",
+    "not_allowed_page": "אין לך הרשאות לצפות בדף זה",
+    "back_to_home_page": "חזור לדף הבית"
 }

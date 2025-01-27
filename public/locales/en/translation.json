@@ -110,5 +110,7 @@
     "clients_placeholder": "Select clients",
     "exist_user_error": "User already exists with this phone number",
     "permissions": "Permissions",
-    "reports": "Reports"
+    "reports": "Reports",
+    "not_allowed_page": "You are not allowed to view this page",
+    "back_to_home_page": "Back to home page"
 }

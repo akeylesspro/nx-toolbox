@@ -253,20 +253,22 @@ export const FeaturesForm = memo(
 
         return (
             <div style={{ display: display }} className="justify-evenly overflow-auto h-[320px] w-full">
-                {Object.entries(displayFeatures).map(([entity, featureArray], index, array) => {
-                    const lineClassNames = index < array.length - 1 ? `${isRtl ? "border-l-[2px]" : "border-r-[2px]"}` : "";
-                    return (
-                        <div key={entity} className={cn(lineClassNames, `border-[#5f9ea0] px-1.5`)}>
-                            <CheckBoxGroup
-                                entity={entity}
-                                features={featureArray}
-                                onChecked={onChecked}
-                                selectedFeatures={selectedFeatures}
-                                user={user}
-                            />
-                        </div>
-                    );
-                })}
+                {Object.entries(displayFeatures)
+                    .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+                    .map(([entity, featureArray], index, array) => {
+                        const lineClassNames = index < array.length - 1 ? `${isRtl ? "border-l-[2px]" : "border-r-[2px]"}` : "";
+                        return (
+                            <div key={entity} className={cn(lineClassNames, `border-[#5f9ea0] px-1.5`)}>
+                                <CheckBoxGroup
+                                    entity={entity}
+                                    features={featureArray}
+                                    onChecked={onChecked}
+                                    selectedFeatures={selectedFeatures}
+                                    user={user}
+                                />
+                            </div>
+                        );
+                    })}
             </div>
         );
     },

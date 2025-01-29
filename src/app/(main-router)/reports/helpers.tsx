@@ -15,6 +15,9 @@ export const getAvailableReports = async (): Promise<availableReports> => {
             },
             url: biUrl + "/reports/available",
         });
+        if (!response.data.success) {
+            throw new Error(response.data.error || "reports/available error");
+        }
         return response.data.data;
     } catch (error) {
         console.log("error fetching available reports", error);
@@ -35,6 +38,9 @@ export const getReport = async (reportId: string): Promise<GenericReport | null>
             },
             url: biUrl + "/reports/report/" + reportId,
         });
+        if (!response.data.success) {
+            throw new Error(response.data.error || `reports/report/${reportId} error`);
+        }
         return response.data.data;
     } catch (error) {
         console.log("error fetching available reports", error);

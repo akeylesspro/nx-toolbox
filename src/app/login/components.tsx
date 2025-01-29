@@ -19,6 +19,7 @@ export const LoginForm = ({ setError }: { setError: Dispatch<SetStateAction<stri
     const [loginUser, setLoginUser] = useState<NxUser | null>(null);
 
     const setActiveUser = UserStore.setActiveUser();
+    const setUserPermissions = UserStore.setUserPermissions();
 
     const handleSubmit = async (e: FormEvent) => {
         try {
@@ -27,7 +28,7 @@ export const LoginForm = ({ setError }: { setError: Dispatch<SetStateAction<stri
             if (codeDisplay) {
                 return await onCodeSubmit(codeValue, loginUser!, setActiveUser, router);
             }
-            await onPhoneSubmit(phoneValue, setLoginUser, setCodeDisplay);
+            await onPhoneSubmit(phoneValue, setLoginUser, setCodeDisplay, setUserPermissions);
             setIsLoading(false);
         } catch (error: any) {
             setError(t(error.message || "general error"));

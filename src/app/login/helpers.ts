@@ -21,7 +21,12 @@ export const get_user_by_phone = async (phone: string): Promise<NxUser | null> =
     return user;
 };
 
-export const onPhoneSubmit = async (phone: string, setLoginUser: (t: NxUser) => void, setCodeDisplay: (t: boolean) => void) => {
+export const onPhoneSubmit = async (
+    phone: string,
+    setLoginUser: (t: NxUser) => void,
+    setCodeDisplay: (t: boolean) => void,
+    setUserPermissions: (t: TObject<any>) => void
+) => {
     if (phone.length < 10) {
         throw new Error("number_not_valid");
     }
@@ -34,6 +39,7 @@ export const onPhoneSubmit = async (phone: string, setLoginUser: (t: NxUser) => 
     if (!userPermissions.toolbox) {
         throw new Error("user_not_allowed");
     }
+    setUserPermissions(userPermissions);
     setLoginUser(user);
     const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
     window.confirmationResult = confirmationResult;

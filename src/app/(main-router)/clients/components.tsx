@@ -132,7 +132,7 @@ export const ClientWizard = ({ elements, submitFunction, client }: ClientWizardP
     );
 
     return (
-        <div style={{ minWidth: "700px", minHeight: "500px" }} className="flex flex-col w-full">
+        <div className="flex flex-col min-w-[700px] min-h-[500px]">
             <WizardHeader activeForm={activeForm} setActiveForm={setActiveForm} />
             <div className=" flex-1 _center">
                 <ModularForm
@@ -184,7 +184,7 @@ interface WizardFooterProps {
 export const WizardFooter = memo(({ submitRef, isLoading }: WizardFooterProps) => {
     const { t } = useTranslation();
     return (
-        <div className="h-10 w-full flex justify-end items-center px-2">
+        <div className="h-14 w-full flex justify-end items-center p-2 ">
             <Button disabled={isLoading} onClick={() => submitRef.current?.click()}>
                 {isLoading ? <Loader size={20} color="#fff" /> : t("save")}
             </Button>
@@ -217,7 +217,7 @@ export const FeaturesForm = memo(
         const clientTranslation = CacheStore.getFeaturesTranslation()("client");
 
         return (
-            <div style={{ display: display }} className="overflow-auto max-h-[320px]">
+            <div style={{ display: display }} className="overflow-auto max-h-[350px] max-w-[700px]">
                 <div className="w-full flex  flex-wrap items-center justify-start ">
                     {clientFeatures.map((feature) => (
                         <FeatureCheckbox
@@ -226,9 +226,11 @@ export const FeaturesForm = memo(
                             feature={feature}
                             onChecked={onChecked}
                             key={feature}
-                            containerClassName="w-80"
+                            containerClassName="min-w-80"
                         />
                     ))}
+                    
+                    
                 </div>
             </div>
         );

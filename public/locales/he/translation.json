@@ -112,5 +112,7 @@
     "permissions": "הרשאות",
     "reports": "דוחות",
     "not_allowed_page": "אין לך הרשאות לצפות בדף זה",
-    "back_to_home_page": "חזור לדף הבית"
+    "back_to_home_page": "חזור לדף הבית",
+    "report_error": "שגיאה בדוח {reportId}",
+    "report_server_error": "לא ניתן ליצור דוח"
 }

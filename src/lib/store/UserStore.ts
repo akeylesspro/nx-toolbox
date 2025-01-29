@@ -11,6 +11,8 @@ export interface UserStorType {
     setActiveUser: SetState<NxUser | null>;
     userPermissions: TObject<TObject<boolean>>;
     setUserPermissions: SetState<TObject<TObject<boolean>>>;
+    userTimeZone: string;
+    setUserTimeZone: SetState<string>;
 }
 
 function get_user_by_token(token?: string): NxUser | null {
@@ -26,6 +28,9 @@ export const UserStoreBase = create<UserStorType>((set) => ({
     setActiveUser: (updater) => setState(updater, set, "activeUser"),
     userPermissions: {},
     setUserPermissions: (updater) => setState(updater, set, "userPermissions"),
+    userTimeZone: "Asia/Jerusalem",
+    setUserTimeZone: (updater) => setState(updater, set, "userTimeZone"),
 }));
 
 export const UserStore = createSelectors<UserStorType>(UserStoreBase);
+

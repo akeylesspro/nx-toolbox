@@ -84,7 +84,7 @@ export const FeatureCheckbox = memo(
                     } shadow-inner transition-all duration-300 before:mr-0.5`}
                     disabled={disabled}
                 />
-                <div className={`ellipsis max-w-[79%] ${disabled ? "opacity-50" : ""}`}>{featureName}</div>
+                <div className={`_ellipsis max-w-[79%] ${disabled ? "opacity-50" : ""}`}>{featureName}</div>
             </div>
         );
     },

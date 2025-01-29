@@ -137,8 +137,6 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
                 const header = reportData.meta.headers[cellIndex];
                 const headerType = header.type;
                 const headerName = header.name;
-                console.log("headerName",headerName);
-                console.log("headerType",headerType);
                 
                 switch (headerType) {
                     case "datetime":

@@ -52,6 +52,7 @@ export const ReportGroup = memo(({ groupName, reports }: ReportGroupProps) => {
         </div>
     );
 }, renderOnce);
+ReportGroup.displayName = "ReportGroup";
 
 interface PropsWithReportId {
     reportId: string;
@@ -126,7 +127,7 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
         const headerType = header.type;
         const headerName = header.name;
         const rule = ["datetime", "car_number", "phone"].includes(headerType);
-        let key = rule ? headerName + "_ui" : headerName;
+        const key = rule ? headerName + "_ui" : headerName;
         return key;
     });
 
@@ -137,7 +138,7 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
                 const header = reportData.meta.headers[cellIndex];
                 const headerType = header.type;
                 const headerName = header.name;
-                
+
                 switch (headerType) {
                     case "datetime":
                         result[headerName + "_ui"] = <TimesUI timestamp={new Date(cell)} tz={userTimeZone} direction={direction} />;

@@ -36,6 +36,7 @@ export default function InitialCache() {
         };
         init();
     }, []);
+    
     const bulk = useMemo(() => {
         if (Object.keys(userPermissions).length === 0) {
             return [];

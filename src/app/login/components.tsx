@@ -23,6 +23,7 @@ export const LoginForm = ({ setError }: { setError: Dispatch<SetStateAction<stri
 
     const handleSubmit = async (e: FormEvent) => {
         try {
+            setError("");
             e.preventDefault();
             setIsLoading(true);
             if (codeDisplay) {

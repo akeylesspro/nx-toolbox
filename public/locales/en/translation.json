@@ -115,5 +115,5 @@
     "back_to_home_page": "Back to home page",
     "report_error": "Error in report {reportId}",
     "report_server_error": "Unable to generate report",
-    "no_data": "No data"
+    "last_login": "Last login"
 }

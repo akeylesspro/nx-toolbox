@@ -115,5 +115,5 @@
     "back_to_home_page": "חזור לדף הבית",
     "report_error": "שגיאה בדוח {reportId}",
     "report_server_error": "לא ניתן ליצור דוח",
-    "no_data": "אין נתונים"
+    "last_login": "התחברות אחרונה"
 }

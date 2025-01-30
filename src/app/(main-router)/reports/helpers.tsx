@@ -6,12 +6,12 @@ export interface availableReports {
     list: TObject<string>[];
     grouped: TObject<string>;
 }
-export const getAvailableReports = async (): Promise<availableReports> => {
+export const getAvailableReports = async (token: string): Promise<availableReports> => {
     try {
         const response = await axios({
             method: "GET",
             headers: {
-                authorization: "bearer " + auth.currentUser.accessToken,
+                authorization: "bearer " + token,
             },
             url: biUrl + "/reports/available",
         });
@@ -20,7 +20,7 @@ export const getAvailableReports = async (): Promise<availableReports> => {
         }
         return response.data.data;
     } catch (error) {
-        console.log("error fetching available reports", error);
+        console.error("error fetching available reports", error);
         return { list: [], grouped: {} };
     }
 };
@@ -34,7 +34,7 @@ export const getReport = async (reportId: string): Promise<GenericReport | null>
         const response = await axios({
             method: "POST",
             headers: {
-                authorization: "bearer " + auth.currentUser.accessToken,
+                authorization: "bearer " + auth.currentUser?.accessToken,
             },
             url: biUrl + "/reports/report/" + reportId,
         });

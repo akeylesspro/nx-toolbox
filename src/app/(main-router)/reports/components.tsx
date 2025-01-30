@@ -37,7 +37,7 @@ interface ReportGroupProps {
     groupName: string;
     reports: string[];
 }
-export const ReportGroup = memo(({ groupName, reports }: ReportGroupProps) => {
+export const ReportGroup = ({ groupName, reports }: ReportGroupProps) => {
     const currentLanguage = SettingsStore.currentLanguage();
     const reportsTranslation = CacheStore.getTranslation()("reports");
     const groupNameUi = reportsTranslation["group__" + groupName] || groupName;
@@ -51,8 +51,7 @@ export const ReportGroup = memo(({ groupName, reports }: ReportGroupProps) => {
             </div>
         </div>
     );
-}, renderOnce);
-ReportGroup.displayName = "ReportGroup";
+};
 
 interface PropsWithReportId {
     reportId: string;

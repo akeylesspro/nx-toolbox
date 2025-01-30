@@ -6,7 +6,7 @@ import { auth } from "akeyless-client-commons/helpers";
 import { useSafeEffect, useSnapshotBulk } from "akeyless-client-commons/hooks";
 import { OnSnapshotConfig } from "akeyless-client-commons/types";
 import { TObject } from "akeyless-types-commons";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import moment from "moment-timezone";
 
 export default function InitialCache() {
@@ -21,6 +21,7 @@ export default function InitialCache() {
     const setCameraBoardTypes = CacheStore.setCameraBoardTypes();
     const setBoardTypes = CacheStore.setBoardTypes();
     const setAvailableReports = CacheStore.setAvailableReports();
+    const availableReports = CacheStore.availableReports();
     const userPermissions = UserStore.userPermissions();
     const setUserTimeZone = UserStore.setUserTimeZone();
 
@@ -28,15 +29,25 @@ export default function InitialCache() {
 
     useSafeEffect(() => {
         const init = async () => {
-            const [cameraBoardTypes, availableReports] = await Promise.all([getCameraBoardTypes(), getAvailableReports()]);
+            const cameraBoardTypes = await getCameraBoardTypes();
             const userTimeZone = moment.tz.guess();
             setCameraBoardTypes(cameraBoardTypes);
-            setAvailableReports(availableReports.grouped);
             setUserTimeZone(userTimeZone);
         };
         init();
     }, []);
-    
+
+    useEffect(() => {
+        (async () => {
+            if (!auth.currentUser || !userPermissions.reports || Object.keys(availableReports).length > 0) {
+                return;
+            }
+            const token = auth.currentUser.accessToken;
+            const availableReportsData = await getAvailableReports(token);
+            setAvailableReports(availableReportsData.grouped);
+        })();
+    }, [auth.currentUser, availableReports, userPermissions]);
+
     const bulk = useMemo(() => {
         if (Object.keys(userPermissions).length === 0) {
             return [];

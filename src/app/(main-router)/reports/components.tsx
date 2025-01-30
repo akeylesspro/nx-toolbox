@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { GenericReport, getReport } from "./helpers";
 import moment from "moment";
 import { displayFormatPhoneNumber, formatCarNumber, renderOnce, timestamp_to_string } from "akeyless-client-commons/helpers";
-import { CountryOptions, Geo, TObject } from "akeyless-types-commons";
-import { BooleanUi, GeoUi, Loader, PhoneUI, Table, TableProps, TimesUI } from "akeyless-client-commons/components";
+import { CountryOptions, Geo, ReportMetaDataType, TObject } from "akeyless-types-commons";
+import { BooleanUi, GeoUi, GeoUiProps, Loader, NumberUI, PhoneUI, Table, TableProps, TimesUI } from "akeyless-client-commons/components";
 import { CarPlate } from "akeyless-assets-commons";
 import { Timestamp } from "firebase/firestore";
 
@@ -61,7 +61,7 @@ interface PropsWithReportId {
 /// Report button
 export const ReportButton = memo(({ reportId }: PropsWithReportId) => {
     const addPopup = PopupsStore.addPopup();
-
+    const { t } = useTranslation();
     const currentLanguage = SettingsStore.currentLanguage();
     const reportsTranslation = CacheStore.getTranslation()("reports");
     const reportName = reportsTranslation["name__" + reportId];
@@ -72,11 +72,15 @@ export const ReportButton = memo(({ reportId }: PropsWithReportId) => {
             id: "report " + reportId,
             type: "custom",
             headerContent: reportNameUi,
-            initialPosition: { top: "100px", left: "50px" },
+            headerIcon: t("reports"),
+            initialPosition: { top: "10px", left: "10px" },
+            className: "w-[98%] h-[98%] ",
+            contentClassName: "w-full h-[90%] p-4",
+            minimize: { enabled: true },
         });
     };
     return (
-        <Button className="w-full mx-2" title={reportNameUi} disabled={!reportName} onClick={onClick}>
+        <Button className="w-full mx-2 " title={reportNameUi} disabled={!reportName} onClick={onClick}>
             {reportNameUi}
         </Button>
     );
@@ -119,14 +123,16 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
     }, []);
 
     const headers = reportData?.meta.headers.map((header) => {
-        const headerUi = reportsTranslation["header__" + header.name] || header.name;
+        const headerUi = reportsTranslation["header__" + header.name] || header.name.replace("_", " ");
         return headerUi;
     });
-
+    const sortKeys = reportData?.meta.headers.map((header) => header.name);
     const keysToRender = reportData?.meta.headers.map((header, index) => {
         const headerType = header.type;
         const headerName = header.name;
-        const rule = ["datetime", "car_number", "phone"].includes(headerType);
+        const rule = (["datetime", "date", "time", "car_number", "phone", "number", "geo", "boolean", ""] as ReportMetaDataType[]).includes(
+            headerType
+        );
         const key = rule ? headerName + "_ui" : headerName;
         return key;
     });
@@ -138,33 +144,44 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
                 const header = reportData.meta.headers[cellIndex];
                 const headerType = header.type;
                 const headerName = header.name;
-
+                if ([null, ""].includes(cell as any)) {
+                    result[headerName + "_ui"] = "";
+                    result[headerName] = "";
+                    return;
+                }
+                result[headerName] = cell;
                 switch (headerType) {
                     case "datetime":
-                        result[headerName + "_ui"] = <TimesUI timestamp={new Date(cell)} tz={userTimeZone} direction={direction} />;
+                        result[headerName + "_ui"] = <TimesUI timestamp={new Date(cell as Date)} tz={userTimeZone} direction={direction} />;
                         break;
                     case "date":
                         result[headerName + "_ui"] = (
-                            <TimesUI timestamp={new Date(cell)} tz={userTimeZone} format="DD/MM/YYYY" direction={direction} />
+                            <TimesUI timestamp={new Date(cell as Date)} tz={userTimeZone} format="DD/MM/YYYY" direction={direction} />
                         );
                         break;
                     case "time":
-                        result[headerName + "_ui"] = <TimesUI timestamp={new Date(cell)} tz={userTimeZone} format="hh:mm:ss" direction={direction} />;
+                        result[headerName + "_ui"] = (
+                            <TimesUI timestamp={new Date(cell as Date)} tz={userTimeZone} format="hh:mm:ss" direction={direction} />
+                        );
                         break;
                     case "car_number":
-                        result[headerName + "_ui"] = formatCarNumber(cell);
+                        result[headerName + "_ui"] = formatCarNumber(cell as string);
                         break;
                     case "phone":
-                        result[headerName + "_ui"] = <PhoneUI phone={cell} direction={direction} />;
+                        result[headerName + "_ui"] = <PhoneUI phone={cell as string} direction={direction} />;
                         break;
                     case "boolean":
                         result[headerName + "_ui"] = <BooleanUi value={Boolean(cell)} />;
                         break;
                     case "geo":
-                        result[headerName + "_ui"] = <GeoUi value={{ lat: 22 }} />;
+                        result[headerName + "_ui"] = <GeoUi value={cell as GeoUiProps["value"]} />;
+                        break;
+                    case "number":
+                        result[headerName + "_ui"] = <NumberUI number={cell as string} direction={direction} />;
+                        // result[headerName + "_ui"] = <NumberUI number={cell as string | number} direction={direction} />;
                         break;
                     default:
-                        result[headerName] = cell;
+                        break;
                 }
             });
             return result;
@@ -180,14 +197,16 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
         direction: direction,
         headers: headers!,
         keysToRender: keysToRender!,
-        sortKeys: keysToRender,
+        sortKeys: sortKeys,
         // styles
-        headerStyle: { backgroundColor: "#5f9ea0", height: "40px", fontSize: "18px" },
-        containerHeaderClassName: "h-12 justify-between ",
-        containerClassName: "min-w-[1000px] p-4 h-[600px]",
-        cellClassName: "_ellipsis text-start h-10  px-2 w-40",
-        tableContainerClass: "w-full",
+        containerHeaderClassName: "h-12 justify-between",
+        containerClassName: "_full ",
+        tableContainerClass: "_full",
+        cellClassName: "_ellipsis text-start p-1 text-sl text-xs w-fit max-w-[20px]",
+        headerCellClassName: "px-0.5 text-sm w-fit max-w-[20px]",
+        headerClassName: " bg-[#5f9ea0] h-8 ",
         searchInputClassName: "h-10 w-1/4",
+        zebraStriping: {},
         // labels
         searchPlaceHolder: t("search"),
         sortLabel: t("sort_by"),

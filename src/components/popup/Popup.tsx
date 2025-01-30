@@ -33,6 +33,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
         parentRef,
         className = " ",
         initialPosition,
+        contentClassName = "",
     } = props;
 
     const { t } = useTranslation();
@@ -44,7 +45,6 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
     const minimizedPopups = PopupsStore.minimizedPopups();
     const contentRef = useRef<HTMLDivElement>(null);
     const popupRef = useRef<HTMLDivElement>(null);
-
     const [minSize, setMinSize] = useState({ width: 300, height: 150 });
 
     const { isDragging, startDragging, position, setPosition } = useDragAndDrop({
@@ -148,12 +148,24 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                         </button>
                     )}
                     {maximize?.enabled && (
-                        <button title={t("maximize")} onClick={maximizePopupHandler} className="center text-white w-8 h-full hover:bg-gray-500">
+                        <button
+                            style={{ pointerEvents: "auto" }}
+                            title={t("maximize")}
+                            onClick={maximizePopupHandler}
+                            className="center text-white w-8 h-full hover:bg-gray-500"
+                        >
                             <i className="fa-light fa-square"></i>
                         </button>
                     )}
                     {minimize?.enabled && (
-                        <button title={t("minimize")} onClick={() => minimizePopup(id)} className="center text-white w-8 h-full hover:bg-gray-500">
+                        <button
+                            style={{ pointerEvents: "auto" }}
+                            title={t("minimize")}
+                            onClick={() => {
+                                minimizePopup(id);
+                            }}
+                            className="center text-white w-8 h-full hover:bg-gray-500"
+                        >
                             <i className="fa-solid fa-window-minimize"></i>
                         </button>
                     )}
@@ -195,7 +207,7 @@ const Popup = memo((props: PopUpProps & { parentRef: React.RefObject<HTMLDivElem
                 {/* Header */}
                 {renderHeader()}
                 {/* Content */}
-                <div className="flex-1 min-w-fit _center" ref={contentRef}>
+                <div className={cn("flex-1 min-w-fit _center", contentClassName)} ref={contentRef}>
                     <Wrapper element={element} exitPopUp={exitPopUp} position={position} />
                 </div>
 

@@ -26,6 +26,7 @@ export interface PopUpProps {
         height?: number;
         width?: number;
     };
+    contentClassName?: string;
 }
 
 export interface useDragAndDropProps {

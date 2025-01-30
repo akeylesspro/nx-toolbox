@@ -1,7 +1,7 @@
 import axios from "axios";
 import { biUrl } from "@/lib/helpers";
 import { auth } from "akeyless-client-commons/helpers";
-import { TObject } from "akeyless-types-commons";
+import { ReportDataRow, ReportMeta, ReportMetaHeader, TObject } from "akeyless-types-commons";
 export interface availableReports {
     list: TObject<string>[];
     grouped: TObject<string>;
@@ -26,8 +26,8 @@ export const getAvailableReports = async (): Promise<availableReports> => {
 };
 
 export interface GenericReport {
-    meta: { headers: { name: string; type: string }[] };
-    data: string[][];
+    meta: ReportMeta;
+    data: ReportDataRow[];
 }
 export const getReport = async (reportId: string): Promise<GenericReport | null> => {
     try {

@@ -2,11 +2,11 @@ import axios from "axios";
 import { biUrl } from "@/lib/helpers";
 import { auth } from "akeyless-client-commons/helpers";
 import { ReportDataRow, ReportMeta, ReportMetaHeader, TObject } from "akeyless-types-commons";
-export interface availableReports {
+export interface AvailableReports {
     list: TObject<string>[];
     grouped: TObject<string>;
 }
-export const getAvailableReports = async (token: string): Promise<availableReports> => {
+export const getAvailableReports = async (token: string): Promise<AvailableReports> => {
     try {
         const response = await axios({
             method: "GET",
@@ -21,6 +21,25 @@ export const getAvailableReports = async (token: string): Promise<availableRepor
         return response.data.data;
     } catch (error) {
         console.error("error fetching available reports", error);
+        return { list: [], grouped: {} };
+    }
+};
+
+export const getAllReports = async (token: string): Promise<AvailableReports> => {
+    try {
+        const response = await axios({
+            method: "GET",
+            headers: {
+                authorization: "bearer " + token,
+            },
+            url: biUrl + "/reports/all",
+        });
+        if (!response.data.success) {
+            throw new Error(response.data.error || "reports/all error");
+        }
+        return response.data.data;
+    } catch (error) {
+        console.error("error fetching all reports", error);
         return { list: [], grouped: {} };
     }
 };

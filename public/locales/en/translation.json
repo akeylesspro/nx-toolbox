@@ -112,5 +112,8 @@
     "permissions": "Permissions",
     "reports": "Reports",
     "not_allowed_page": "You are not allowed to view this page",
-    "back_to_home_page": "Back to home page"
+    "back_to_home_page": "Back to home page",
+    "report_error": "Error in report {reportId}",
+    "report_server_error": "Unable to generate report",
+    "last_login": "Last login"
 }

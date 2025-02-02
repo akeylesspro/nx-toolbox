@@ -1,10 +1,11 @@
 import { setCookie } from "cookies-next";
 import moment from "moment";
 import { signInWithPhoneNumber } from "@firebase/auth";
-import { auth, local_israel_phone_format, query_document } from "akeyless-client-commons/helpers";
+import { auth, fire_base_TIME_TEMP, local_israel_phone_format, query_document } from "akeyless-client-commons/helpers";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { NxUser, TObject } from "akeyless-types-commons";
 import { parsePermissions } from "akeyless-client-commons/helpers";
+import { set_document } from "akeyless-client-commons/helpers";
 
 export const setAuthCookie = (token: string) => {
     const expiresAt = moment().set({ hour: 6, minute: 0, second: 0, millisecond: 0 });
@@ -49,6 +50,7 @@ export const onPhoneSubmit = async (
 export const onCodeSubmit = async (code: string, loginUser: NxUser, setActiveUser: (t: NxUser) => void, router: AppRouterInstance) => {
     const result = await window.confirmationResult.confirm(code);
     const token = await result.user.getIdToken();
+    await set_document("nx-users", loginUser.id!, { last_login: fire_base_TIME_TEMP() });
     setAuthCookie(token);
     setActiveUser(loginUser);
     router.push("/");

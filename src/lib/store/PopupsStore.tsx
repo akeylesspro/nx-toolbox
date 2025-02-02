@@ -53,7 +53,7 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
             maxZIndex: newZIndex,
         }));
     },
-    minimize: (id) => {
+    minimize: (id) => {        
         set((state) => {
             const popupIndex = state.popups.findIndex((popup) => popup.id === id);
             if (popupIndex !== -1) {

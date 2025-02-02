@@ -2,7 +2,7 @@
 import { NxUser, TObject } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { CacheStore, SettingsStore } from "@/lib/store";
-import { Loader, ModularForm, PhoneUI, Table, TableProps } from "akeyless-client-commons/components";
+import { Loader, ModularForm, PhoneUI, Table, TableProps, TimesUI } from "akeyless-client-commons/components";
 import { Dispatch, FormEvent, memo, RefObject, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormElement } from "akeyless-client-commons/types";
 import { Button } from "@/components";
@@ -21,9 +21,9 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
     const direction = SettingsStore.direction();
     const isRtl = SettingsStore.isRtl();
     const clientsObject = CacheStore.clientsObject();
-    const headers = [t("name"), t("permissions"), t("clients"), t("phone_number"), t("actions")];
+    const headers = [t("name"), t("permissions"), t("clients"), t("phone_number"), t("last_login"), t("actions")];
 
-    const keysToRender = useMemo(() => ["name_ui", "permissions_ui", "clients_ui", "phone_number_ui", "actions"], []);
+    const keysToRender = useMemo(() => ["name_ui", "permissions_ui", "clients_ui", "phone_number_ui", "last_login_ui", "actions"], []);
 
     const sortKeys = useMemo(() => ["name_ui", "permissions_ui", "clients_ui", "phone_number_ui"], []);
 
@@ -36,12 +36,14 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
             const permissionsUi = Array.from(new Set(userFeatures.map((feature) => t(feature.split("__")[0]))))
                 .join(", ")
                 .trim();
+            const last_login_ui = user.last_login ? <TimesUI timestamp={user.last_login} direction={direction} /> : "";
 
             return {
                 ...user,
                 name_ui: userNameFormat(user),
                 permissions_ui: permissionsUi,
                 clients_ui: clientsUi,
+                last_login_ui,
                 phone_number_ui: <PhoneUI phone={user.phone_number!} direction={direction} />,
                 clients_for_search: clientsData.map((c) => c?.key || "").join(", "),
                 actions: (
@@ -253,20 +255,22 @@ export const FeaturesForm = memo(
 
         return (
             <div style={{ display: display }} className="justify-evenly overflow-auto h-[320px] w-full">
-                {Object.entries(displayFeatures).map(([entity, featureArray], index, array) => {
-                    const lineClassNames = index < array.length - 1 ? `${isRtl ? "border-l-[2px]" : "border-r-[2px]"}` : "";
-                    return (
-                        <div key={entity} className={cn(lineClassNames, `border-[#5f9ea0] px-1.5`)}>
-                            <CheckBoxGroup
-                                entity={entity}
-                                features={featureArray}
-                                onChecked={onChecked}
-                                selectedFeatures={selectedFeatures}
-                                user={user}
-                            />
-                        </div>
-                    );
-                })}
+                {Object.entries(displayFeatures)
+                    .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+                    .map(([entity, featureArray], index, array) => {
+                        const lineClassNames = index < array.length - 1 ? `${isRtl ? "border-l-[2px]" : "border-r-[2px]"}` : "";
+                        return (
+                            <div key={entity} className={cn(lineClassNames, `border-[#5f9ea0] px-1.5`)}>
+                                <CheckBoxGroup
+                                    entity={entity}
+                                    features={featureArray}
+                                    onChecked={onChecked}
+                                    selectedFeatures={selectedFeatures}
+                                    user={user}
+                                />
+                            </div>
+                        );
+                    })}
             </div>
         );
     },

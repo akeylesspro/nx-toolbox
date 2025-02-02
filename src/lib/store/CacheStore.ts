@@ -26,9 +26,11 @@ export interface CacheStoreType {
     features: TObject<any>;
     setFeatures: SetState<TObject<any>>;
     getFeaturesByScope: (scope: string) => string[];
-    getTranslation: (entity: string) => TObject<any> | null;
-    getFeatureTranslation: (dictionary: string, key: string) => string;
-    getFeaturesTranslation: (dictionary: string) => TObject<string>;
+    getTranslation: (entity: string) => TObject<any>;
+    getTranslationByKey: (scope: string, key: string) => string;
+    getFeaturesTranslation: (scope: string) => TObject<string>;
+    availableReports: TObject<any>;
+    setAvailableReports: SetState<TObject<any>>;
 }
 
 export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
@@ -61,31 +63,26 @@ export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
         const { currentLanguage } = SettingsStoreBase.getState();
         const entityTranslation = translation[entity];
         if (!entityTranslation) {
-            return null;
-        }
-        return entityTranslation[currentLanguage] || null;
-    },
-    getFeatureTranslation: (dictionary, key) => {
-        const featuresTranslation = get().getTranslation("features");
-        if (!featuresTranslation) {
-            return "N/A";
-        }
-
-        return featuresTranslation[`${dictionary}__${key}`] || "N/A";
-    },
-    getFeaturesTranslation: (dictionary) => {
-        const featuresTranslation = get().getTranslation("features");
-        if (!featuresTranslation) {
             return {};
         }
+        return entityTranslation[currentLanguage] || {};
+    },
+    getTranslationByKey: (scope, key) => {
+        const featuresTranslation = get().getTranslation(scope);
+        return featuresTranslation[key] || "N/A";
+    },
+    getFeaturesTranslation: (scope) => {
+        const featuresTranslation = get().getTranslation("features");
         const result: TObject<string> = {};
         Object.entries(featuresTranslation).forEach(([key, value]) => {
-            if (key.startsWith(dictionary)) {
+            if (key.startsWith(scope)) {
                 result[key] = value;
             }
         });
         return result;
     },
+    availableReports: {},
+    setAvailableReports: (updater) => setState(updater, set, "availableReports"),
 }));
 
 export const CacheStore = createSelectors<CacheStoreType>(CacheStoreBase);

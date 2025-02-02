@@ -45,6 +45,7 @@ export function Auth() {
                     throw new Error("activeUser is null");
                 }
                 if (activeUser && !activeUser.clients) {
+                    // const user = await get_user_by_phone("+972547380791");
                     const user = await get_user_by_phone(activeUser!.phone_number!);
                     if (!user) {
                         throw new Error("user not found");

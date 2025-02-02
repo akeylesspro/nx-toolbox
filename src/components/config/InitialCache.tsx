@@ -1,10 +1,13 @@
 "use client";
 import { getCameraBoardTypes } from "@/app/(main-router)/boards/helpers";
+import { getAvailableReports } from "@/app/(main-router)/reports/helpers";
 import { CacheStore, UserStore } from "@/lib/store";
+import { auth } from "akeyless-client-commons/helpers";
 import { useSafeEffect, useSnapshotBulk } from "akeyless-client-commons/hooks";
 import { OnSnapshotConfig } from "akeyless-client-commons/types";
 import { TObject } from "akeyless-types-commons";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import moment from "moment-timezone";
 
 export default function InitialCache() {
     const setBoards = CacheStore.setBoards();
@@ -17,16 +20,34 @@ export default function InitialCache() {
     const setFeatures = CacheStore.setFeatures();
     const setCameraBoardTypes = CacheStore.setCameraBoardTypes();
     const setBoardTypes = CacheStore.setBoardTypes();
+    const setAvailableReports = CacheStore.setAvailableReports();
+    const availableReports = CacheStore.availableReports();
     const userPermissions = UserStore.userPermissions();
+    const setUserTimeZone = UserStore.setUserTimeZone();
+
     const pushedRef = useRef<string[]>([]);
 
     useSafeEffect(() => {
         const init = async () => {
             const cameraBoardTypes = await getCameraBoardTypes();
+            const userTimeZone = moment.tz.guess();
             setCameraBoardTypes(cameraBoardTypes);
+            setUserTimeZone(userTimeZone);
         };
         init();
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (!auth.currentUser || !userPermissions.reports || Object.keys(availableReports).length > 0) {
+                return;
+            }
+            const token = auth.currentUser.accessToken;
+            const availableReportsData = await getAvailableReports(token);
+            setAvailableReports(availableReportsData.grouped);
+        })();
+    }, [auth.currentUser, availableReports, userPermissions]);
+
     const bulk = useMemo(() => {
         if (Object.keys(userPermissions).length === 0) {
             return [];
@@ -305,7 +326,7 @@ export default function InitialCache() {
         }
 
         return result;
-    }, [userPermissions, pushedRef]);
+    }, [userPermissions, JSON.stringify(pushedRef.current)]);
     useSnapshotBulk(bulk, "init snapshot");
 
     return null;

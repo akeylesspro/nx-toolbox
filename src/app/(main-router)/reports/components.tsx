@@ -17,15 +17,15 @@ export const Header = () => {
     return <div className={`w-full text-center py-2.5 text-4xl font-bold border-b-2 ${PRIMARY_BORDER}`}>{t("reports")}</div>;
 };
 
-///  Report groups
+///  Report groups container
 export const ReportGroups = () => {
     const availableReports = CacheStore.availableReports();
-    useEffect(() => {
-        console.log("availableReports", availableReports);
-    }, [availableReports]);
+    const allReports = CacheStore.allReports();
+    const userPermissions = UserStore.userPermissions();
+
     return (
         <div className={`w-full overflow-auto flex flex-wrap  gap-4 `}>
-            {Object.keys(availableReports).map((groupName, index) => {
+            {Object.keys(userPermissions.toolbox?.super_admin ? allReports : availableReports).map((groupName, index) => {
                 return <ReportGroup key={groupName + index} groupName={groupName} reports={availableReports[groupName]} />;
             })}
         </div>

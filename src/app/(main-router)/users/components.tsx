@@ -223,6 +223,7 @@ export const FeaturesForm = memo(
     ({ display, setSelectedFeatures, selectedFeatures, user }: FeaturesFormProps) => {
         const allFeatures = CacheStore.features();
         const isRtl = SettingsStore.isRtl();
+        const allReports = CacheStore.allReports();
 
         const displayFeatures = useMemo(() => {
             const data = { ...allFeatures };
@@ -231,6 +232,7 @@ export const FeaturesForm = memo(
                 delete data["dashboard"];
             }
             const result: TObject<string[]> = {};
+
             Object.entries(data).forEach(([key, value]) => {
                 const features: string[] = [];
                 value.forEach((feature: string) => {
@@ -238,8 +240,16 @@ export const FeaturesForm = memo(
                 });
                 result[key] = features;
             });
+            result.reports = [];
+            Object.values(allReports).forEach((value) => {
+                const reports: string[] = [];
+                value.forEach((report: string) => {
+                    reports.push(`reports__${report}`);
+                });
+                result.reports.push(...reports);
+            });
             return result;
-        }, [allFeatures, user]);
+        }, [allFeatures, user, allReports]);
 
         const onChecked = useCallback(
             (feature: string) => {
@@ -290,7 +300,10 @@ interface CheckBoxGroupProps {
 export const CheckBoxGroup = ({ features, onChecked, selectedFeatures, entity, user }: CheckBoxGroupProps) => {
     const { t } = useTranslation();
     const isDashboard = entity === "dashboard";
+    const isReport = entity === "reports";
+    const currentLanguage = SettingsStore.currentLanguage();
     const entityTranslation = CacheStore.getFeaturesTranslation()(entity);
+    const reportsTranslation = CacheStore.getTranslation()("reports");
     const clientsObject = CacheStore.clientsObject();
 
     const [title, setTitle] = useState("");
@@ -305,7 +318,7 @@ export const CheckBoxGroup = ({ features, onChecked, selectedFeatures, entity, u
                     console.error("error from getting user site: ", error);
                 });
         }
-    }, []);
+    }, []); 
     return (
         <div className="flex flex-col gap-4 relative">
             <div className={`w-full text-start px-2 sticky top-0 bg-white`}>
@@ -315,7 +328,7 @@ export const CheckBoxGroup = ({ features, onChecked, selectedFeatures, entity, u
 
             <div>
                 {features.map((feature) => {
-                    const featureName = entityTranslation[feature];
+                    const featureName = isReport ? reportsTranslation[feature.replace("reports__", "name__")] : entityTranslation[feature];
                     return (
                         <FeatureCheckbox
                             featureName={featureName}

@@ -31,6 +31,8 @@ export interface CacheStoreType {
     getFeaturesTranslation: (scope: string) => TObject<string>;
     availableReports: TObject<any>;
     setAvailableReports: SetState<TObject<any>>;
+    allReports: TObject<any>;
+    setAllReports: SetState<TObject<any>>;
 }
 
 export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
@@ -83,6 +85,8 @@ export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
     },
     availableReports: {},
     setAvailableReports: (updater) => setState(updater, set, "availableReports"),
+    allReports: {},
+    setAllReports: (updater) => setState(updater, set, "allReports"),
 }));
 
 export const CacheStore = createSelectors<CacheStoreType>(CacheStoreBase);

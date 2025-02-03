@@ -1,6 +1,6 @@
 "use client";
 import { getCameraBoardTypes } from "@/app/(main-router)/boards/helpers";
-import { getAvailableReports } from "@/app/(main-router)/reports/helpers";
+import { getAllReports, getAvailableReports } from "@/app/(main-router)/reports/helpers";
 import { CacheStore, UserStore } from "@/lib/store";
 import { auth } from "akeyless-client-commons/helpers";
 import { useSafeEffect, useSnapshotBulk } from "akeyless-client-commons/hooks";
@@ -20,13 +20,16 @@ export default function InitialCache() {
     const setFeatures = CacheStore.setFeatures();
     const setCameraBoardTypes = CacheStore.setCameraBoardTypes();
     const setBoardTypes = CacheStore.setBoardTypes();
-    const setAvailableReports = CacheStore.setAvailableReports();
+    const allReports = CacheStore.allReports();
+    const setAllReports = CacheStore.setAllReports();
     const availableReports = CacheStore.availableReports();
+    const setAvailableReports = CacheStore.setAvailableReports();
     const userPermissions = UserStore.userPermissions();
     const setUserTimeZone = UserStore.setUserTimeZone();
 
     const pushedRef = useRef<string[]>([]);
 
+    /// init function
     useSafeEffect(() => {
         const init = async () => {
             const cameraBoardTypes = await getCameraBoardTypes();
@@ -37,9 +40,26 @@ export default function InitialCache() {
         init();
     }, []);
 
+    /// get all reports
     useEffect(() => {
         (async () => {
-            if (!auth.currentUser || !userPermissions.reports || Object.keys(availableReports).length > 0) {
+            if (!auth.currentUser || !userPermissions.toolbox?.super_admin || Object.keys(allReports).length > 0) {
+                return;
+            }
+            const token = auth.currentUser.accessToken;
+            const allReportsData = await getAllReports(token);
+            setAllReports(allReportsData.grouped);
+        })();
+    }, [auth.currentUser, allReports, userPermissions]);
+
+    /// get available reports
+    useEffect(() => {
+        (async () => {
+            if (
+                !auth.currentUser ||
+                (!userPermissions.reports && !userPermissions.toolbox?.super_admin) ||
+                Object.keys(availableReports).length > 0
+            ) {
                 return;
             }
             const token = auth.currentUser.accessToken;
@@ -47,7 +67,7 @@ export default function InitialCache() {
             setAvailableReports(availableReportsData.grouped);
         })();
     }, [auth.currentUser, availableReports, userPermissions]);
-
+    /// snapshots bulk
     const bulk = useMemo(() => {
         if (Object.keys(userPermissions).length === 0) {
             return [];

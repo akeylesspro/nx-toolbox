@@ -99,11 +99,7 @@ interface PropsWithUser {
 const AddUser = () => {
     const { t } = useTranslation();
     const onAddClick = useAddUser();
-    return (
-        <>
-            <TableButton type="add" onClick={onAddClick} title={t("add_user")} />
-        </>
-    );
+    return <TableButton type="add" onClick={onAddClick} title={t("add_user")} />;
 };
 const EditUser = ({ user }: PropsWithUser) => {
     const onEditClick = useEditUser();
@@ -318,7 +314,7 @@ export const CheckBoxGroup = ({ features, onChecked, selectedFeatures, entity, u
                     console.error("error from getting user site: ", error);
                 });
         }
-    }, []); 
+    }, []);
     return (
         <div className="flex flex-col gap-4 relative">
             <div className={`w-full text-start px-2 sticky top-0 bg-white`}>

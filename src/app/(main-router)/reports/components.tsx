@@ -22,11 +22,11 @@ export const ReportGroups = () => {
     const availableReports = CacheStore.availableReports();
     const allReports = CacheStore.allReports();
     const userPermissions = UserStore.userPermissions();
-
+    const reportsToRender = userPermissions.toolbox?.super_admin ? allReports : availableReports;
     return (
         <div className={`w-full overflow-auto flex flex-wrap  gap-4 `}>
-            {Object.keys(userPermissions.toolbox?.super_admin ? allReports : availableReports).map((groupName, index) => {
-                return <ReportGroup key={groupName + index} groupName={groupName} reports={availableReports[groupName]} />;
+            {Object.keys(reportsToRender).map((groupName, index) => {
+                return <ReportGroup key={groupName + index} groupName={groupName} reports={reportsToRender[groupName]} />;
             })}
         </div>
     );
@@ -39,6 +39,7 @@ interface ReportGroupProps {
 }
 export const ReportGroup = ({ groupName, reports }: ReportGroupProps) => {
     const currentLanguage = SettingsStore.currentLanguage();
+    const translation = CacheStore.translation();
     const reportsTranslation = CacheStore.getTranslation()("reports");
     const groupNameUi = reportsTranslation["group__" + groupName] || groupName;
     return (
@@ -46,7 +47,8 @@ export const ReportGroup = ({ groupName, reports }: ReportGroupProps) => {
             <div className={`border-b-2 ${PRIMARY_BORDER} text-2xl text-center pb-1`}>{groupNameUi}</div>
             <div className={`flex flex-wrap gap-2 justify-center max-h-full overflow-auto`}>
                 {reports.map((reportId, index) => {
-                    return <ReportButton key={reportId + index} reportId={reportId} />;
+                    const reportName = reportsTranslation["name__" + reportId];
+                    return <ReportButton key={reportId + index} reportId={reportId} reportName={reportName} />;
                 })}
             </div>
         </div>
@@ -58,12 +60,9 @@ interface PropsWithReportId {
 }
 
 /// Report button
-export const ReportButton = memo(({ reportId }: PropsWithReportId) => {
+export const ReportButton = memo(({ reportId, reportName }: PropsWithReportId & { reportName: string }) => {
     const addPopup = PopupsStore.addPopup();
     const { t } = useTranslation();
-    const currentLanguage = SettingsStore.currentLanguage();
-    const reportsTranslation = CacheStore.getTranslation()("reports");
-    const reportName = reportsTranslation["name__" + reportId];
     const reportNameUi = reportName || reportId;
     const onClick = () => {
         addPopup({

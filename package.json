@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "start": "npm run clear8003 && next dev -p 8003",
+        "startAnas":"next dev -p 8003",
         "build": "next build",
         "startBuild": "next start -p 8003",
         "test": "npm run build && npm run startBuild",

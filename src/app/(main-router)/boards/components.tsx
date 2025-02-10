@@ -3,12 +3,13 @@ import { Board, BoardStatus } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { CacheStore, SettingsStore } from "@/lib/store";
 import { Loader, Table, TimesUI } from "akeyless-client-commons/components";
-import { forwardRef, memo, useMemo } from "react";
+import { forwardRef, memo, useEffect, useMemo } from "react";
 import { TableProps } from "akeyless-client-commons/components";
 import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
 import Image from "next/image";
 import { TableButton, TableOptionsWarper } from "@/components/utils";
-
+import { timestamp_to_string } from "akeyless-client-commons/helpers";
+import { Timestamp } from "firebase/firestore";
 interface PropsWithBoard {
     board: Board;
 }
@@ -25,7 +26,7 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
 
     const keysToRender = useMemo(() => ["imei", "sim_ui", "ui_status", "type", "comments", "ui_uploaded", "actions"], []);
 
-    const sortKeys = useMemo(() => ["imei", "sim", "status", "type", "comments", "created_date", "actions"], []);
+    const sortKeys = useMemo(() => ["imei","sim", "status", "type", "comments","created_date", "actions"], []);
 
     const filterableColumns = [
         { header: t("type"), dataKey: "type" },
@@ -44,6 +45,7 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
                     </TableOptionsWarper>
                 ),
                 ui_status: t(BoardStatus[board.status]) || "N/A",
+                ui_uploadedd: board.uploaded ? timestamp_to_string(board.uploaded as Timestamp) : "",
                 ui_uploaded: <TimesUI timestamp={board.uploaded} />,
                 sim_ui: (
                     <div style={{ direction: "ltr" }} className={`w-full ${isRtl ? "text-end" : "text-start"}`}>
@@ -58,13 +60,15 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         /// settings
         includeSearch: true,
         maxRows: 100,
-        /// data
+        // / data
         data: formattedData,
         direction: direction,
         headers: headers,
         keysToRender: keysToRender,
         filterableColumns: filterableColumns,
         sortKeys: sortKeys,
+
+        
         /// styles
         headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
         containerHeaderClassName: "h-12 justify-between",
@@ -72,8 +76,10 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         cellClassName: "_ellipsis text-start h-10 px-3",
         tableContainerClass: "flex-1",
         searchInputClassName: "h-10 w-1/4",
+
+
         /// labels
-        searchPlaceHolder: t("search"),
+        searchPlaceHolder: ("Search"),
         filterLabel: t("filter_by"),
         sortLabel: t("sort_by"),
         maxRowsLabel1: t("maxRowsLabel1"),
@@ -84,6 +90,7 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
     return (
         <div className="p-3">
             <div style={{ direction: direction }} className="w-full h-full _center">
+                
                 {formattedData.length ? <Table {...tableProps} /> : <Loader size={200} />}
             </div>
         </div>

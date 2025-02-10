@@ -11,7 +11,8 @@ import { useAddUser, useDeleteUser, useEditUser } from "./hooks";
 import { cn } from "@/lib/utils";
 import { PRIMARY_COLOR } from "@/lib";
 import { get_document_by_id, multiStringFormat, query_document, userNameFormat } from "akeyless-client-commons/helpers";
-
+import { Timestamp } from "firebase/firestore";
+import { timestamp_to_string } from "akeyless-client-commons/helpers";
 // users table
 interface UsersTableProps {
     data: NxUser[];
@@ -31,19 +32,20 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
         return data.map((user) => {
             const userClients = user.clients || [];
             const clientsData = userClients.map((client) => clientsObject[client]);
+            
             const clientsUi = clientsData.map((c) => c?.name || "").join(", ");
             const userFeatures = user.features || [];
             const permissionsUi = Array.from(new Set(userFeatures.map((feature) => t(feature.split("__")[0]))))
                 .join(", ")
                 .trim();
             const last_login_ui = user.last_login ? <TimesUI timestamp={user.last_login} direction={direction} /> : "";
-
             return {
                 ...user,
                 name_ui: userNameFormat(user),
                 permissions_ui: permissionsUi,
                 clients_ui: clientsUi,
                 last_login_ui,
+                Last_uploadedd_login_ui: user.last_login ? timestamp_to_string(user.last_login as any as Timestamp) : "",  
                 phone_number_ui: <PhoneUI phone={user.phone_number!} direction={direction} />,
                 clients_for_search: clientsData.map((c) => c?.key || "").join(", "),
                 actions: (
@@ -61,11 +63,13 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
         includeSearch: true,
         maxRows: 100,
         // data
+
         data: formattedData,
         direction: direction,
         headers: headers,
         keysToRender: keysToRender,
         sortKeys: sortKeys,
+
         // styles
         headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
         containerHeaderClassName: "h-12 justify-between",

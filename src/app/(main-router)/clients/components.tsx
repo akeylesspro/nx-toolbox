@@ -34,7 +34,7 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
                 ...client,
                 status_ui: t(client.status!),
                 language_ui: t(client.language || "he"),
-                ui_uploadedd: client.updated ? timestamp_to_string(client.updated as Timestamp) : "",
+                updatedAtString: client.updated ? timestamp_to_string(client.updated as Timestamp) : "",
                 updated: <TimesUI timestamp={client.updated} />,
                 actions: (
                     <TableOptionsWarper>
@@ -45,11 +45,12 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
             };
         });
     }, [data, isRtl]);
+    const numberMaxData=formattedData?.length;
 
     const tableProps: TableProps = {
         // settings
         includeSearch: true,
-        maxRows: 100,
+        maxRows :numberMaxData ,
         // data
         data: formattedData,
         direction: direction,

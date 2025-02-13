@@ -134,7 +134,7 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
         const key = rule ? headerName + "_ui" : headerName;
         return key;
     });
-    const exportToExcelKeys = reportData?.meta.headers.map((header) => header.name);
+    const exportToExcelKeys = reportData?.meta.headers.map((header) => t(header.name));
 
     const formattedData = useMemo(() => {
         return reportData?.data.map((row) => {
@@ -186,13 +186,15 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
             return result;
         });
     }, [reportData, isRtl]);
-    
+
     const excelFileName = `Report_${reportId}_${moment().format("DD-MM-YYYY HH:mm:ss")}`;
 
+
+    const numberMaxData = formattedData?.length;
     const tableProps: TableProps = {
         // settings
         includeSearch: true,
-        maxRows: 100,
+        maxRows: numberMaxData,
         // data
         data: formattedData!,
         direction: direction,
@@ -200,7 +202,7 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
         keysToRender: keysToRender!,
         sortKeys: sortKeys,
         exportToExcelKeys: exportToExcelKeys!,
-        excelFileName: excelFileName, 
+        excelFileName: excelFileName,
         // styles
         containerHeaderClassName: "h-12 justify-between",
         containerClassName: "_full ",

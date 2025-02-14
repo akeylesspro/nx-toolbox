@@ -9,6 +9,9 @@ import { Button } from "@/components";
 import { FeatureCheckbox, TableButton, TableOptionsWarper } from "@/components/utils";
 // import { FeatureCheckbox, TableButton, TableOptionsWarper, TimesUI } from "@/components/utils";
 import { useAddClient, useDeleteClient, useEditClient } from "./hooks";
+import { Timestamp } from "firebase/firestore";
+import { timestamp_to_string } from "akeyless-client-commons/helpers";
+
 
 // clients table
 interface ClientsTableProps {
@@ -31,6 +34,7 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
                 ...client,
                 status_ui: t(client.status!),
                 language_ui: t(client.language || "he"),
+                updatedAtString: client.updated ? timestamp_to_string(client.updated as Timestamp) : "",
                 updated: <TimesUI timestamp={client.updated} />,
                 actions: (
                     <TableOptionsWarper>
@@ -41,11 +45,12 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
             };
         });
     }, [data, isRtl]);
+    const numberMaxData=formattedData?.length;
 
     const tableProps: TableProps = {
         // settings
         includeSearch: true,
-        maxRows: 100,
+        maxRows :numberMaxData ,
         // data
         data: formattedData,
         direction: direction,

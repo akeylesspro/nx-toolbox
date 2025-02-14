@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "start": "npm run clear8003 && next dev -p 8003",
+        "startAnas": " next dev -p 8003",
         "build": "next build",
         "startBuild": "next start -p 8003",
         "test": "npm run build && npm run startBuild",
@@ -28,7 +29,7 @@
         "akeyless-assets-commons": "github:akeylesspro/akeyless-assets-commons",
         "akeyless-client-commons": "github:akeylesspro/akeyless-client-commons#main",
         "akeyless-server-commons": "github:akeylesspro/akeyless-server-commons",
-        "akeyless-types-commons": "github:akeylesspro/akeyless-types-commons#main",
+        "akeyless-types-commons": "github:akeylesspro/akeyless-types-commons",
         "autoprefixer": "^10.4.20",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -48,9 +49,11 @@
         "react-to-print": "^3.0.2",
         "tailwind-merge": "^2.5.4",
         "tailwindcss-animate": "^1.0.7",
+        "xlsx": "^0.18.5",
         "zustand": "^5.0.1"
     },
     "devDependencies": {
+        "@types/file-saver": "^2.0.7",
         "@types/node": "^22.10.2",
         "@types/qrcode": "^1.5.5",
         "@types/react": "^18.3.1",

@@ -82,7 +82,8 @@ export const ReportButton = memo(({ reportId, reportName }: PropsWithReportId & 
             {reportNameUi}
         </Button>
     );
-});
+}); //ReportButton
+
 ReportButton.displayName = "ReportButton";
 
 /// Report table
@@ -125,13 +126,21 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
         return headerUi;
     });
     const sortKeys = reportData?.meta.headers.map((header) => header.name);
+
     const keysToRender = reportData?.meta.headers.map((header, index) => {
         const headerType = header.type;
         const headerName = header.name;
-        const rule = (["datetime", "date", "time", "car_number", "phone", "number", "geo", "boolean", ""] as ReportMetaDataType[]).includes(
-            headerType
-        );
+        const rule = (["datetime", "date", "time", "car_number", "phone", "number", "geo", "boolean"] as ReportMetaDataType[]).includes(headerType);
         const key = rule ? headerName + "_ui" : headerName;
+        return key;
+    });
+
+    const exportToExcelKeys = reportData?.meta.headers.map((header) => {
+        const headerType = header.type;
+        const headerName = header.name;
+        const rule = (["datetime", "date", "time"] as ReportMetaDataType[]).includes(headerType);
+        const key = rule ? headerName + "_string" : headerName;
+
         return key;
     });
 
@@ -142,29 +151,38 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
                 const header = reportData.meta.headers[cellIndex];
                 const headerType = header.type;
                 const headerName = header.name;
+
                 if ([null, ""].includes(cell as any)) {
                     result[headerName + "_ui"] = "";
                     result[headerName] = "";
+                    result[headerName + "_string"] = "";
                     return;
                 }
+
                 result[headerName] = cell;
+
                 switch (headerType) {
                     case "datetime":
-                        result[headerName + "_ui"] = <TimesUI timestamp={new Date(cell as Date)} tz={userTimeZone} direction={direction} />;
+                        const formattedDateTime = new Date(cell as Date);
+                        result[headerName + "_ui"] = <TimesUI timestamp={formattedDateTime} tz={userTimeZone} direction={direction} />;
+                        result[headerName + "_string"] = timestamp_to_string(formattedDateTime, { tz: userTimeZone });
                         break;
                     case "date":
+                        const formattedDate = new Date(cell as Date);
                         result[headerName + "_ui"] = (
-                            <TimesUI timestamp={new Date(cell as Date)} tz={userTimeZone} format="DD/MM/YYYY" direction={direction} />
+                            <TimesUI timestamp={formattedDate} tz={userTimeZone} format="DD/MM/YYYY" direction={direction} />
                         );
+                        result[headerName + "_string"] = timestamp_to_string(formattedDate, { tz: userTimeZone, format: "DD/MM/YYYY" });
                         break;
                     case "time":
-                        result[headerName + "_ui"] = (
-                            <TimesUI timestamp={new Date(cell as Date)} tz={userTimeZone} format="hh:mm:ss" direction={direction} />
-                        );
+                        const formattedTime = new Date(cell as Date);
+                        result[headerName + "_ui"] = <TimesUI timestamp={formattedTime} tz={userTimeZone} format="hh:mm:ss" direction={direction} />;
+                        result[headerName + "_string"] = timestamp_to_string(formattedTime, { tz: userTimeZone, format: "hh:mm:ss" });
                         break;
                     case "car_number":
                         result[headerName + "_ui"] = formatCarNumber(cell as string);
                         break;
+
                     case "phone":
                         result[headerName + "_ui"] = <PhoneUI phone={cell as string} direction={direction} />;
                         break;
@@ -184,18 +202,23 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
             });
             return result;
         });
-    }, [reportData, isRtl]);
+    }, [reportData, isRtl, userTimeZone, direction]);
 
+    const excelFileName = `Report_${reportId}_${moment().format("DD-MM-YYYY_HH:mm:ss")}`;
+
+    const numberMaxData = formattedData?.length;
     const tableProps: TableProps = {
         // settings
         includeSearch: true,
-        maxRows: 100,
+        maxRows: numberMaxData,
         // data
         data: formattedData!,
         direction: direction,
         headers: headers!,
         keysToRender: keysToRender!,
         sortKeys: sortKeys,
+        exportToExcelKeys: exportToExcelKeys!,
+        excelFileName: excelFileName,
         // styles
         containerHeaderClassName: "h-12 justify-between",
         containerClassName: "_full ",

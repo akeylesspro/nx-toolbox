@@ -11,7 +11,8 @@ import { useAddUser, useDeleteUser, useEditUser } from "./hooks";
 import { cn } from "@/lib/utils";
 import { PRIMARY_COLOR } from "@/lib";
 import { get_document_by_id, multiStringFormat, query_document, userNameFormat } from "akeyless-client-commons/helpers";
-
+import { Timestamp } from "firebase/firestore";
+import { timestamp_to_string } from "akeyless-client-commons/helpers";
 // users table
 interface UsersTableProps {
     data: NxUser[];
@@ -31,19 +32,20 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
         return data.map((user) => {
             const userClients = user.clients || [];
             const clientsData = userClients.map((client) => clientsObject[client]);
+
             const clientsUi = clientsData.map((c) => c?.name || "").join(", ");
             const userFeatures = user.features || [];
             const permissionsUi = Array.from(new Set(userFeatures.map((feature) => t(feature.split("__")[0]))))
                 .join(", ")
                 .trim();
             const last_login_ui = user.last_login ? <TimesUI timestamp={user.last_login} direction={direction} /> : "";
-
             return {
                 ...user,
                 name_ui: userNameFormat(user),
                 permissions_ui: permissionsUi,
                 clients_ui: clientsUi,
                 last_login_ui,
+                last_login_string: user.last_login ? timestamp_to_string(user.last_login as any as Timestamp) : "",
                 phone_number_ui: <PhoneUI phone={user.phone_number!} direction={direction} />,
                 clients_for_search: clientsData.map((c) => c?.key || "").join(", "),
                 actions: (
@@ -55,25 +57,25 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
             };
         });
     }, [data, isRtl, clientsObject, t]);
-
+    const numberMaxData = formattedData.length;
     const tableProps: TableProps = {
         // settings
         includeSearch: true,
-        maxRows: 100,
-        // data
+        maxRows: numberMaxData,
+        /// data
         data: formattedData,
         direction: direction,
         headers: headers,
         keysToRender: keysToRender,
         sortKeys: sortKeys,
-        // styles
+        /// styles
         headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
         containerHeaderClassName: "h-12 justify-between",
         containerClassName: "_full",
         cellClassName: "_ellipsis text-start h-10 px-3",
         tableContainerClass: "flex-1",
         searchInputClassName: "h-10 w-1/4",
-        // labels
+        /// labels
         searchPlaceHolder: t("search"),
         filterLabel: t("filter_by"),
         sortLabel: t("sort_by"),

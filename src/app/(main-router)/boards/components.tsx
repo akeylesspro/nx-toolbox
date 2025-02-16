@@ -8,7 +8,8 @@ import { TableProps } from "akeyless-client-commons/components";
 import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
 import Image from "next/image";
 import { TableButton, TableOptionsWarper } from "@/components/utils";
-
+import { timestamp_to_string } from "akeyless-client-commons/helpers";
+import { Timestamp } from "firebase/firestore";
 interface PropsWithBoard {
     board: Board;
 }
@@ -44,6 +45,7 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
                     </TableOptionsWarper>
                 ),
                 ui_status: t(BoardStatus[board.status]) || "N/A",
+                uploadedString: board.uploaded ? timestamp_to_string(board.uploaded as Timestamp) : "",
                 ui_uploaded: <TimesUI timestamp={board.uploaded} />,
                 sim_ui: (
                     <div style={{ direction: "ltr" }} className={`w-full ${isRtl ? "text-end" : "text-start"}`}>
@@ -66,14 +68,18 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         filterableColumns: filterableColumns,
         sortKeys: sortKeys,
         /// styles
-        headerStyle: { backgroundColor: "cadetblue", height: "40px", fontSize: "18px" },
+        headerStyle: {
+            backgroundColor: "cadetblue",
+            height: "40px",
+            fontSize: "18px",
+        },
         containerHeaderClassName: "h-12 justify-between",
         containerClassName: "_full",
         cellClassName: "_ellipsis text-start h-10 px-3",
         tableContainerClass: "flex-1",
         searchInputClassName: "h-10 w-1/4",
         /// labels
-        searchPlaceHolder: t("search"),
+        searchPlaceHolder: "Search",
         filterLabel: t("filter_by"),
         sortLabel: t("sort_by"),
         maxRowsLabel1: t("maxRowsLabel1"),

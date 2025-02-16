@@ -25,7 +25,7 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
 
     const keysToRender = useMemo(() => ["name", "key", "status_ui", "language_ui", "updated", "actions"], []);
 
-    const sortKeys = useMemo(() => ["name", "key", "status_ui", "language_ui", "updated", "actions"], []);
+    const sortKeys = useMemo(() => ["name", "key", "status_ui", "updated_string", "language_ui", "updated", "actions"], []);
 
     const formattedData = useMemo(() => {
         return data.map((client) => {
@@ -33,7 +33,7 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
                 ...client,
                 status_ui: t(client.status!),
                 language_ui: t(client.language || "he"),
-                updatedAtString: client.updated ? timestamp_to_string(client.updated as Timestamp) : "",
+                updated_string: client.updated ? timestamp_to_string(client.updated as Timestamp) : "",
                 updated: <TimesUI timestamp={client.updated} />,
                 actions: (
                     <TableOptionsWarper>

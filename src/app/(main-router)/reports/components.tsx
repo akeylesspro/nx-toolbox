@@ -82,7 +82,8 @@ export const ReportButton = memo(({ reportId, reportName }: PropsWithReportId & 
             {reportNameUi}
         </Button>
     );
-});
+}); //ReportButton
+
 ReportButton.displayName = "ReportButton";
 
 /// Report table

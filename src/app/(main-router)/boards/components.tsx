@@ -3,7 +3,7 @@ import { Board, BoardStatus } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { CacheStore, SettingsStore } from "@/lib/store";
 import { Loader, Table, TimesUI } from "akeyless-client-commons/components";
-import { forwardRef, memo, useEffect, useMemo } from "react";
+import { forwardRef, memo, useMemo } from "react";
 import { TableProps } from "akeyless-client-commons/components";
 import { useAddBoard, useDeleteBoard, useEditBoard, usePrintQR } from "./hooks";
 import Image from "next/image";
@@ -67,7 +67,6 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         keysToRender: keysToRender,
         filterableColumns: filterableColumns,
         sortKeys: sortKeys,
-
         /// styles
         headerStyle: {
             backgroundColor: "cadetblue",
@@ -79,7 +78,6 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         cellClassName: "_ellipsis text-start h-10 px-3",
         tableContainerClass: "flex-1",
         searchInputClassName: "h-10 w-1/4",
-
         /// labels
         searchPlaceHolder: "Search",
         filterLabel: t("filter_by"),

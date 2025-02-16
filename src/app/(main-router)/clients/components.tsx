@@ -12,7 +12,6 @@ import { useAddClient, useDeleteClient, useEditClient } from "./hooks";
 import { Timestamp } from "firebase/firestore";
 import { timestamp_to_string } from "akeyless-client-commons/helpers";
 
-
 // clients table
 interface ClientsTableProps {
     data: Client[];
@@ -45,12 +44,11 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
             };
         });
     }, [data, isRtl]);
-    const numberMaxData=formattedData?.length;
-
+    const numberMaxData = formattedData?.length;
     const tableProps: TableProps = {
         // settings
         includeSearch: true,
-        maxRows :numberMaxData ,
+        maxRows: numberMaxData,
         // data
         data: formattedData,
         direction: direction,
@@ -234,8 +232,6 @@ export const FeaturesForm = memo(
                             containerClassName="min-w-80"
                         />
                     ))}
-                    
-                    
                 </div>
             </div>
         );

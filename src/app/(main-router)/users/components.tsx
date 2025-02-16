@@ -45,7 +45,7 @@ export const UsersTable = memo(({ data }: UsersTableProps) => {
                 permissions_ui: permissionsUi,
                 clients_ui: clientsUi,
                 last_login_ui,
-                last_last_login_string: user.last_login ? timestamp_to_string(user.last_login as any as Timestamp) : "",
+                last_login_string: user.last_login ? timestamp_to_string(user.last_login as any as Timestamp) : "",
                 phone_number_ui: <PhoneUI phone={user.phone_number!} direction={direction} />,
                 clients_for_search: clientsData.map((c) => c?.key || "").join(", "),
                 actions: (

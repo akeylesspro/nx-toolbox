@@ -101,9 +101,9 @@ export const useAddClient = () => {
             const status = getFormElementValue(form, "status");
             const language = getFormElementValue(form, "language");
             const key = getFormElementValue(form, "key");
+            const name = getFormElementValue(form, "name");
             const installation_name = getFormElementValue(form, "installation_name");
             const installation_phone = getFormElementValue(form, "installation_phone");
-
             const newClient = {
                 name,
                 status,
@@ -219,10 +219,11 @@ export const useEditClient = () => {
             const submit = async (e: FormEvent<HTMLFormElement>, features: string[]) => {
                 e.preventDefault();
                 const form = e.currentTarget;
+                const key = getFormElementValue(form, "key");
+                const name = getFormElementValue(form, "name");
                 const api_token = getFormElementValue(form, "api_token");
                 const status = getFormElementValue(form, "status");
                 const language = getFormElementValue(form, "language");
-                const key = getFormElementValue(form, "key");
                 const installation_name = getFormElementValue(form, "installation_name");
                 const installation_phone = getFormElementValue(form, "installation_phone");
                 const updatedClient = {

@@ -1,10 +1,10 @@
-import { memo, ReactNode } from "react";
-import { Timestamp } from "firebase/firestore";
+import { Dispatch, ForwardedRef, forwardRef, memo, ReactNode, RefObject, SetStateAction, useRef, useState } from "react";
 import { SettingsStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui";
-import { timestamp_to_string } from "@/lib/helpers";
-import { PRIMARY_COLOR } from "@/lib";
+import { PRIMARY_BORDER } from "@/lib";
+import { useTranslation } from "react-i18next";
+import { Loader } from "akeyless-client-commons/components";
 interface TableOptionsWarperProps {
     children: ReactNode;
     className?: string;
@@ -93,3 +93,80 @@ export const FeatureCheckbox = memo(
     }
 );
 FeatureCheckbox.displayName = "FeatureCheckbox";
+
+// multiStepForm
+interface MultiStepFormProps {
+    isLoading: boolean;
+    submitFunction: (event: React.FormEvent<HTMLFormElement>, features: string[]) => Promise<void>;
+    activeChild: string;
+    setActiveChild: Dispatch<SetStateAction<string>>;
+    children: ReactNode;
+    className?: string;
+    options: { key: string; label: string }[];
+}
+
+export const MultiStepForm = forwardRef<HTMLButtonElement, MultiStepFormProps>(
+    ({ isLoading, activeChild, children, setActiveChild, className, options, ...props }, ref) => {
+        return (
+            <div className={cn("flex flex-col min-w-[700px] min-h-[500px]", className)}>
+                <MultiStepFormHeader options={options} activeChild={activeChild} setActiveChild={setActiveChild} />
+                {children}
+                <MultiStepFormFooter submitRef={ref} isLoading={isLoading} />
+            </div>
+        );
+    }
+);
+MultiStepForm.displayName = "multiStepForm";
+
+interface MultiStepFormHeaderProps {
+    activeChild: string;
+    setActiveChild: Dispatch<SetStateAction<string>>;
+    options: { key: string; label: string }[];
+}
+export const MultiStepFormHeader = memo(({ activeChild, setActiveChild, options }: MultiStepFormHeaderProps) => {
+    return (
+        <div className={`w-full py-6 flex items-center justify-center  h-8 `}>
+            <div className={`w-[95%] flex items-center justify-start gap-1.5 border-b-[2px] ${PRIMARY_BORDER}`}>
+                {options?.map((option, index) => {
+                    const showLine = index % 2 === 0;
+                    const isActive = activeChild === option.key;
+                    return (
+                        <div key={index} className={`flex items-center gap-1.5 h-full`}>
+                            <button
+                                onClick={() => setActiveChild(option.key)}
+                                className={` ${isActive ? `text-[#5f9ea0] font-bold` : "text-[#00000073]"}  text-[18px] h-7 px-1`}
+                            >
+                                {option.label}
+                            </button>
+                            {showLine && <div className="h-6 bg-[#00000076] w-[2px]"></div>}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+});
+MultiStepFormHeader.displayName = "multiStepFormHeader";
+
+interface MultiStepFormFooterProps {
+    isLoading: boolean;
+    submitRef: ForwardedRef<HTMLButtonElement>;
+}
+export const MultiStepFormFooter = memo(({ submitRef, isLoading }: MultiStepFormFooterProps) => {
+    const { t } = useTranslation();
+    return (
+        <div className="h-14 w-full flex justify-end items-center p-2 ">
+            <Button
+                disabled={isLoading}
+                onClick={() => {
+                    if (typeof submitRef === "object" && submitRef?.current) {
+                        submitRef.current.click();
+                    }
+                }}
+            >
+                {isLoading ? <Loader size={20} color="#fff" /> : t("save")}
+            </Button>
+        </div>
+    );
+});
+MultiStepFormFooter.displayName = "multiStepFormFooter";

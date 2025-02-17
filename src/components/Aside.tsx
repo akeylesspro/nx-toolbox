@@ -26,15 +26,13 @@ const NavigationButtons = () => {
             buttons.push({ content: "boards", to: "/boards" });
             buttons.push({ content: "clients", to: "/clients" });
             buttons.push({ content: "users", to: "/users" });
+            buttons.push({ content: "car_catalog", to: "/car-catalog" });
         }
         if (isSuperAdmin || userPermissions.reports) {
             buttons.push({ content: "reports", to: "/reports" });
         }
         return buttons;
     }, [userPermissions]);
-    useEffect(() => {
-        console.log("buttonsToDisplay", buttonsToDisplay.length);
-    }, [buttonsToDisplay]);
     return (
         <div className="w-full px-4 py-2 flex flex-col gap-2 flex-1">
             {buttonsToDisplay.map((button, index) => {

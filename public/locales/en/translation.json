@@ -115,5 +115,13 @@
     "back_to_home_page": "Back to home page",
     "report_error": "Error in report {reportId}",
     "report_server_error": "Unable to generate report",
-    "last_login": "Last login"
+    "last_login": "Last login",
+    "car_catalog": "Car Catalog",
+    "brand": "brand",
+    "aliases": "Aliases",
+    "models": "Models",
+    "add_brand": "Add Brand",
+    "edit_brand": "Edit Brand - {brand}",
+    "delete_brand": "Delete Brand",
+    "edit_brand_title": "Edit Brand"
 }

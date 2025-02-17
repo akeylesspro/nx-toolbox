@@ -115,5 +115,13 @@
     "back_to_home_page": "חזור לדף הבית",
     "report_error": "שגיאה בדוח {reportId}",
     "report_server_error": "לא ניתן ליצור דוח",
-    "last_login": "התחברות אחרונה"
+    "last_login": "התחברות אחרונה",
+    "car_catalog": "קטלוג רכבים",
+    "brand": "מותג",
+    "aliases": "כינויים",
+    "models": "דגמים",
+    "add_brand": "הוסף מותג",
+    "edit_brand": "ערוך מותג - {name}",
+    "delete_brand": "מחק מותג",
+    "edit_brand_title": "ערוך מותג"
 }

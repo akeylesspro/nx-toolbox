@@ -24,6 +24,7 @@ export default function InitialCache() {
     const setAllReports = CacheStore.setAllReports();
     const availableReports = CacheStore.availableReports();
     const setAvailableReports = CacheStore.setAvailableReports();
+    const setCarCatalog = CacheStore.setCarCatalog();
     const userPermissions = UserStore.userPermissions();
     const setUserTimeZone = UserStore.setUserTimeZone();
 
@@ -74,7 +75,7 @@ export default function InitialCache() {
         }
         const isSuperAdmin = userPermissions.toolbox?.super_admin;
         const result: OnSnapshotConfig[] = [];
-        // settings
+        /// settings
         if (!pushedRef.current.includes("settings")) {
             result.push({
                 collectionName: "settings",
@@ -115,7 +116,7 @@ export default function InitialCache() {
             });
             pushedRef.current.push("settings");
         }
-        // nx-settings
+        /// nx-settings
         if (!pushedRef.current.includes("nx-settings")) {
             result.push({
                 collectionName: "nx-settings",
@@ -156,7 +157,7 @@ export default function InitialCache() {
             });
             pushedRef.current.push("nx-settings");
         }
-        // nx-translations
+        /// nx-translations
         if (!pushedRef.current.includes("nx-translations")) {
             result.push({
                 collectionName: "nx-translations",
@@ -293,7 +294,7 @@ export default function InitialCache() {
             });
             pushedRef.current.push("nx-clients");
         }
-        // nx-users
+        /// nx-users
         if (isSuperAdmin && !pushedRef.current.includes("nx-users")) {
             result.push({
                 collectionName: "nx-users",
@@ -322,7 +323,7 @@ export default function InitialCache() {
             });
             pushedRef.current.push("nx-users");
         }
-        // nx-features
+        /// nx-features
         if (isSuperAdmin && !pushedRef.current.includes("nx-features")) {
             result.push({
                 collectionName: "nx-features",
@@ -343,6 +344,35 @@ export default function InitialCache() {
                 },
             });
             pushedRef.current.push("nx-features");
+        }
+        /// nx-car-catalog
+        if (isSuperAdmin && !pushedRef.current.includes("nx-car-catalog")) {
+            result.push({
+                collectionName: "nx-car-catalog",
+                onFirstTime: setCarCatalog,
+                onAdd: (data) => {
+                    setCarCatalog((prev) => {
+                        return [...prev, ...data];
+                    });
+                },
+                onModify: (data) => {
+                    setCarCatalog((prev) => {
+                        data.forEach((v) => {
+                            const index = prev.findIndex((val) => val.id === v.id);
+                            if (index !== -1) {
+                                prev[index] = v;
+                            }
+                        });
+                        return prev;
+                    });
+                },
+                onRemove: (data) => {
+                    setCarCatalog((prev) => {
+                        return prev.filter((item) => !data.some((v) => v.id === item.id));
+                    });
+                },
+            });
+            pushedRef.current.push("nx-car-catalog");
         }
 
         return result;

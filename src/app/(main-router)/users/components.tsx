@@ -3,13 +3,11 @@ import { NxUser, TObject } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { CacheStore, SettingsStore } from "@/lib/store";
 import { Loader, ModularForm, PhoneUI, Table, TableProps, TimesUI } from "akeyless-client-commons/components";
-import { Dispatch, FormEvent, memo, RefObject, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormElement } from "akeyless-client-commons/types";
-import { Button } from "@/components";
-import { FeatureCheckbox, TableButton, TableOptionsWarper } from "@/components/utils";
+import { FeatureCheckbox, MultiStepForm, TableButton, TableOptionsWarper } from "@/components/utils";
 import { useAddUser, useDeleteUser, useEditUser } from "./hooks";
 import { cn } from "@/lib/utils";
-import { PRIMARY_COLOR } from "@/lib";
 import { get_document_by_id, multiStringFormat, query_document, userNameFormat } from "akeyless-client-commons/helpers";
 import { Timestamp } from "firebase/firestore";
 import { timestamp_to_string } from "akeyless-client-commons/helpers";
@@ -123,11 +121,11 @@ interface UserWizardProps {
 }
 export const UserWizard = ({ elements, submitFunction, user }: UserWizardProps) => {
     const direction = SettingsStore.direction();
-    const { t } = useTranslation();
-    const [activeForm, setActiveForm] = useState<"features" | "form">("form");
+    const [activeForm, setActiveForm] = useState<string>("form");
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>(user?.features || []);
     const [isLoading, setIsLoading] = useState(false);
     const submitRef = useRef<HTMLButtonElement>(null);
+    const { t } = useTranslation();
 
     const submit = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {
@@ -144,8 +142,17 @@ export const UserWizard = ({ elements, submitFunction, user }: UserWizardProps) 
     );
 
     return (
-        <div className="flex flex-col min-w-[700px] p-3 ">
-            <WizardHeader activeForm={activeForm} setActiveForm={setActiveForm} />
+        <MultiStepForm
+            options={[
+                { key: "form", label: t("user_details") },
+                { key: "features", label: t("features") },
+            ]}
+            ref={submitRef}
+            isLoading={isLoading}
+            activeChild={activeForm}
+            setActiveChild={setActiveForm}
+            submitFunction={submit}
+        >
             <div className="min-h-[400px] _center">
                 <ModularForm
                     submitRef={submitRef}
@@ -163,52 +170,9 @@ export const UserWizard = ({ elements, submitFunction, user }: UserWizardProps) 
                     user={user}
                 />
             </div>
-            <WizardFooter submitRef={submitRef} isLoading={isLoading} />
-        </div>
+        </MultiStepForm>
     );
 };
-
-interface WizardHeaderProps {
-    activeForm: "features" | "form";
-    setActiveForm: Dispatch<SetStateAction<"features" | "form">>;
-}
-export const WizardHeader = memo(({ activeForm, setActiveForm }: WizardHeaderProps) => {
-    const { t } = useTranslation();
-    return (
-        <div className=" w-full px-2 flex items-center justify-start gap-2 h-8  ">
-            <button
-                onClick={() => setActiveForm("form")}
-                className={` ${activeForm === "form" ? `text-[${PRIMARY_COLOR}]` : "text-[#00000076]"} font-bold text-[16px]`}
-            >
-                {t("user_details")}
-            </button>
-            <div className="h-6 bg-[#00000076] w-[1px]"></div>
-            <button
-                onClick={() => setActiveForm("features")}
-                className={` ${activeForm === "features" ? `text-[${PRIMARY_COLOR}]` : "text-[#00000076]"} font-bold text-[16px]`}
-            >
-                {t("permissions")}
-            </button>
-        </div>
-    );
-});
-WizardHeader.displayName = "WizardHeader";
-
-interface WizardFooterProps {
-    isLoading: boolean;
-    submitRef: RefObject<HTMLButtonElement>;
-}
-export const WizardFooter = memo(({ submitRef, isLoading }: WizardFooterProps) => {
-    const { t } = useTranslation();
-    return (
-        <div className="h-10 w-full flex justify-end items-center px-2">
-            <Button disabled={isLoading} onClick={() => submitRef.current?.click()}>
-                {isLoading ? <Loader size={20} color="#fff" /> : t("save")}
-            </Button>
-        </div>
-    );
-});
-WizardFooter.displayName = "WizardFooter";
 
 // features form
 interface FeaturesFormProps {

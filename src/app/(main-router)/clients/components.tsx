@@ -3,14 +3,12 @@ import { Client } from "akeyless-types-commons";
 import { useTranslation } from "react-i18next";
 import { CacheStore, SettingsStore } from "@/lib/store";
 import { Loader, ModularForm, Table, TableProps, TimesUI } from "akeyless-client-commons/components";
-import { Dispatch, FormEvent, memo, RefObject, SetStateAction, useCallback, useMemo, useRef, useState } from "react";
-import { FormElement } from "akeyless-client-commons/types";
-import { Button } from "@/components";
-import { FeatureCheckbox, TableButton, TableOptionsWarper } from "@/components/utils";
-// import { FeatureCheckbox, TableButton, TableOptionsWarper, TimesUI } from "@/components/utils";
+import { FormEvent, memo, useCallback, useMemo, useRef, useState } from "react";
+import { FeatureCheckbox, TableButton, TableOptionsWarper, MultiStepForm } from "@/components/utils";
 import { useAddClient, useDeleteClient, useEditClient } from "./hooks";
 import { Timestamp } from "firebase/firestore";
 import { timestamp_to_string } from "akeyless-client-commons/helpers";
+import { FormElement } from "akeyless-client-commons/types";
 
 // clients table
 interface ClientsTableProps {
@@ -81,7 +79,7 @@ export const ClientsTable = memo(({ data }: ClientsTableProps) => {
 });
 ClientsTable.displayName = "ClientsTable";
 
-// CRUD buttons
+/// CRUD buttons
 interface PropsWithClient {
     client: Client;
 }
@@ -106,7 +104,7 @@ const DeleteClient = ({ client }: PropsWithClient) => {
     return <TableButton type="delete" title={t("delete_client")} onClick={() => onDeleteClick(client)} />;
 };
 
-// Wizard
+/// wizard
 interface ClientWizardProps {
     client?: Client;
     elements: FormElement[];
@@ -115,7 +113,7 @@ interface ClientWizardProps {
 export const ClientWizard = ({ elements, submitFunction, client }: ClientWizardProps) => {
     const direction = SettingsStore.direction();
     const { t } = useTranslation();
-    const [activeForm, setActiveForm] = useState<"features" | "form">("form");
+    const [activeForm, setActiveForm] = useState<string>("form");
     const [features, setFeatures] = useState<string[]>(client?.features || []);
     const [isLoading, setIsLoading] = useState(false);
     const submitRef = useRef<HTMLButtonElement>(null);
@@ -135,9 +133,18 @@ export const ClientWizard = ({ elements, submitFunction, client }: ClientWizardP
     );
 
     return (
-        <div className="flex flex-col min-w-[700px] min-h-[500px]">
-            <WizardHeader activeForm={activeForm} setActiveForm={setActiveForm} />
-            <div className=" flex-1 _center">
+        <MultiStepForm
+            options={[
+                { key: "form", label: t("client_details") },
+                { key: "features", label: t("features") },
+            ]}
+            ref={submitRef}
+            isLoading={isLoading}
+            activeChild={activeForm}
+            setActiveChild={setActiveForm}
+            submitFunction={submit}
+        >
+            <div className=" flex-1 _center ">
                 <ModularForm
                     submitRef={submitRef}
                     direction={direction}
@@ -149,54 +156,11 @@ export const ClientWizard = ({ elements, submitFunction, client }: ClientWizardP
                 />
                 <FeaturesForm display={activeForm === "features" ? "flex" : "none"} features={features} setFeatures={setFeatures} />
             </div>
-            <WizardFooter submitRef={submitRef} isLoading={isLoading} />
-        </div>
+        </MultiStepForm>
     );
 };
 
-interface WizardHeaderProps {
-    activeForm: "features" | "form";
-    setActiveForm: Dispatch<SetStateAction<"features" | "form">>;
-}
-export const WizardHeader = memo(({ activeForm, setActiveForm }: WizardHeaderProps) => {
-    const { t } = useTranslation();
-    return (
-        <div className=" w-full px-2 flex items-center justify-start gap-2 h-8  ">
-            <button
-                onClick={() => setActiveForm("form")}
-                className={` ${activeForm === "form" ? "text-[#5f9ea0]" : "text-[#00000076]"} font-bold text-[16px]`}
-            >
-                {t("client_details")}
-            </button>
-            <div className="h-6 bg-[#00000076] w-[1px]"></div>
-            <button
-                onClick={() => setActiveForm("features")}
-                className={` ${activeForm === "features" ? "text-[#5f9ea0]" : "text-[#00000076]"} font-bold text-[16px]`}
-            >
-                {t("features")}
-            </button>
-        </div>
-    );
-});
-WizardHeader.displayName = "WizardHeader";
-
-interface WizardFooterProps {
-    isLoading: boolean;
-    submitRef: RefObject<HTMLButtonElement>;
-}
-export const WizardFooter = memo(({ submitRef, isLoading }: WizardFooterProps) => {
-    const { t } = useTranslation();
-    return (
-        <div className="h-14 w-full flex justify-end items-center p-2 ">
-            <Button disabled={isLoading} onClick={() => submitRef.current?.click()}>
-                {isLoading ? <Loader size={20} color="#fff" /> : t("save")}
-            </Button>
-        </div>
-    );
-});
-WizardFooter.displayName = "WizardFooter";
-
-// features form
+/// features form
 interface FeaturesFormProps {
     display: string | undefined;
     setFeatures: React.Dispatch<React.SetStateAction<string[]>>;

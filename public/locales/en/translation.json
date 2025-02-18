@@ -117,11 +117,19 @@
     "report_server_error": "Unable to generate report",
     "last_login": "Last login",
     "car_catalog": "Car Catalog",
-    "brand": "brand",
+    "brand": "Brand",
+    "model": "Model",
     "aliases": "Aliases",
     "models": "Models",
     "add_brand": "Add Brand",
     "edit_brand": "Edit Brand - {brand}",
     "delete_brand": "Delete Brand",
-    "edit_brand_title": "Edit Brand"
+    "edit_brand_title": "Edit Brand",
+    "add_model": "Add Model",
+    "edit_model": "Edit Model - {model}",
+    "delete_model": "Delete Model",
+    "edit_model_title": "Edit Model",
+    "brand_placeholder": "Enter brand in English",
+    "model_placeholder": "Enter model in English",
+    "aliases_placeholder": "Enter {entity} aliases (nam 1, name 2, name 3)"
 }

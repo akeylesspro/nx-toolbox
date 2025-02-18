@@ -85,15 +85,13 @@ ResizeHandle.displayName = "resizeHandle";
 const PopupManager = () => {
     const popups = PopupsStore.popups();
     const managerRef = useRef<HTMLDivElement>(null);
-
     return (
-        <div ref={managerRef} className="absolute top-0 left-0 w-full h-full" style={{ pointerEvents: "none" }}>
+        <div ref={managerRef} className="popupManager absolute top-0 left-0 w-full h-full" style={{ pointerEvents: "none" }}>
             {popups.map((popupProps) => {
                 return <Popup key={popupProps.id} {...popupProps} parentRef={managerRef} />;
             })}
         </div>
     );
 };
-
 
 export { Wrapper, MinimizePopup, PopupManager, ResizeHandle };

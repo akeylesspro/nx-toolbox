@@ -1,17 +1,19 @@
 import { LanguageOptions } from "akeyless-types-commons";
-import { FormEvent, useCallback } from "react";
+import { FormEvent, useCallback, useRef } from "react";
 import { ConfirmForm, ModularForm } from "akeyless-client-commons/components";
 import { getFormElementValue } from "akeyless-client-commons/helpers";
 import { FormElement } from "akeyless-client-commons/types";
 import { useTranslation } from "react-i18next";
 import { PopupsStore, SettingsStore } from "@/lib/store";
 import { addBrand, BrandItem, updateBrand } from "./helpers";
+import { ModelsContainer, ModelsContainerRef } from "./components";
 
 const initialPosition = { top: "25%", left: "30%" };
 
 export const useAddBrand = () => {
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
+    const deletePopupsGroup = PopupsStore.deletePopupsGroup();
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
 
@@ -27,26 +29,22 @@ export const useAddBrand = () => {
                 validationName: "charts",
             },
             { type: "input", name: "aliases", labelContent: t("aliases"), containerClassName: "_center w-full", validationName: "charts" },
-            { type: "input", name: "models", labelContent: t("models"), containerClassName: "_center w-full", validationName: "charts" },
         ];
         const submit = async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const form = e.currentTarget;
             const brand = getFormElementValue(form, "brand");
             const aliases = getFormElementValue(form, "aliases");
-            const models = getFormElementValue(form, "models");
 
             const parseBrand = brand.charAt(0).toUpperCase() + brand.slice(1);
             const parsedAliases = aliases.split(",").map((alias) => alias.trim());
-            const parsedModels = models.split(",").map((model) => model.trim());
             const newBrand = {
                 brand: parseBrand,
                 aliases: parsedAliases,
-                models: parsedModels,
             };
             console.log(newBrand, "newBrand");
             // await addBrand(newBrand, t);
-            deletePopup("add_brand");
+            // deletePopup("add_brand");
         };
         const form = (
             <ModularForm
@@ -58,7 +56,19 @@ export const useAddBrand = () => {
                 buttonClassName="bg-[#5f9ea0]"
             />
         );
-        addPopup({ element: form, id: "add_brand", type: "custom", initialPosition, headerContent: t(headerContent) });
+        addPopup({
+            close: {
+                onClose: () => {
+                    deletePopupsGroup("add_model");
+                    deletePopupsGroup("edit_model");
+                },
+            },
+            element: form,
+            id: "add_brand",
+            type: "custom",
+            initialPosition,
+            headerContent: t(headerContent),
+        });
     }, [addPopup, deletePopup]);
     return onAddClick;
 };
@@ -67,30 +77,70 @@ export const useEditBrand = () => {
     const { t } = useTranslation();
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
-
+    const deletePopupsGroup = PopupsStore.deletePopupsGroup();
+    const direction = SettingsStore.direction();
+    const modelsRef = useRef<ModelsContainerRef>({ updatedModels: [] });
     const onEditClick = useCallback(
         (brand: BrandItem) => {
             const headerContent = t("edit_brand").replace("{brand}", brand.brand!);
-            const elements: FormElement[] = [];
-            const submit = async (e: FormEvent<HTMLFormElement>, features: string[]) => {
+            const elements: FormElement[] = [
+                {
+                    type: "input",
+                    name: "brand",
+                    required: true,
+                    labelContent: t("brand"),
+                    containerClassName: "_center w-10/12",
+                    props: { title: brand.brand },
+                    placeholder: t("brand_placeholder"),
+                    defaultValue: brand.brand,
+                    validationName: "charts",
+                },
+                {
+                    type: "input",
+                    name: "aliases",
+                    labelContent: t("aliases"),
+                    containerClassName: "_center w-10/12",
+                    placeholder: t("aliases_placeholder").replace("{entity}", t("brand")),
+                    props: { title: brand.aliases.join(", ") },
+                    validationName: "charts",
+                    defaultValue: brand.aliases.join(", "),
+                },
+                { type: "custom", element: <ModelsContainer brand={brand} ref={modelsRef} /> },
+            ];
+            const submit = async (e: FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 const form = e.currentTarget;
                 const brandInput = getFormElementValue(form, "brand");
-                const aliases = getFormElementValue(form, "aliases");
-                const models = getFormElementValue(form, "models");
-                const modelAliases = getFormElementValue(form, "modelAliases");
-
+                const aliasesInput = getFormElementValue(form, "aliases");
+                const parsedBrand = brandInput.charAt(0).toUpperCase() + brandInput.slice(1);
+                const parsedAliases = aliasesInput.split(",").map((alias) => alias.trim());
                 const updatedBrand = {
-                    brand: brandInput,
-                    aliases,
-                    modelAliases,
-                    models,
+                    brand: parsedBrand,
+                    aliases: parsedAliases,
+                    models: modelsRef.current?.updatedModels,
                 };
-                await updateBrand(brand.id!, updatedBrand);
-                deletePopup("edit_brand" + brand.id);
+                console.log(updatedBrand, "updatedBrand");
+
+                // await updateBrand(brand.id!, updatedBrand);
+                // deletePopup("edit_brand" + brand.id);
             };
-            const form = <></>;
+            const form = (
+                <ModularForm
+                    direction={direction}
+                    buttonContent={t("save")}
+                    elements={elements}
+                    formClassName="min-w-[600px] flex flex-col items-center justify-center"
+                    submitFunction={submit}
+                    buttonClassName="bg-[#5f9ea0]"
+                />
+            );
             addPopup({
+                close: {
+                    onClose: () => {
+                        deletePopupsGroup("add_model");
+                        deletePopupsGroup("edit_model");
+                    },
+                },
                 element: form,
                 id: "edit_brand" + brand.id,
                 type: "custom",
@@ -98,7 +148,7 @@ export const useEditBrand = () => {
                 headerContent,
             });
         },
-        [deletePopup, addPopup]
+        [deletePopup, addPopup, direction]
     );
 
     return onEditClick;

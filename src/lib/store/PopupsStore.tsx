@@ -8,6 +8,7 @@ interface PopupsStoreType {
     minimizedPopups: string[];
     addPopup: (props: PopUpProps) => void;
     deletePopup: (id: string) => void;
+    deletePopupsGroup: (group: string) => void;
     bringToFront: (id: string) => void;
     minimize: (id: string) => void;
     restore: (id: string) => void;
@@ -39,6 +40,11 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
             popups: state.popups.filter((popup) => popup.id !== id),
             minimizedPopups: state.minimizedPopups.filter((popupId) => popupId !== id),
         })),
+    deletePopupsGroup: (group) =>
+        set((state) => ({
+            popups: state.popups.filter((popup) => !popup.id.includes(group)),
+            minimizedPopups: state.minimizedPopups.filter((popupId) => !popupId.includes(group)),
+        })),
     bringToFront: (id) => {
         const newZIndex = get().maxZIndex + 1;
         set((state) => ({
@@ -53,7 +59,7 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
             maxZIndex: newZIndex,
         }));
     },
-    minimize: (id) => {        
+    minimize: (id) => {
         set((state) => {
             const popupIndex = state.popups.findIndex((popup) => popup.id === id);
             if (popupIndex !== -1) {

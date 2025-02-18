@@ -118,10 +118,18 @@
     "last_login": "התחברות אחרונה",
     "car_catalog": "קטלוג רכבים",
     "brand": "מותג",
+    "model": "דגם",
     "aliases": "כינויים",
     "models": "דגמים",
     "add_brand": "הוסף מותג",
-    "edit_brand": "ערוך מותג - {name}",
+    "edit_brand": "עריכת מותג - {brand}",
     "delete_brand": "מחק מותג",
-    "edit_brand_title": "ערוך מותג"
+    "edit_brand_title": "עריכת מותג",
+    "add_model": "הוסף דגם",
+    "edit_model": "עריכת דגם - {model}",
+    "delete_model": "מחק דגם",
+    "edit_model_title": "עריכת דגם",
+    "brand_placeholder": "הכנס שם מותג באנגלית",
+    "model_placeholder": "הכנס שם דגם באנגלית",
+    "aliases_placeholder": "הכנס כינויים בשביל ה{entity} (שם 1,שם 2,שם 3)"
 }

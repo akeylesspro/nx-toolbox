@@ -1,12 +1,12 @@
 "use brand";
 import { useTranslation } from "react-i18next";
 import { PopupsStore, SettingsStore, UserStore } from "@/lib/store";
-import { Loader, ModularForm, Table, TableButton, TableProps, TimesUI } from "akeyless-client-commons/components";
+import { ConfirmForm, Loader, ModularForm, Table, TableButton, TableProps, TimesUI } from "akeyless-client-commons/components";
 import { FormEvent, forwardRef, memo, MouseEvent, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { useAddBrand, useDeleteBrand, useEditBrand } from "./hooks";
 import { Timestamp } from "firebase/firestore";
 import { getFormElementValue, timestamp_to_string } from "akeyless-client-commons/helpers";
-import { BrandItem, ModelItem } from "./helpers";
+import { BrandItem, ModelItem, parseAliases, parseName, stringifyAliases, validateModel } from "./helpers";
 import { TableOptionsWarper } from "@/components/utils";
 import { cn, PRIMARY_BORDER } from "@/lib";
 import { Button, Badge } from "@/components";
@@ -23,18 +23,16 @@ export const CarCatalogTable = memo(({ data }: CarCatalogTableProps) => {
     const isRtl = SettingsStore.isRtl();
     const userTimeZone = UserStore.userTimeZone();
 
-    const headers = [t("brand"), t("aliases"), t("models"), t("updated"), t("actions")];
+    const headers = [t("brand"), t("aliases"), t("models"), t("actions")];
 
-    const keysToRender = useMemo(() => ["brand", "aliases_ui", "models_ui", "updated_ui", "actions"], []);
+    const keysToRender = useMemo(() => ["brand", "aliases_ui", "models_ui", "actions"], []);
 
-    const sortKeys = useMemo(() => ["brand", "aliases_number", "models_number", "updated_string", "actions"], []);
+    const sortKeys = useMemo(() => ["brand", "aliases_number", "models_number", "actions"], []);
 
     const formattedData = useMemo(() => {
         return data.map((brand) => {
             return {
                 ...brand,
-                updated_ui: <TimesUI timestamp={brand.updated} tz={userTimeZone} direction={direction} />,
-                updated_string: brand.updated ? timestamp_to_string(brand.updated as Timestamp, { format: "YY/MM/DD HH:mm" }) : "",
                 aliases_ui: brand.aliases?.join(", "),
                 aliases_number: brand.aliases?.length,
                 models_ui: brand.models?.map((v) => v.model).join(", "),
@@ -123,7 +121,9 @@ export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerPro
     const { t } = useTranslation();
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
+    const direction = SettingsStore.direction();
     const [models, setModels] = useState<ModelItem[]>(brand?.models || []);
+    const modelLengthError = t("length_error").replace("{entity}", t("model")).replace("{length}", "2");
 
     useImperativeHandle(
         ref,
@@ -133,58 +133,111 @@ export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerPro
         [models]
     );
 
-    const onEditClick = (e: MouseEvent<HTMLDivElement>, model: ModelItem) => {
-        const popupId = "edit_model " + model.model;
-        const submit = async (newModel: ModelItem) => {
-            console.log(newModel, "model");
-            setModels(models.map((m) => (m.model.toLocaleLowerCase().trim() === model.model.toLocaleLowerCase().trim() ? newModel : m)));
-            deletePopup(popupId);
-        };
-        const onDelete = (newModel: ModelItem) => {
-            setModels(models.filter((m) => m.model !== newModel.model));
-            deletePopup(popupId);
-        };
-        addPopup({
-            id: popupId,
-            element: <ModelForm model={model} onSubmit={submit} onDelete={onDelete} />,
-            type: "custom",
-            initialPosition: getClickLocation(e),
-            headerContent: t("edit_model").replace("{model}", model.model),
-        });
-    };
+    const onDeleteClick = useCallback(
+        (e: MouseEvent<HTMLButtonElement>, model: ModelItem) => {
+            e.stopPropagation();
+            const popupId = "delete_model " + model.model;
+            const onX = () => {
+                deletePopup("edit_model " + model.model);
+                deletePopup(popupId);
+            };
+            const onV = () => {
+                setModels(models.filter((m) => m.model !== model.model));
+                onX();
+            };
+            const form = <ConfirmForm onV={onV} onX={onX} direction={direction} headline={t("delete_model_confirmation")} />;
+            addPopup({
+                element: form,
+                id: popupId,
+                type: "custom",
+                initialPosition: getClickLocation(e),
+                headerContent: t("delete_model").replace("{model}", model.model),
+            });
+        },
+        [models]
+    );
 
-    const onAddClick = (e: MouseEvent<HTMLButtonElement>) => {
-        const submit = async (newModel: ModelItem) => {
-            console.log(newModel, "model");
-            setModels([...models, newModel]);
-            deletePopup("add_model");
-        };
+    const onEditClick = useCallback(
+        (e: MouseEvent<HTMLDivElement>, model: ModelItem, index: number) => {
+            const popupId = "edit_model " + model.model;
+            const submit = async (newModel: ModelItem) => {
+                const newModels = models.map((m) => (m.model.toLocaleLowerCase().trim() === model.model.toLocaleLowerCase().trim() ? newModel : m));
+                await validateModel({
+                    t,
+                    modelName: newModel.model,
+                    models,
+                    modelLengthError,
+                    index,
+                });
+                setModels(newModels);
+                deletePopup(popupId);
+            };
+            addPopup({
+                id: popupId,
+                element: <ModelForm model={model} onSubmit={submit} />,
+                type: "custom",
+                initialPosition: getClickLocation(e),
+                headerContent: t("edit_model").replace("{model}", model.model),
+            });
+        },
+        [models]
+    );
 
-        addPopup({
-            element: <ModelForm onSubmit={submit} />,
-            id: "add_model",
-            type: "custom",
-            initialPosition: getClickLocation(e),
-            headerContent: t("add_model"),
-        });
-    };
+    const onAddClick = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            const submit = async (newModel: ModelItem) => {
+                await validateModel({
+                    t,
+                    modelName: newModel.model,
+                    models,
+                    modelLengthError,
+                });
+                const newModels = [...models, newModel];
+                setModels(newModels);
+                deletePopup("add_model");
+            };
+
+            addPopup({
+                element: <ModelForm onSubmit={submit} />,
+                id: "add_model",
+                type: "custom",
+                initialPosition: getClickLocation(e),
+                headerContent: t("add_model"),
+            });
+        },
+        [models]
+    );
 
     return (
         <div className={cn(`_full flex flex-col items-center gap-3  ${PRIMARY_BORDER} border-[2px] p-1`, className)}>
-            <div className={`w-full text-center  text-xl ${PRIMARY_BORDER} border-b-2 `}>{t("models")}</div>
+            <div className={`w-full text-center text-xl pb-1 ${PRIMARY_BORDER} border-b-2 `}>
+                {t("models")}
+                <span className="text-red-500">*</span>
+            </div>
             <div className="_center w-full gap-2 flex-wrap">
-                {models.map((model, i) => {
-                    return (
-                        <Badge
-                            onClick={(e) => onEditClick(e, model)}
-                            key={model.model + i}
-                            title={t("edit_model").replace("{model}", model.model)}
-                            className="hover:cursor-pointer"
-                        >
-                            {model.model}
-                        </Badge>
-                    );
-                })}
+                {models.length < 1 ? (
+                    <div className="text-lg">{t("models_placeholder")}</div>
+                ) : (
+                    models.map((model, index) => {
+                        return (
+                            <Badge
+                                onClick={(e) => onEditClick(e, model, index)}
+                                key={model.model + index}
+                                title={stringifyAliases(model.aliases)}
+                                className="hover:cursor-pointer text-sm flex gap-2"
+                            >
+                                {model.model}
+                                <button
+                                    title={t("delete_model").replace("{model}", model.model)}
+                                    type="button"
+                                    onClick={(e) => onDeleteClick(e, model)}
+                                >
+                                    <i className="fa-regular fa-xmark text-red-500 text-lg pt-1"></i>
+                                </button>
+                            </Badge>
+                        );
+                    })
+                )}
             </div>
             <div className="w-full flex justify-end items-end ">
                 <Button className="h-fit py-2 px-3" onClick={onAddClick} type="button" title={t("add_model")}>
@@ -199,63 +252,66 @@ ModelsContainer.displayName = "ModelsContainer";
 /// ModelForm
 interface ModelForm {
     model?: ModelItem;
-    onSubmit: (model: ModelItem) => void;
-    onDelete?: (model: ModelItem) => void;
+    onSubmit: (model: ModelItem) => Promise<void>;
 }
-export const ModelForm = ({ model, onSubmit, onDelete }: ModelForm) => {
+export const ModelForm = ({ model, onSubmit }: ModelForm) => {
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
+    const modelLengthError = t("length_error").replace("{entity}", t("model")).replace("{length}", "2");
 
-    const submit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = e.currentTarget;
-        const name = getFormElementValue(form, "name");
-        const aliases = getFormElementValue(form, "aliases");
-        const parsedName = name.charAt(0).toUpperCase() + name.slice(1);
-        const parsedAliases = aliases.split(",").map((alias) => alias.trim());
-        const newModel = {
-            model: parsedName,
-            aliases: parsedAliases,
-        };
-        onSubmit(newModel);
-    }, []);
+    const submit = useCallback(
+        async (e: FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            const name = getFormElementValue(form, "name");
+            const aliases = getFormElementValue(form, "aliases");
+            const parsedName = parseName(name);
+            const parsedAliases = parseAliases(aliases);
+            const newModel = {
+                model: parsedName,
+                aliases: parsedAliases,
+            };
+
+            await onSubmit(newModel);
+            // try {
+            // } catch (error) {
+            //     throw error;
+            // }
+        },
+        [onSubmit]
+    );
+
     const elements: FormElement[] = [
         {
             type: "input",
             name: "name",
             required: true,
             labelContent: t("name"),
-            containerClassName: "_center w-full",
+            labelClassName: "text-lg w-fit",
+            containerClassName: "_center w-10/12",
             defaultValue: model?.model || "",
+            validationError: modelLengthError,
             validationName: "charts",
             placeholder: t("model_placeholder"),
         },
         {
-            type: "input",
+            type: "textarea",
             name: "aliases",
-            required: true,
             labelContent: t("aliases"),
-            containerClassName: "_center w-full",
+            containerClassName: "w-full",
+            elementClassName: `${PRIMARY_BORDER} border-2`,
             placeholder: t("aliases_placeholder").replace("{entity}", t("model")),
-            defaultValue: model?.aliases.join(", ") || "",
-            validationName: "charts",
+            defaultValue: model ? stringifyAliases(model.aliases) : "",
         },
     ];
     return (
-        <div className="flex flex-col items-center  gap-2  py-2">
-            {model && onDelete && (
-                <Button type="button" className="bg-red-500 w-11/12" onClick={() => onDelete(model)} title={t("delete_model")}>
-                    {t("delete_model")}
-                </Button>
-            )}
-            <ModularForm
-                formClassName="min-w-[500px]"
-                buttonClassName="bg-[#5f9ea0]"
-                submitFunction={submit}
-                elements={elements}
-                direction={direction}
-                buttonContent={t("save")}
-            />
-        </div>
+        <ModularForm
+            formClassName="min-w-[500px] items-center"
+            buttonClassName="bg-[#5f9ea0]"
+            submitFunction={submit}
+            elements={elements}
+            direction={direction}
+            buttonContent={t("save")}
+        />
     );
 };

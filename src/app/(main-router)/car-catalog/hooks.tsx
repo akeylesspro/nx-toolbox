@@ -4,9 +4,10 @@ import { ConfirmForm, ModularForm } from "akeyless-client-commons/components";
 import { getFormElementValue } from "akeyless-client-commons/helpers";
 import { FormElement } from "akeyless-client-commons/types";
 import { useTranslation } from "react-i18next";
-import { PopupsStore, SettingsStore } from "@/lib/store";
-import { addBrand, BrandItem, updateBrand } from "./helpers";
+import { CacheStore, PopupsStore, SettingsStore } from "@/lib/store";
+import { addBrand, BrandItem, parseAliases, parseName, updateBrand, validateBrand } from "./helpers";
 import { ModelsContainer, ModelsContainerRef } from "./components";
+import { PRIMARY_BORDER } from "@/lib";
 
 const initialPosition = { top: "25%", left: "30%" };
 
@@ -16,7 +17,10 @@ export const useAddBrand = () => {
     const deletePopupsGroup = PopupsStore.deletePopupsGroup();
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
+    const carCatalog = CacheStore.carCatalog();
 
+    const modelsRef = useRef<ModelsContainerRef>({ updatedModels: [] });
+    const brandValidationError = t("length_error").replace("{entity}", t("brand")).replace("{length}", "2");
     const onAddClick = useCallback(async () => {
         const headerContent = "add_brand";
         const elements: FormElement[] = [
@@ -25,22 +29,37 @@ export const useAddBrand = () => {
                 name: "brand",
                 required: true,
                 labelContent: t("brand"),
-                containerClassName: "_center w-full",
+                minLength: 2,
+                validationError: brandValidationError,
+                placeholder: t("brand_placeholder"),
+                containerClassName: "_center w-10/12 gap-2",
+                labelClassName: "w-fit text-lg",
                 validationName: "charts",
             },
-            { type: "input", name: "aliases", labelContent: t("aliases"), containerClassName: "_center w-full", validationName: "charts" },
+            {
+                type: "textarea",
+                name: "aliases",
+                labelContent: t("aliases"),
+                containerClassName: `w-full`,
+                elementClassName: `${PRIMARY_BORDER} border-2`,
+                placeholder: t("aliases_placeholder").replace("{entity}", t("brand")),
+            },
+            { type: "custom", element: <ModelsContainer ref={modelsRef} /> },
         ];
         const submit = async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const form = e.currentTarget;
             const brand = getFormElementValue(form, "brand");
             const aliases = getFormElementValue(form, "aliases");
+            const parsedBrand = parseName(brand);
+            const parsedAliases = parseAliases(aliases);
+            const models = modelsRef.current?.updatedModels;
+            await validateBrand({ brand, brandValidationError, carCatalog, t, models });
 
-            const parseBrand = brand.charAt(0).toUpperCase() + brand.slice(1);
-            const parsedAliases = aliases.split(",").map((alias) => alias.trim());
             const newBrand = {
-                brand: parseBrand,
+                brand: parsedBrand,
                 aliases: parsedAliases,
+                models,
             };
             console.log(newBrand, "newBrand");
             // await addBrand(newBrand, t);
@@ -51,7 +70,7 @@ export const useAddBrand = () => {
                 direction={direction}
                 buttonContent={t("save")}
                 elements={elements}
-                formClassName="min-w-[400px]"
+                formClassName="min-w-[600px] flex flex-col items-center justify-center"
                 submitFunction={submit}
                 buttonClassName="bg-[#5f9ea0]"
             />
@@ -69,7 +88,7 @@ export const useAddBrand = () => {
             initialPosition,
             headerContent: t(headerContent),
         });
-    }, [addPopup, deletePopup]);
+    }, [addPopup, deletePopup, carCatalog, modelsRef]);
     return onAddClick;
 };
 
@@ -80,6 +99,9 @@ export const useEditBrand = () => {
     const deletePopupsGroup = PopupsStore.deletePopupsGroup();
     const direction = SettingsStore.direction();
     const modelsRef = useRef<ModelsContainerRef>({ updatedModels: [] });
+    const brandValidationError = t("length_error").replace("{entity}", t("brand")).replace("{length}", "2");
+    const carCatalog = CacheStore.carCatalog();
+
     const onEditClick = useCallback(
         (brand: BrandItem) => {
             const headerContent = t("edit_brand").replace("{brand}", brand.brand!);
@@ -89,20 +111,23 @@ export const useEditBrand = () => {
                     name: "brand",
                     required: true,
                     labelContent: t("brand"),
-                    containerClassName: "_center w-10/12",
+                    containerClassName: "_center w-10/12 gap-2",
+                    labelClassName: "w-fit text-lg",
+                    minLength: 2,
+                    validationError: brandValidationError,
                     props: { title: brand.brand },
                     placeholder: t("brand_placeholder"),
                     defaultValue: brand.brand,
                     validationName: "charts",
                 },
                 {
-                    type: "input",
+                    type: "textarea",
                     name: "aliases",
                     labelContent: t("aliases"),
-                    containerClassName: "_center w-10/12",
+                    containerClassName: `w-full ${PRIMARY_BORDER}`,
+                    elementClassName: `${PRIMARY_BORDER} border-2 `,
                     placeholder: t("aliases_placeholder").replace("{entity}", t("brand")),
                     props: { title: brand.aliases.join(", ") },
-                    validationName: "charts",
                     defaultValue: brand.aliases.join(", "),
                 },
                 { type: "custom", element: <ModelsContainer brand={brand} ref={modelsRef} /> },
@@ -114,13 +139,15 @@ export const useEditBrand = () => {
                 const aliasesInput = getFormElementValue(form, "aliases");
                 const parsedBrand = brandInput.charAt(0).toUpperCase() + brandInput.slice(1);
                 const parsedAliases = aliasesInput.split(",").map((alias) => alias.trim());
+                const models = modelsRef.current?.updatedModels;
+
+                await validateBrand({ brand: brandInput, brandValidationError, carCatalog, t, models, brandId: brand.id });
                 const updatedBrand = {
                     brand: parsedBrand,
                     aliases: parsedAliases,
-                    models: modelsRef.current?.updatedModels,
+                    models,
                 };
                 console.log(updatedBrand, "updatedBrand");
-
                 // await updateBrand(brand.id!, updatedBrand);
                 // deletePopup("edit_brand" + brand.id);
             };
@@ -148,7 +175,7 @@ export const useEditBrand = () => {
                 headerContent,
             });
         },
-        [deletePopup, addPopup, direction]
+        [deletePopup, addPopup, carCatalog, modelsRef]
     );
 
     return onEditClick;
@@ -176,15 +203,14 @@ export const useDeleteBrand = () => {
                         direction={direction}
                         onV={onV}
                         onX={onX}
-                        headline={t("brand_delete_confirmation").replace("{name}", brand.brand!)}
-                        containerClassName="w-80 flex flex-col gap-4"
-                        buttonsContainerClassName="_center gap-4"
+                        headline={t("brand_delete_confirmation").replace("{name}", brand.brand)}
+                        containerClassName="w-80"
                     />
                 ),
                 id: "delete_brand " + brand.id,
                 initialPosition,
                 type: "custom",
-                headerContent: t("delete_brand"),
+                headerContent: t("delete_brand").replace("{brand}", brand.brand),
             });
         },
         [deletePopup, addPopup]

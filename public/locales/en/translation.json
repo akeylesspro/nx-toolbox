@@ -123,13 +123,18 @@
     "models": "Models",
     "add_brand": "Add Brand",
     "edit_brand": "Edit Brand - {brand}",
-    "delete_brand": "Delete Brand",
+    "delete_brand": "Delete Brand - {brand}",
     "edit_brand_title": "Edit Brand",
     "add_model": "Add Model",
     "edit_model": "Edit Model - {model}",
-    "delete_model": "Delete Model",
+    "delete_model": "Delete Model - {model}",
     "edit_model_title": "Edit Model",
     "brand_placeholder": "Enter brand in English",
     "model_placeholder": "Enter model in English",
-    "aliases_placeholder": "Enter {entity} aliases (nam 1, name 2, name 3)"
+    "aliases_placeholder": "Enter {entity} aliases (nam 1, name 2, name 3)",
+    "models_placeholder": "Please add models",
+    "length_error": "{entity} must be in English and at least {length} characters",
+    "brand_exists": "Brand already exists",
+    "model_exists": "Model already exists",
+    "delete_model_confirmation": "Do you want to delete the model ?"
 }

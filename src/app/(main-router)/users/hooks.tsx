@@ -257,8 +257,7 @@ export const useDeleteUser = () => {
                         onV={onV}
                         onX={onX}
                         headline={t("client_delete_confirmation").replace("{name}", userNameFormat(user))}
-                        containerClassName="w-80 flex flex-col gap-4"
-                        buttonsContainerClassName="_center gap-4"
+                        containerClassName="w-80"
                     />
                 ),
                 id: "delete_user " + user.id,

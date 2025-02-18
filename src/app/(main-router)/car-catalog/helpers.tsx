@@ -73,3 +73,50 @@ export interface BrandItem {
     id?: string;
     updated?: Timestamp;
 }
+
+export const parseAliases = (aliases: string) =>
+    aliases
+        .split(",")
+        .map((alias) => alias.trim())
+        .filter((alias) => alias !== "");
+export const parseName = (name: string) => name.charAt(0).toUpperCase() + name.slice(1);
+export const stringifyAliases = (aliases: string[]) => aliases.join(", ");
+
+interface ValidateBrand {
+    brand: string;
+    carCatalog: BrandItem[];
+    t: (key: string) => string;
+    brandValidationError: string;
+    models: ModelItem[];
+    brandId?: string;
+}
+
+export const validateBrand = async ({ brand, brandValidationError, carCatalog, t, models, brandId }: ValidateBrand) => {
+    const parsedBrand = parseName(brand);
+    if (!/^[a-zA-Z]{2,}$/.test(brand)) {
+        throw new Error(brandValidationError);
+    }
+    if (carCatalog.find((item) => item.brand === parsedBrand && (brandId ? item.id !== brandId : true))) {
+        throw new Error(t("brand_exists"));
+    }
+    if (!models.length) {
+        throw new Error(t("models_placeholder"));
+    }
+};
+interface ValidateModel {
+    modelName: string;
+    models: ModelItem[];
+    modelLengthError: string;
+    t: (key: string) => string;
+    index?: number;
+}
+export const validateModel = async ({ modelName, modelLengthError, index, models, t }: ValidateModel) => {
+    if (!/^[a-zA-Z]{2,}$/.test(modelName)) {
+        throw new Error(modelLengthError);
+    }
+
+    if (models.find((model) => model.model === modelName && (index ? models.indexOf(model) !== index : true))) {
+        throw new Error(t("model_exists"));
+    }
+    /// check with the server if the model exists
+};

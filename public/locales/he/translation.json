@@ -124,6 +124,7 @@
     "add_brand": "הוסף מותג",
     "edit_brand": "עריכת מותג - {brand}",
     "delete_brand": "מחיקת מותג - {brand}",
+    "brand_delete_confirmation": "האם ברצונך למחוק את המותג {brand} ?",
     "edit_brand_title": "עריכת מותג",
     "add_model": "הוסף דגם",
     "edit_model": "עריכת דגם - {model}",
@@ -134,7 +135,11 @@
     "aliases_placeholder": "הכנס כינויים בשביל ה{entity} (שם 1,שם 2,שם 3)",
     "models_placeholder": "אנא הוסף דגמים",
     "length_error": "{entity} צריך ליהיות באנגלית ובן {length} תווים לפחות",
-    "brand_exists": "מותג כבר קיים",
-    "model_exists": "דגם כבר קיים",
-    "delete_model_confirmation": "האם ברצונך למחוק את הדגם ?"
+    "brand_exists": "מותג כבר קיים - {brandName}",
+    "model_exists": "דגם כבר קיים - {modelName}",
+    "delete_model_confirmation": "האם ברצונך למחוק את הדגם ?",
+    "brand_unknown": "שם מותג לא ידוע",
+    "model_unknown": "עבור מותג {brandName} לא נמצא דגם {modelName}",
+    "brand_exists_model_validation": "מותג {brandName} כבר קיים בקטלוג",
+    "Network Error": "שגיאת רשת"
 }

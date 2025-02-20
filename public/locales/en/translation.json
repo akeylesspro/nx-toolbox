@@ -124,6 +124,7 @@
     "add_brand": "Add Brand",
     "edit_brand": "Edit Brand - {brand}",
     "delete_brand": "Delete Brand - {brand}",
+    "brand_delete_confirmation": "Do you want to delete the brand {brand} ?",
     "edit_brand_title": "Edit Brand",
     "add_model": "Add Model",
     "edit_model": "Edit Model - {model}",
@@ -134,7 +135,11 @@
     "aliases_placeholder": "Enter {entity} aliases (nam 1, name 2, name 3)",
     "models_placeholder": "Please add models",
     "length_error": "{entity} must be in English and at least {length} characters",
-    "brand_exists": "Brand already exists",
-    "model_exists": "Model already exists",
-    "delete_model_confirmation": "Do you want to delete the model ?"
+    "brand_exists": "Brand already exists - {brandName}",
+    "model_exists": "Model already exists - {modelName}",
+    "delete_model_confirmation": "Do you want to delete the model ?",
+    "brand_unknown": "Unknown Brand name",
+    "model_unknown": "Model {modelName} not found for {brandName}",
+    "brand_exists_model_validation": "Brand {brandName} already exists in catalog",
+    "Network Error": "Network Error"
 }

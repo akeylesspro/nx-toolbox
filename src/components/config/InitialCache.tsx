@@ -349,7 +349,7 @@ export default function InitialCache() {
         if (isSuperAdmin && !pushedRef.current.includes("nx-car-catalog")) {
             result.push({
                 collectionName: "nx-car-catalog",
-                onFirstTime: setCarCatalog,
+                onFirstTime: (data) => setCarCatalog(data),
                 onAdd: (data) => {
                     setCarCatalog((prev) => {
                         return [...prev, ...data];
@@ -357,13 +357,11 @@ export default function InitialCache() {
                 },
                 onModify: (data) => {
                     setCarCatalog((prev) => {
-                        data.forEach((v) => {
-                            const index = prev.findIndex((val) => val.id === v.id);
-                            if (index !== -1) {
-                                prev[index] = v;
-                            }
+                        const updated = prev.map((item) => {
+                            const updatedItem = data.find((v) => v.id === item.id);
+                            return updatedItem ? updatedItem : item;
                         });
-                        return prev;
+                        return updated;
                     });
                 },
                 onRemove: (data) => {

@@ -2,11 +2,11 @@
 import { useTranslation } from "react-i18next";
 import { PopupsStore, SettingsStore, UserStore } from "@/lib/store";
 import { ConfirmForm, Loader, ModularForm, Table, TableButton, TableProps, TimesUI } from "akeyless-client-commons/components";
-import { FormEvent, forwardRef, memo, MouseEvent, useCallback, useImperativeHandle, useMemo, useState } from "react";
+import { FormEvent, forwardRef, memo, MouseEvent, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { useAddBrand, useDeleteBrand, useEditBrand } from "./hooks";
 import { Timestamp } from "firebase/firestore";
 import { getFormElementValue, timestamp_to_string } from "akeyless-client-commons/helpers";
-import { BrandItem, ModelItem, parseAliases, parseName, stringifyAliases, validateModel } from "./helpers";
+import { BrandItem, getModelName, ModelItem, parseAliases, uppercaseName, stringifyAliases, validateModel } from "./helpers";
 import { TableOptionsWarper } from "@/components/utils";
 import { cn, PRIMARY_BORDER } from "@/lib";
 import { Button, Badge } from "@/components";
@@ -37,6 +37,10 @@ export const CarCatalogTable = memo(({ data }: CarCatalogTableProps) => {
                 aliases_number: brand.aliases?.length,
                 models_ui: brand.models?.map((v) => v.model).join(", "),
                 models_number: brand.models?.length,
+                modelsAliases: brand.models
+                    ?.map((m) => m.aliases)
+                    .flat()
+                    .join(", "),
                 actions: (
                     <TableOptionsWarper>
                         <EditBrand brand={brand} />
@@ -46,6 +50,7 @@ export const CarCatalogTable = memo(({ data }: CarCatalogTableProps) => {
             };
         });
     }, [data, isRtl]);
+
     const numberMaxData = formattedData.length;
     const tableProps: TableProps = {
         // settings
@@ -106,31 +111,108 @@ const EditBrand = ({ brand }: PropsWithBrand) => {
 const DeleteBrand = ({ brand }: PropsWithBrand) => {
     const { t } = useTranslation();
     const onDeleteClick = useDeleteBrand();
-    return <TableButton type="delete" title={t("delete_brand")} onClick={() => onDeleteClick(brand)} />;
+    return <TableButton type="delete" title={t("delete_brand").replace("{brand}", brand.brand)} onClick={() => onDeleteClick(brand)} />;
 };
 
 /// ModelsContainer
 interface ModelsContainerProps {
+    closeAllPopups: () => void;
     className?: string;
     brand?: BrandItem;
 }
 export interface ModelsContainerRef {
     updatedModels: ModelItem[];
+    updatedBrandName?: string;
+    setBrandInputValue?: (name: string) => void;
 }
-export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerProps>(({ className, brand, ...props }, ref) => {
+export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerProps>(({ className, brand, closeAllPopups, ...props }, ref) => {
     const { t } = useTranslation();
     const addPopup = PopupsStore.addPopup();
     const deletePopup = PopupsStore.deletePopup();
     const direction = SettingsStore.direction();
     const [models, setModels] = useState<ModelItem[]>(brand?.models || []);
+    const [updatedBrandName, setUpdatedBrandName] = useState("");
+    const [brandInputValue, setBrandInputValue] = useState(brand?.brand || "");
     const modelLengthError = t("length_error").replace("{entity}", t("model")).replace("{length}", "2");
 
     useImperativeHandle(
         ref,
         () => ({
-            updatedModels: [...models],
+            updatedModels: models,
+            updatedBrandName,
+            setBrandInputValue: (b) => setBrandInputValue(b),
         }),
-        [models]
+        [models, updatedBrandName, brandInputValue]
+    );
+
+    const onAddClick = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            const submit = async (newModel: ModelItem) => {
+                const { validBrandName, validModelName } = await validateModel({
+                    t,
+                    newModel,
+                    models,
+                    brandInputValue: uppercaseName(brandInputValue),
+                    modelLengthError,
+                });
+                const newModels = [...models, { ...newModel, model: validModelName }];
+
+                setModels(newModels);
+                setUpdatedBrandName(validBrandName);
+                deletePopup("add_model");
+            };
+
+            addPopup({
+                element: <ModelForm onSubmit={submit} />,
+                id: "add_model",
+                type: "custom",
+                initialPosition: getClickLocation(e),
+                headerContent: t("add_model"),
+            });
+        },
+        [models, brandInputValue]
+    );
+
+    const onEditClick = useCallback(
+        (e: MouseEvent<HTMLDivElement>, oldModel: ModelItem, index: number) => {
+            const popupId = "edit_model " + oldModel.model;
+
+            const submit = async (newModel: ModelItem) => {
+                if (getModelName(newModel) === getModelName(oldModel)) {
+                    if (stringifyAliases(newModel.aliases) === stringifyAliases(oldModel.aliases)) {
+                        deletePopup(popupId);
+                        console.log("no changes");
+                        return;
+                    }
+                    deletePopup(popupId);
+                    const newModels = models.map((m) => (getModelName(m) === getModelName(oldModel) ? newModel : m));
+                    setModels(newModels);
+                    return;
+                }
+
+                const { validBrandName, validModelName } = await validateModel({
+                    t,
+                    newModel,
+                    models,
+                    brandInputValue: uppercaseName(brandInputValue),
+                    modelLengthError,
+                    index,
+                });
+
+                const newModels = models.map((m) => (getModelName(m) === getModelName(oldModel) ? { ...newModel, model: validModelName } : m));
+                setUpdatedBrandName(validBrandName);
+                setModels(newModels);
+                deletePopup(popupId);
+            };
+            addPopup({
+                id: popupId,
+                element: <ModelForm model={oldModel} onSubmit={submit} />,
+                type: "custom",
+                initialPosition: getClickLocation(e),
+                headerContent: t("edit_model").replace("{model}", oldModel.model),
+            });
+        },
+        [models, brandInputValue]
     );
 
     const onDeleteClick = useCallback(
@@ -152,57 +234,6 @@ export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerPro
                 type: "custom",
                 initialPosition: getClickLocation(e),
                 headerContent: t("delete_model").replace("{model}", model.model),
-            });
-        },
-        [models]
-    );
-
-    const onEditClick = useCallback(
-        (e: MouseEvent<HTMLDivElement>, model: ModelItem, index: number) => {
-            const popupId = "edit_model " + model.model;
-            const submit = async (newModel: ModelItem) => {
-                const newModels = models.map((m) => (m.model.toLocaleLowerCase().trim() === model.model.toLocaleLowerCase().trim() ? newModel : m));
-                await validateModel({
-                    t,
-                    modelName: newModel.model,
-                    models,
-                    modelLengthError,
-                    index,
-                });
-                setModels(newModels);
-                deletePopup(popupId);
-            };
-            addPopup({
-                id: popupId,
-                element: <ModelForm model={model} onSubmit={submit} />,
-                type: "custom",
-                initialPosition: getClickLocation(e),
-                headerContent: t("edit_model").replace("{model}", model.model),
-            });
-        },
-        [models]
-    );
-
-    const onAddClick = useCallback(
-        (e: MouseEvent<HTMLButtonElement>) => {
-            const submit = async (newModel: ModelItem) => {
-                await validateModel({
-                    t,
-                    modelName: newModel.model,
-                    models,
-                    modelLengthError,
-                });
-                const newModels = [...models, newModel];
-                setModels(newModels);
-                deletePopup("add_model");
-            };
-
-            addPopup({
-                element: <ModelForm onSubmit={submit} />,
-                id: "add_model",
-                type: "custom",
-                initialPosition: getClickLocation(e),
-                headerContent: t("add_model"),
             });
         },
         [models]
@@ -232,7 +263,7 @@ export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerPro
                                     type="button"
                                     onClick={(e) => onDeleteClick(e, model)}
                                 >
-                                    <i className="fa-regular fa-xmark text-red-500 text-lg pt-1"></i>
+                                    <i className="fa-regular fa-xmark hover:text-red-500 text-lg pt-1"></i>
                                 </button>
                             </Badge>
                         );
@@ -265,18 +296,13 @@ export const ModelForm = ({ model, onSubmit }: ModelForm) => {
             const form = e.currentTarget;
             const name = getFormElementValue(form, "name");
             const aliases = getFormElementValue(form, "aliases");
-            const parsedName = parseName(name);
+            const parsedName = uppercaseName(name);
             const parsedAliases = parseAliases(aliases);
             const newModel = {
                 model: parsedName,
-                aliases: parsedAliases,
+                aliases: parsedAliases.some((v) => v.toLocaleLowerCase() === name.toLocaleLowerCase()) ? parsedAliases : [...parsedAliases, name],
             };
-
             await onSubmit(newModel);
-            // try {
-            // } catch (error) {
-            //     throw error;
-            // }
         },
         [onSubmit]
     );

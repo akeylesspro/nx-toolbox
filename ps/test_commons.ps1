@@ -7,7 +7,7 @@ else {
     Write-Host "next folder not found"
 }
 
-npm run uc client test
+npm run uc client
 
 Start-Job -ScriptBlock {
     Start-Sleep -Seconds 20

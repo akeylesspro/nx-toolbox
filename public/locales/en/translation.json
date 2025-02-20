@@ -99,6 +99,7 @@
     "dashboard": "Dashboard",
     "toolbox": "Toolbox",
     "phone": "Phone",
+    "export_to_excel": "Export to Excel",
     "last_name": "Last Name",
     "user_last_name_error": "Last name must be at least 2 characters",
     "user_last_name_placeholder": "Enter last name",

@@ -99,6 +99,7 @@
     "dashboard": "דשבורד",
     "toolbox": "אתר ניהול",
     "phone": "טלפון",
+    "export_to_excel": "ייצוא לאקסל",
     "last_name": "שם משפחה",
     "user_last_name_error": "שם משפחה חייב להיות בן 2 תווים לפחות",
     "user_last_name_placeholder": "הכנס שם משפחה",

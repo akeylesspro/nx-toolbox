@@ -12,5 +12,3 @@ export default async function NotActiveDevicesPage() {
     const data = (await fetchNotActiveCars(token)).filter(filterFun);
     return <NotActiveDevices data={data} />;
 }
-
-export const dynamic = "force-dynamic";

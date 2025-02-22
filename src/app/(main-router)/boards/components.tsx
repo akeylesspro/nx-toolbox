@@ -77,7 +77,8 @@ export const BoardsTable = memo(({ data }: PropsWithBoards) => {
         containerClassName: "_full",
         cellClassName: "_ellipsis text-start h-10 px-3",
         tableContainerClass: "flex-1",
-        searchInputClassName: "h-10 w-1/4",
+        searchInputClassName: "h-10 w-11/12",
+        searchContainerClassName: "w-1/4",
         /// labels
         searchPlaceHolder: "Search",
         filterLabel: t("filter_by"),

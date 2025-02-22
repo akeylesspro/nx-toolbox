@@ -228,8 +228,8 @@ export const ReportTable = memo(({ reportId }: PropsWithReportId) => {
         cellClassName: "_ellipsis text-start p-1 text-sl text-xs w-fit max-w-[20px]",
         headerCellClassName: "px-0.5 text-sm w-fit max-w-[20px]",
         headerClassName: " bg-[#5f9ea0] h-8 ",
-        searchInputClassName: "h-10 w-10/12",
-        searchContainerClassName: "w-1/3",
+        searchInputClassName: "h-10 w-11/12",
+        searchContainerClassName: "w-1/4",
         zebraStriping: {},
         // labels
         searchPlaceHolder: t("search"),

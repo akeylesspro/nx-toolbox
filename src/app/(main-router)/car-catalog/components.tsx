@@ -1,10 +1,9 @@
-"use brand";
+"use client";
 import { useTranslation } from "react-i18next";
 import { PopupsStore, SettingsStore, UserStore } from "@/lib/store";
 import { ConfirmForm, Loader, ModularForm, Table, TableButton, TableProps, TimesUI } from "akeyless-client-commons/components";
 import { FormEvent, forwardRef, memo, MouseEvent, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { useAddBrand, useDeleteBrand, useEditBrand } from "./hooks";
-import { Timestamp } from "firebase/firestore";
 import { getFormElementValue, timestamp_to_string } from "akeyless-client-commons/helpers";
 import { BrandItem, getModelName, ModelItem, parseAliases, uppercaseName, stringifyAliases, validateModel } from "./helpers";
 import { TableOptionsWarper } from "@/components/utils";

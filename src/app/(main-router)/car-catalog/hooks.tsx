@@ -1,4 +1,3 @@
-import { LanguageOptions } from "akeyless-types-commons";
 import { FormEvent, useCallback, useRef } from "react";
 import { ConfirmForm, ModularForm } from "akeyless-client-commons/components";
 import { getFormElementValue } from "akeyless-client-commons/helpers";

@@ -146,7 +146,7 @@
     "sms_configurations": "הגדרות SMS",
     "length_error": "{entity} חייב להיות בן {length} תווים לפחות",
     "name_placeholder": "הכנס שם",
-    "configurations_sms": "לשליחה SMS",
+    "configurations_sms": "SMS לשליחה",
     "configurations_sms_placeholder": "הכנס תוכן לשליחה בSMS",
     "year": "שנה",
     "select_entity": "בחר {entity}",

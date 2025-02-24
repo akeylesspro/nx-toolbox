@@ -140,9 +140,15 @@ export const ModelsContainer = memo(
                     <span className="text-red-500">*</span>
                 </div>
                 <div className="w-full flex flex-col gap-3 overflow-auto max-h-32">
-                    {models.map((model, index) => {
-                        return <ModelRow key={index} index={index} setModels={setModels} brand={model.brand} model={model.model} year={model.year} />;
-                    })}
+                    {models.length < 1 ? (
+                        <div className="text-lg">{t("models_placeholder")}</div>
+                    ) : (
+                        models.map((model, index) => {
+                            return (
+                                <ModelRow key={index} index={index} setModels={setModels} brand={model.brand} model={model.model} year={model.year} />
+                            );
+                        })
+                    )}
                 </div>
                 <div className="w-full flex justify-end items-end ">
                     <Button className="h-fit py-2 px-3" onClick={onAddClick} type="button" title={t("add_model")}>

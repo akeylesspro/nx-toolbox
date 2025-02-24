@@ -15,9 +15,7 @@ import {
     query_document,
     userNameFormat,
 } from "akeyless-client-commons/helpers";
-import { PRIMARY_COLOR } from "@/lib";
-
-const initialPosition = { top: "25%", left: "30%" };
+import { CENTER_POPUP_POSITION } from "@/lib";
 
 export const useAddUser = () => {
     const addPopup = PopupsStore.addPopup();
@@ -110,7 +108,7 @@ export const useAddUser = () => {
             deletePopup("add_user");
         };
         const form = <UserWizard elements={elements} submitFunction={submit} />;
-        addPopup({ element: form, id: "add_user", type: "custom", initialPosition, headerContent: t(headerContent) });
+        addPopup({ element: form, id: "add_user", type: "custom", initialPosition: CENTER_POPUP_POSITION, headerContent: t(headerContent) });
     }, [addPopup, deletePopup, clients, users]);
     return onAddClick;
 };
@@ -224,7 +222,7 @@ export const useEditUser = () => {
                 element: form,
                 id: headerContent + user.id,
                 type: "custom",
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 headerContent: t(headerContent).replace("{name}", userNameFormat(user)),
             });
         },
@@ -261,7 +259,7 @@ export const useDeleteUser = () => {
                     />
                 ),
                 id: "delete_user " + user.id,
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 type: "custom",
                 headerContent: t("delete_user"),
             });

@@ -6,8 +6,6 @@ import { biUrl } from "@/lib/helpers";
 
 export const updateBrand = async (id: string, data: TObject<any>) => {
     try {
-        console.log({ id, data });
-
         await set_document("nx-car-catalog", id, { ...data, updated: fire_base_TIME_TEMP() });
     } catch (error) {
         console.error("error from updateBrand ", error);

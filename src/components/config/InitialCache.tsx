@@ -25,6 +25,7 @@ export default function InitialCache() {
     const availableReports = CacheStore.availableReports();
     const setAvailableReports = CacheStore.setAvailableReports();
     const setCarCatalog = CacheStore.setCarCatalog();
+    const setSmsConfigurations = CacheStore.setSmsConfigurations();
     const userPermissions = UserStore.userPermissions();
     const setUserTimeZone = UserStore.setUserTimeZone();
 
@@ -68,6 +69,7 @@ export default function InitialCache() {
             setAvailableReports(availableReportsData.grouped);
         })();
     }, [auth.currentUser, availableReports, userPermissions]);
+
     /// snapshots bulk
     const bulk = useMemo(() => {
         if (Object.keys(userPermissions).length === 0) {
@@ -371,6 +373,33 @@ export default function InitialCache() {
                 },
             });
             pushedRef.current.push("nx-car-catalog");
+        }
+        /// nx-sms-configurations
+        if (isSuperAdmin && !pushedRef.current.includes("nx-sms-configurations")) {
+            result.push({
+                collectionName: "nx-sms-configurations",
+                onFirstTime: (data) => setSmsConfigurations(data),
+                onAdd: (data) => {
+                    setSmsConfigurations((prev) => {
+                        return [...prev, ...data];
+                    });
+                },
+                onModify: (data) => {
+                    setSmsConfigurations((prev) => {
+                        const updated = prev.map((item) => {
+                            const updatedItem = data.find((v) => v.id === item.id);
+                            return updatedItem ? updatedItem : item;
+                        });
+                        return updated;
+                    });
+                },
+                onRemove: (data) => {
+                    setSmsConfigurations((prev) => {
+                        return prev.filter((item) => !data.some((v) => v.id === item.id));
+                    });
+                },
+            });
+            pushedRef.current.push("nx-sms-configurations");
         }
 
         return result;

@@ -9,8 +9,7 @@ import { FormElement } from "akeyless-client-commons/types";
 import { CacheStore, PopupsStore, SettingsStore, UserStore } from "@/lib/store";
 import { addBoardDB, onImeiInputKeyDown, onSimInputKeyDown, updateBoardDB, validateBoardImei, validateBoardPhoneAndStatus } from "./helpers";
 import { PrintableContent } from "./components";
-
-const initialPosition = { top: "25%", left: "30%" };
+import { CENTER_POPUP_POSITION } from "@/lib";
 
 export const usePrintQR = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -183,7 +182,7 @@ export const useAddBoard = () => {
                 submitFunction={submit}
             />
         );
-        addPopup({ element: form, id: "add_board", type: "custom", initialPosition, headerContent: t(headerContent) });
+        addPopup({ element: form, id: "add_board", type: "custom", initialPosition: CENTER_POPUP_POSITION, headerContent: t(headerContent) });
     }, [activeUser, boardTypes, cameraBoardTypes, addPopup, deletePopup]);
     return { onAddClick, PrintableContent };
 };
@@ -276,7 +275,7 @@ export const useEditBoard = () => {
                 element: form,
                 id: "edit_board " + board.imei,
                 type: "custom",
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 headerContent: (
                     <>
                         {t(header_content)} - {board.imei}
@@ -317,7 +316,7 @@ export const useDeleteBoard = () => {
                     />
                 ),
                 id: "delete_board " + board.imei,
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 type: "custom",
                 headerContent: t("delete_board"),
             });

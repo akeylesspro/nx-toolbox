@@ -4,6 +4,7 @@ import { createSelectors, setState } from "akeyless-client-commons/helpers";
 import { Board, Client, NxUser, TObject } from "akeyless-types-commons";
 import { SettingsStoreBase } from "./SettingsStore";
 import { BrandItem } from "@/app/(main-router)/car-catalog/helpers";
+import { SmsConfigurationItem } from "@/app/(main-router)/sms-configurations/helpers";
 
 export interface CacheStoreType {
     boards: Board[];
@@ -36,6 +37,8 @@ export interface CacheStoreType {
     setAllReports: SetState<TObject<any>>;
     carCatalog: BrandItem[];
     setCarCatalog: SetState<BrandItem[]>;
+    smsConfigurations: SmsConfigurationItem[];
+    setSmsConfigurations: SetState<SmsConfigurationItem[]>;
 }
 
 export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
@@ -92,6 +95,8 @@ export const CacheStoreBase = create<CacheStoreType>((set, get) => ({
     setAllReports: (updater) => setState(updater, set, "allReports"),
     carCatalog: [],
     setCarCatalog: (updater) => setState(updater, set, "carCatalog"),
+    smsConfigurations: [],
+    setSmsConfigurations: (updater) => setState(updater, set, "smsConfigurations"),
 }));
 
 export const CacheStore = createSelectors<CacheStoreType>(CacheStoreBase);

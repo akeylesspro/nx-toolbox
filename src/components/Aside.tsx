@@ -2,7 +2,7 @@
 import { SettingsStore, UserStore } from "@/lib/store";
 import { AsideButton, ChangeLanguageButton, ClickableLogo, Logout } from "./global";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 function Aside() {
     return (
@@ -27,6 +27,7 @@ const NavigationButtons = () => {
             buttons.push({ content: "clients", to: "/clients" });
             buttons.push({ content: "users", to: "/users" });
             buttons.push({ content: "car_catalog", to: "/car-catalog" });
+            buttons.push({ content: "sms_configurations", to: "/sms-configurations" });
         }
         if (isSuperAdmin || userPermissions.reports) {
             buttons.push({ content: "reports", to: "/reports" });

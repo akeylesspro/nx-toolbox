@@ -6,9 +6,7 @@ import { useTranslation } from "react-i18next";
 import { CacheStore, PopupsStore, SettingsStore } from "@/lib/store";
 import { addBrand, BrandItem, deleteBrand, parseAliases, uppercaseName, updateBrand, validateBrand } from "./helpers";
 import { ModelsContainer, ModelsContainerRef } from "./components";
-import { PRIMARY_BORDER } from "@/lib";
-
-const initialPosition = { top: "25%", left: "30%" };
+import { CENTER_POPUP_POSITION, PRIMARY_BORDER } from "@/lib";
 
 export const useAddBrand = () => {
     const addPopup = PopupsStore.addPopup();
@@ -18,7 +16,7 @@ export const useAddBrand = () => {
     const direction = SettingsStore.direction();
     const carCatalog = CacheStore.carCatalog();
     const modelsRef = useRef<ModelsContainerRef>({ updatedModels: [], updatedBrandName: "" });
-    const brandValidationError = t("length_error").replace("{entity}", t("brand")).replace("{length}", "2");
+    const brandValidationError = t("car_catalog_length_error").replace("{entity}", t("brand")).replace("{length}", "2");
 
     const closeAllPopups = useCallback(() => {
         deletePopupsGroup("add_model");
@@ -89,7 +87,7 @@ export const useAddBrand = () => {
             element: form,
             id: "add_brand",
             type: "custom",
-            initialPosition,
+            initialPosition: CENTER_POPUP_POSITION,
             headerContent: t(headerContent),
         });
     }, [addPopup, closeAllPopups, carCatalog, modelsRef]);
@@ -103,7 +101,7 @@ export const useEditBrand = () => {
     const deletePopupsGroup = PopupsStore.deletePopupsGroup();
     const direction = SettingsStore.direction();
     const modelsRef = useRef<ModelsContainerRef>({ updatedModels: [] });
-    const brandValidationError = t("length_error").replace("{entity}", t("brand")).replace("{length}", "2");
+    const brandValidationError = t("car_catalog_length_error").replace("{entity}", t("brand")).replace("{length}", "2");
     const carCatalog = CacheStore.carCatalog();
 
     const closeAllPopups = useCallback(() => {
@@ -178,7 +176,7 @@ export const useEditBrand = () => {
                 element: form,
                 id: "edit_brand" + brand.id,
                 type: "custom",
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 headerContent,
             });
         },
@@ -215,7 +213,7 @@ export const useDeleteBrand = () => {
                     />
                 ),
                 id: "delete_brand " + brand.id,
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 type: "custom",
                 headerContent: t("delete_brand").replace("{brand}", brand.brand),
             });

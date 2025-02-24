@@ -133,7 +133,7 @@ export const ModelsContainer = forwardRef<ModelsContainerRef, ModelsContainerPro
     const [models, setModels] = useState<ModelItem[]>(brand?.models || []);
     const [updatedBrandName, setUpdatedBrandName] = useState("");
     const [brandInputValue, setBrandInputValue] = useState(brand?.brand || "");
-    const modelLengthError = t("length_error").replace("{entity}", t("model")).replace("{length}", "2");
+    const modelLengthError = t("car_catalog_length_error").replace("{entity}", t("model")).replace("{length}", "2");
 
     useImperativeHandle(
         ref,
@@ -288,7 +288,7 @@ interface ModelForm {
 export const ModelForm = ({ model, onSubmit }: ModelForm) => {
     const { t } = useTranslation();
     const direction = SettingsStore.direction();
-    const modelLengthError = t("length_error").replace("{entity}", t("model")).replace("{length}", "2");
+    const modelLengthError = t("car_catalog_length_error").replace("{entity}", t("model")).replace("{length}", "2");
 
     const submit = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {

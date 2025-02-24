@@ -11,7 +11,7 @@ npm run uc client
 
 Start-Job -ScriptBlock {
     Start-Sleep -Seconds 20
-    Start-Process "http://localhost:8003/reports"
+    Start-Process "http://localhost:8003"
 } | Out-Null
 
 npm start

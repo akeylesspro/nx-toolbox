@@ -165,8 +165,7 @@ export const useAddBoard = () => {
                         onV={onV}
                         onX={onX}
                         headline={t("print_confirmation").replace("{imei}", update.imei)}
-                        containerClassName="w-80 flex flex-col gap-4"
-                        buttonsContainerClassName="_center gap-4"
+                        containerClassName="w-80"
                     />
                 ),
                 id: "print_confirmation",
@@ -314,8 +313,7 @@ export const useDeleteBoard = () => {
                         onV={onV}
                         onX={onX}
                         headline={t("board_delete_confirmation").replace("{imei}", board.imei)}
-                        containerClassName="w-80 flex flex-col gap-4"
-                        buttonsContainerClassName="_center gap-4"
+                        containerClassName="w-80"
                     />
                 ),
                 id: "delete_board " + board.imei,

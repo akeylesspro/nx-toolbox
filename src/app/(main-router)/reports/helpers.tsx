@@ -6,6 +6,7 @@ export interface AvailableReports {
     list: TObject<string>[];
     grouped: TObject<string>;
 }
+
 export const getAvailableReports = async (token: string): Promise<AvailableReports> => {
     try {
         const response = await axios({

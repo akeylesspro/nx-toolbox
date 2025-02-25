@@ -217,7 +217,6 @@ export const ModelRow = memo(({ brand, model, year, index, setModels }: ModelRow
             <SelectWithSearch
                 labelContent={t("brand")}
                 placeholder={t("select_entity").replace("{entity}", t("brand"))}
-                sortDirection="abc"
                 value={selectedBrand}
                 onChange={(brand) => onBrandChange(brand)}
                 options={carCatalog.map((c) => ({ label: c.brand, value: c.brand, aliases: JSON.stringify(c.aliases) }))}
@@ -226,7 +225,6 @@ export const ModelRow = memo(({ brand, model, year, index, setModels }: ModelRow
             <SelectWithSearch
                 labelContent={t("model")}
                 placeholder={t("select_entity").replace("{entity}", t("model"))}
-                sortDirection="abc"
                 value={selectedModel}
                 onChange={(model) => onModelChange(model)}
                 options={modelOptions}
@@ -239,6 +237,7 @@ export const ModelRow = memo(({ brand, model, year, index, setModels }: ModelRow
                 onChange={(year) => onYearChange(year)}
                 options={yearsOptions}
                 notFoundLabel={t("entity_not_found").replace("{entity}", t("year"))}
+                sortAsNumber
             />
             <button title={t("delete_model").replace(" - {model}", "")} type="button" onClick={onDeleteClick}>
                 {<i className="fa-light fa-trash text-xl text-red-500" />}
@@ -246,3 +245,4 @@ export const ModelRow = memo(({ brand, model, year, index, setModels }: ModelRow
         </div>
     );
 });
+ModelRow.displayName = "ModelRow";

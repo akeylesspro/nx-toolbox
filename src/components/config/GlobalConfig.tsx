@@ -7,8 +7,8 @@ import packageJson from "../../../package.json";
 export function GlobalConfig() {
     useEffect(() => {
         const storedLang = localStorage?.getItem("lang") || "he";
-        i18n.changeLanguage(storedLang);
-    }, []);
+        i18n?.changeLanguage(storedLang);
+    }, [i18n]);
     return (
         <>
             <Version version={packageJson.version} className="bottom-1 right-1"/>

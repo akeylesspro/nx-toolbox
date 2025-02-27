@@ -46,16 +46,19 @@ export const PopupsStoreBase = create<PopupsStoreType>((set, get) => ({
             minimizedPopups: state.minimizedPopups.filter((popupId) => !popupId.includes(group)),
         })),
     bringToFront: (id) => {
-        const newZIndex = get().maxZIndex + 1;
+        const maxZIndex = get().maxZIndex;
+        let newZIndex = maxZIndex;
         set((state) => ({
-            popups: state.popups.map((popup) =>
-                popup.id === id
-                    ? {
-                          ...popup,
-                          zIndex: newZIndex,
-                      }
-                    : popup
-            ),
+            popups: state.popups.map((popup) => {
+                if (popup.id === id && popup.zIndex! < maxZIndex) {
+                    newZIndex += 1;
+                    return {
+                        ...popup,
+                        zIndex: newZIndex,
+                    };
+                }
+                return popup;
+            }),
             maxZIndex: newZIndex,
         }));
     },

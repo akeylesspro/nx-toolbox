@@ -7,8 +7,7 @@ import { PopupsStore, SettingsStore } from "@/lib/store";
 import { addClient, updateClient } from "./helpers";
 import { ClientWizard } from "./components";
 import { getFormElementValue } from "akeyless-client-commons/helpers";
-
-const initialPosition = { top: "25%", left: "30%" };
+import { CENTER_POPUP_POSITION } from "@/lib";
 
 export const useAddClient = () => {
     const addPopup = PopupsStore.addPopup();
@@ -118,7 +117,7 @@ export const useAddClient = () => {
             deletePopup("add_client");
         };
         const form = <ClientWizard elements={elements} submitFunction={submit} />;
-        addPopup({ element: form, id: "add_client", type: "custom", initialPosition, headerContent: t(headerContent) });
+        addPopup({ element: form, id: "add_client", type: "custom", initialPosition: CENTER_POPUP_POSITION, headerContent: t(headerContent) });
     }, [addPopup, deletePopup]);
     return onAddClick;
 };
@@ -244,7 +243,7 @@ export const useEditClient = () => {
                 element: form,
                 id: "edit_client" + client.id,
                 type: "custom",
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 headerContent: t(headerContent).replace("{name}", client.name!),
             });
         },
@@ -281,7 +280,7 @@ export const useDeleteClient = () => {
                     />
                 ),
                 id: "delete_client " + client.id,
-                initialPosition,
+                initialPosition: CENTER_POPUP_POSITION,
                 type: "custom",
                 headerContent: t("delete_client"),
             });
